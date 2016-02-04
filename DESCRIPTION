@@ -1,8 +1,10 @@
 Package: esaj
 Title: Download e Parse Dados TJ Com Sistema SAJ
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Julio", "Trecenti", email = "jtrecenti@erri.com.br", role = c("aut", "cre"))
+Description: Scraper do DJE, consulta de processos de primeiro grau (CPOPG),
+             consulta de processos de segundo grau (CPOSG) em 9 tribunais
+             brasileiros.
 Depends:
     R (>= 3.2.3)
 License: GNU
@@ -13,4 +15,6 @@ Imports: magrittr,
     tidyr,
     stringi,
     stringr,
-    httr
+    httr,
+    xml2,
+    rvest
