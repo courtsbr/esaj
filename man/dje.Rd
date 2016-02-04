@@ -43,8 +43,10 @@ tjal_dje <- dje(tj = 'TJAL', dates = Sys.Date() - 0:3)
 tjam_dje <- dje(tj = 'TJAM', dates = Sys.Date() - 0:3)
 tjce_dje <- dje(tj = 'TJCE', dates = Sys.Date() - 0:3)
 tjba_dje <- dje(tj = 'TJBA', dates = Sys.Date() - 0:3)
-tjmt_dje <- dje(tj = 'TJMT', dates = Sys.Date() - 0:3)
+tjms_dje <- dje(tj = 'TJMS', dates = Sys.Date() - 0:3)
+tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
 tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
+tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
 
 }
 
