@@ -113,7 +113,7 @@ dje_tjac <- function(dates, path, verbose) {
 
 dje_tjal <- function(dates, path, verbose) {
   u <- 'http://www2.tjal.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjal_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(c(1:2)),
@@ -134,7 +134,7 @@ dje_tjal <- function(dates, path, verbose) {
 
 dje_tjam <- function(dates, path, verbose) {
   u <- 'http://esaj.tjam.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjam_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(c(1:3)),
@@ -182,7 +182,7 @@ dje_tjms <- function(dates, path, verbose) {
       dplyr::last() %>%
       {paste0(u0, .)}
   }
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjms_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(1),
@@ -302,7 +302,7 @@ dje_tjrn <- function(dates, path, verbose) {
 }
 
 dje_tjsc <- function(dates, path, verbose) {
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjsc_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
 
   tjsc_link <- function(date_link) {
@@ -333,7 +333,7 @@ dje_tjsc <- function(dates, path, verbose) {
 
 dje_tjce <- function(dates, path, verbose) {
   u <- 'http://esaj.tjce.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjce_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(c(1:2)),
@@ -389,7 +389,7 @@ dje_tjba <- function(dates, path, verbose) {
   }
   dates <- as.Date(dates)
   u <- 'http://www.tjba.jus.br/diario/internet/download.wsp?'
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
+  pastas <- sprintf('%s/tjba_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   aux <- edicoes_tjba()
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
