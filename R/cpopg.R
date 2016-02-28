@@ -4,7 +4,7 @@
 cpo_pg <- function(processos, path = "data-raw/cpo-pg") {
   # f <- dplyr::failwith(dplyr::data_frame(result = "erro"), cpo_pg_um)
   d <- dplyr::data_frame(n_processo = unique(processos))
-  d <- dplyr::mutate(d, id = 1:n())
+  d <- dplyr::mutate(d, id = 1:n(), path = path)
   clust <- multidplyr::create_cluster(parallel::detectCores())
   d <- multidplyr::partition(d, id, n_processo, cluster = clust)
   d <- dplyr::do(d, {
@@ -37,7 +37,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg") {
     }
     # cat(.$id, '\n', file = 'data-raw/log.txt', append = TRUE)
     f <- dplyr::failwith(dplyr::data_frame(result = "erro"), cpo_pg_um)
-    f(.$n_processo, path = path)
+    f(.$n_processo, path = .$path)
   })
   d <- dplyr::collect(d)
   d <- dplyr::ungroup(d)
