@@ -122,11 +122,16 @@ parse_cpopg_info_ <- function (a) {
     dplyr::tbl_df()
 }
 
-
+#' @export
 arrumar_forma <- function(x) {
   x <- desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
   x <- gsub("[^a-z]", "", x)
   x
+}
+
+#' @export
+arrumar_key <- function (x) {
+  desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
 }
 
 #' @export
