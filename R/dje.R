@@ -310,11 +310,19 @@ dje_tjsc <- function(dates, path, verbose) {
     r0 <- httr::POST(u, body = list('dtselecionada' = date_link),
                      httr::config(followlocation = 0L),
                      encode = 'form')
-    if (r0$status_code == 302) return(r0$headers$location)
+    if (r0$status_code == 302) {
+      loc <- r0$headers$location
+      # print(loc)
+      u_base <- sprintf('http://www.tjsc.jus.br/institucional/diario/a%d/',
+                        lubridate::year(lubridate::dmy(date_link)))
+      u_final <- paste0(u_base, stringr::str_match(loc, '/([^/]+)$')[, 2])
+      return(u_final)
+    }
     existe <- !(stringr::str_detect(httr::content(r0, 'text'), 'Não há|não hav'))
     if (existe) return(u)
     if (r0$status_code != 302) return(r0$status_code)
   }
+
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(c(1)),
                    KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
@@ -421,14 +429,14 @@ download_arq <- function(u, a, verbose = FALSE) {
     })
     ct <- httr::headers(r)[['content-type']]
     ct <- ifelse(is.null(ct), 'application', ct)
+    if (httr::status_code(r) == 200 && stringr::str_detect(ct, 'application')) {
+      if (verbose) cat('OK!\n')
+      return(dplyr::data_frame(result = 'ok'))
+    }
   }, error = function(e) as.character(e))
   if (stringr::str_detect(res, 'Timeout')) {
     if (verbose) cat('ERRO!\n')
     return(dplyr::data_frame(result = 'timeout'))
-  }
-  if (httr::status_code(r) == 200 && stringr::str_detect(ct, 'application')) {
-    if (verbose) cat('OK!\n')
-    return(dplyr::data_frame(result = 'ok'))
   }
   if (verbose) cat('ERRO!\n')
   return(dplyr::data_frame(result = 'nao tem dje'))
