@@ -322,14 +322,14 @@ dje_tjsc <- function(dates, path, verbose) {
     if (existe) return(u)
     if (r0$status_code != 302) return(r0$status_code)
   }
-
+  if (verbose) cat('obtendo links...\n')
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
   d <- expand.grid(date = dates, caderno = as.character(c(1)),
                    KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
     dplyr::tbl_df() %>%
     dplyr::arrange(date) %>%
     dplyr::mutate(date_link = format(as.Date(date), '%d/%m/%Y'),
-                  link = sapply(date_link, tjsc_link),
+                  link = plyr::laply(date_link, tjsc_link, .progress = 'text'),
                   arq = sprintf('%s/tjsc_dje_%s_%s.pdf', rep(pastas, each = 1), caderno, date)) %>%
     dplyr::arrange(desc(date)) %>%
     dplyr::group_by(date, caderno, date_link, link, arq) %>%
