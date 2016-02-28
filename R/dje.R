@@ -116,7 +116,7 @@ dje_tjal <- function(dates, path, verbose) {
   pastas <- sprintf('%s/tjal_dje_%s', path, sort(dates))
   invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
   f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- expand.grid(date = dates, caderno = as.character(c(1:2)),
+  d <- expand.grid(date = dates, caderno = as.character(c(2,3)),
                    KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
     dplyr::tbl_df() %>%
     dplyr::arrange(date) %>%
