@@ -80,6 +80,7 @@ parse_cpopg <- function (arqs, .parallel = TRUE) {
   d
 }
 
+#' @export
 parse_cpopg_info_ <- function (a) {
   html <- xml2::read_html(a)
   infos <- html %>%
@@ -128,6 +129,7 @@ arrumar_forma <- function(x) {
   x
 }
 
+#' @export
 parse_cpopg_partes_ <- function(a) {
   html <- xml2::read_html(a)
   html %>%
@@ -154,6 +156,7 @@ parse_cpopg_partes_ <- function(a) {
   }
 }
 
+#' @export
 parse_cpopg_movs_ <- function (a) {
   a %>%
     xml2::read_html() %>%
