@@ -4,7 +4,7 @@
 \alias{cpo_pg}
 \title{Consulta processos primeiro grau TJSP}
 \usage{
-cpo_pg(processos, path = "data-raw/cpo-pg")
+cpo_pg(processos, path = "data-raw/cpo-pg", tj = "TJSP")
 }
 \description{
 Consulta processos primeiro grau TJSP
