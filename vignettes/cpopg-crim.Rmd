@@ -1,0 +1,88 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r}
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+arqs <- dir('data-raw/temp_tjsp_cpopg', full.names = TRUE)
+h <- lapply(arqs, readRDS) %>% 
+  purrr::keep(~is.character(.x))
+
+plyr::l_ply(seq_along(h), function(x) {
+  cat(h[[x]], file = sprintf('data-raw/tjsp_cpopg_html/%s',
+                             gsub('\\.rds$', '', basename(arqs[x]))))
+}, .progress = 'text')
+
+arqs <- dir('data-raw/tjsp_cpopg_html', full.names = TRUE) %>% 
+  purrr::keep(~stringr::str_detect(.x, '\\.html$'))
+
+library(magrittr)
+system.time({
+  tjsp_infos <- dplyr::data_frame(arq = arqs) %>% 
+    dplyr::group_by(arq) %>% 
+    dplyr::do({
+      a <- basename(.$arq)
+      arq <- paste0('data-raw/rds/', a, '.rds')
+      if (!file.exists(arq)) {
+        d_parcial <- tryCatch({
+          parse_cpopg_info_(.$arq)
+        }, error = function(e) dplyr::data_frame(erro = TRUE))
+        saveRDS(d_parcial, arq)
+      } else {
+        d_parcial <- dplyr::data_frame(erro = FALSE, ja_tem = TRUE)
+      }
+      d_parcial
+    }) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::filter(!erro) %>% 
+    dplyr::select(-erro)
+  saveRDS(tjsp_infos, 'data-raw/tjsp_infos.rds')
+})
+
+
+d_infos <- 'data-raw/rds' %>% 
+  dir(full.names = TRUE) %>% 
+  {dplyr::data_frame(arq = .)} %>% 
+  dplyr::group_by(arq) %>% 
+  dplyr::do(readRDS(.$arq)) %>% 
+  dplyr::ungroup()
+
+
+html_homi <- d_infos %>% 
+  filter(!erro) %>% 
+  filter(key == 'assunto') %>% 
+  filter(stringr::str_detect(value, 'Homi')) %>% 
+  mutate(arq = gsub('.rds$', '', gsub('/rds/', '/tjsp_cpopg_html/', arq))) %>% 
+  with(arq)
+
+parse_cpopg(html_homi, .parallel = FALSE)
+
+
+
+html_homi %>% 
+  sample(1) %>% 
+  httr::BROWSE()
+
+```
+
+
+
+```{r}
+```
+
+
+
+

@@ -18,38 +18,36 @@ parse_cpopg <- function(arqs, .parallel = TRUE) {
     infos <- tryCatch(list(esaj::parse_cpopg_infos_(h)), error = function(e) fail)
     partes <- tryCatch(list(esaj::parse_cpopg_partes_(h)), error = function(e) fail)
     movs <- tryCatch(list(esaj::parse_cpopg_movs_(h)), error = function(e) fail)
-    d <- dplyr::data_frame(arq = x, infos, partes, movs)
+    deleg <- tryCatch(list(esaj::parse_cpopg_delegacia_(h)), error = function(e) fail)
+    auds <- tryCatch(list(esaj::parse_cpopg_audiencias_(h)), error = function(e) fail)
+    histclass <- tryCatch(list(esaj::parse_cpopg_histclasses_(h)), error = function(e) fail)
+    d <- dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass)
     saveRDS(d, gsub('.html$', '.rds', x))
     d
   }
-  # fail <- list(dplyr::data_frame(erro = 'nao existe'))
-  # d_fail <- dplyr::data_frame(arq = NA, infos = fail, partes = fail, movs = fail)
   f <- dplyr::failwith(d_fail, fun)
   if(.parallel) {
     cl <- parallel::makeCluster(parallel::detectCores(), outfile = "")
     doParallel::registerDoParallel(cl)
     n <- length(arqs)
     opts <- list(.packages = c('esaj', 'magrittr'), .export = c('arqs', 'n'))
-    d <- n %>%
-      seq_len() %>%
-      plyr::llply(fun, .parallel = TRUE, .paropts = opts) %>%
-      dplyr::bind_rows() %>%
-      dplyr::tbl_df()
+    d <- n %>% seq_len() %>% plyr::llply(fun, .parallel = TRUE, .paropts = opts) %>%
+      dplyr::bind_rows() %>% dplyr::tbl_df()
     parallel::stopCluster(cl)
   } else {
     n <- length(arqs)
-    d <- n %>%
-      seq_len() %>%
-      plyr::llply(fun) %>%
-      dplyr::bind_rows() %>%
-      dplyr::tbl_df()
+    d <- n %>% seq_len() %>% plyr::llply(fun) %>% dplyr::bind_rows() %>% dplyr::tbl_df()
   }
   d
 }
 
-#' @export
-parse_cpopg_infos_ <- function(html) {
+parse_cpopg_info_ <- function(a) {
+  '%>%' <- dplyr::`%>%`
   arrumar_key <- function(x) desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
+  html <- xml2::read_html(a, encoding = 'UTF-8')
+  if(length(rvest::html_nodes(html, '#spwTabelaMensagem')) > 0) {
+    return(dplyr::data_frame(erro = TRUE))
+  }
   infos <- html %>%
     rvest::html_nodes(".secaoFormBody") %>%
     dplyr::last() %>%
@@ -65,18 +63,21 @@ parse_cpopg_infos_ <- function(html) {
     dplyr::distinct(value) %>%
     dplyr::mutate(key = stringr::str_replace_na(key, "Lugar")) %>%
     dplyr::mutate(key = arrumar_key(key))
+
   infos_cdp <- html %>%
     rvest::html_text() %>%
-    stringr::str_match("processoPK\\.cdProcesso=([^&]+)&") %>%
+    stringr::str_match("processo.codigo=([^&]+)&") %>%
     as.character() %>%
     dplyr::last() %>%
     {dplyr::data_frame(key = "cdprocesso", value = .)}
+
   infos_p <- infos %>%
     dplyr::filter(key == "processo") %>%
     tidyr::separate(value, c("n_processo", "status"), sep = " ",
                     extra = "merge", fill = "right") %>%
     dplyr::select(-key) %>%
     tidyr::gather(convert = TRUE)
+
   infos_digital <- html %>%
     rvest::html_nodes(".linkPasta") %>% {
       if (length(.) == 0)
@@ -86,8 +87,10 @@ parse_cpopg_infos_ <- function(html) {
       digital <- stringr::str_detect(., "Este processo é digital")
       dplyr::data_frame(key = "digital", value = as.character(digital))
     }
+
   dplyr::bind_rows(infos, infos_p, infos_cdp, infos_digital) %>%
-    dplyr::tbl_df()
+    dplyr::tbl_df() %>%
+    dplyr::mutate(erro = FALSE)
 }
 
 
@@ -171,18 +174,57 @@ parse_cpopg_movs_ <- function(html) {
     rvest::html_node("#tabelaTodasMovimentacoes") %>%
     rvest::html_table() %>%
     dplyr::select(data_mov = X1, X3) %>%
-    tidyr::separate(X3, c("titulo", "mov"), sep = "\r\n\t", extra = "merge", fill = "right") %>%
+    tidyr::separate(X3, c("titulo", "mov"), sep = "\r\n\t",
+                    extra = "merge", fill = "right") %>%
     dplyr::tbl_df()
 }
 
 #' @export
-parse_cpopg_delegacias_ <- function(html) {
-
+parse_cpopg_delegacia_ <- function(html) {
+  html %>%
+    rvest::html_node(xpath = '//tbody[@id="dadosDaDelegacia"]/..') %>%
+    rvest::html_table(header = TRUE) %>%
+    dplyr::filter(Documento != '') %>%
+    setNames(arrumar_key(names(.))) %>%
+    dplyr::tbl_df()
 }
 
 #' @export
 parse_cpopg_audiencias_ <- function(html) {
+  xp <- '//a[@name="audienciasPlaceHolder"]/following-sibling::table'
+  d <- html %>%
+    rvest::html_nodes(xpath = xp) %>%
+    dplyr::first() %>%
+    rvest::html_table(header = FALSE)
+  if (any(stringr::str_detect(d$X1, 'Não há Audiências futuras'))) {
+    d <- dplyr::data_frame(erro = 'nao_tem')
+  } else {
+    d <- html %>%
+      rvest::html_nodes(xpath = xp) %>%
+      rvest::html_table(header = FALSE) %>%
+      {.[1:(which(purrr::map_lgl(., ~any(.x$X3 == 'Classe')))[1] - 1)]} %>%
+      lapply(function(x) dplyr::mutate_each(x, dplyr::funs(as.character))) %>%
+      dplyr::bind_rows() %>%
+      dplyr::filter(X1 != '') %>%
+      setNames(as.character(gsub('\\.', '', arrumar_key(.[1,])))) %>%
+      dplyr::slice(-1) %>%
+      dplyr::tbl_df()
+  }
+  d
+}
 
+#' @export
+parse_cpopg_histclasses_ <- function(html) {
+  html %>%
+    rvest::html_node(xpath = '//table[@id="tdHistoricoDeClasses"]') %>% {
+      if (length(.) == 0) {
+        dplyr::data_frame(erro = 'nao_tem')
+      } else {
+        rvest::html_table(., header = FALSE) %>%
+          setNames(c('data', 'tipo', 'classe', 'area', 'motivo')) %>%
+          dplyr::tbl_df()
+      }
+    }
 }
 
 
