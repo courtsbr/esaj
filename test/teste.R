@@ -7,20 +7,29 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   if(.parallel){
     clust <- multidplyr::create_cluster(parallel::detectCores())
     d <- multidplyr::partition(d, id, n_processo, cluster = clust)
-    parallel::clusterExport(clust, list('cpo_pg_um'))
+    parallel::clusterExport(clust, list('cpo_pg_um','tem_captcha'))
     d <- dplyr::do(d,{
-        cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
-      })
+      cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
+    })
     d <- dplyr::collect(d)
   } else {
     d <- d %>%
       dplyr::group_by(n_processo) %>%
       dplyr::do({
         cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
-        })
+      })
   }
   d <- dplyr::ungroup(d)
   d
+}
+
+#' @export
+tem_captcha <- function(r) {
+  (r %>%
+     httr::content('text') %>%
+     xml2::read_html() %>%
+     rvest::html_nodes('#captchaCodigo') %>%
+     length()) > 0
 }
 
 #' @export
@@ -38,18 +47,18 @@ build_url_cpo_pg <- function(p, tj, captcha = NULL) {
   dados_url[["foroNumeroUnificado"]] <- stringr::str_sub(p, start = 17)
   dados_url[["dadosConsulta.valorConsultaNuUnificado"]] <- p
   if (tj == 'TJSP') {
-   url1 <- "https://esaj.tjsp.jus.br/cpopg/search.do"
- } else if (tj == 'TJAL') {
-   url1 <- 'http://www2.tjal.jus.br/cpopg/search.do'
- } else if (tj == 'TJSC') {
-   url1 <- "https://esaj.tjsc.jus.br/cpopg/search.do"
-   if(!is.null(captcha)){dados_url[['vlCaptcha']] = tolower(captcha)}
+    url1 <- "https://esaj.tjsp.jus.br/cpopg/search.do"
+  } else if (tj == 'TJAL') {
+    url1 <- 'http://www2.tjal.jus.br/cpopg/search.do'
+  } else if (tj == 'TJSC') {
+    url1 <- "https://esaj.tjsc.jus.br/cpopg/search.do"
+    if(!is.null(captcha)){dados_url[['vlCaptcha']] = tolower(captcha)}
 
-   # No TJSC o cpopg_um não consegue baixar via link quando tem captcha,
-   # precisa fazer a requisição via formulário, com os parâmetros
-   # de dados_url.
-   return(dados_url)
- }
+    # No TJSC o cpopg_um não consegue baixar via link quando tem captcha,
+    # precisa fazer a requisição via formulário, com os parâmetros
+    # de dados_url.
+    return(dados_url)
+  }
   parametros <- paste(names(dados_url), unlist(dados_url), sep = "=")
 
   paste(url1, paste0(parametros, collapse = "&"), sep = "?")
@@ -69,23 +78,13 @@ cpo_pg_um <- function(p, path, tj){
     if(tj == 'TJSC'){
       u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
       r0 <- httr::GET(u0, httr::set_cookies(NULL))
-      if (esaj::tem_captcha(r0)) {
-        captcha <- esaj::quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-      } else {
-        captcha <- NULL
-      }
-      u <- "http://esaj.tjsc.jus.br/cpopg/search.do"
-      param <- esaj::build_url_cpo_pg(p, tj, captcha)
-      if (!file.exists(arq)) {
-        r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
-      }
 
-      while(esaj::tem_captcha(r)){
-        message('errei captcha')
-        captcha <- esaj::quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-        param <- esaj::build_url_cpo_pg(p, tj, captcha)
-        r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
+      if (tem_captcha(r0)) {
+ #       captcha <- esaj::quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
+      } else {
+#        captcha <- NULL
       }
+      return(dplyr::data_frame(result = "OK"))
     } else {
       u <- esaj::build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T), httr::config(ssl_verifypeer = FALSE))
@@ -114,19 +113,10 @@ cpo_pg_um <- function(p, path, tj){
 #' @export
 quebra_captcha <- function(u_captcha){
   tmp <- tempfile()
-#  u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
+  #  u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
   r_captcha <- httr::GET(u_captcha)
   # obs: a funcao "write_disk" não é apropriada pois salva o arq duas vezes.
   writeBin(httr::content(r_captcha, "raw"), tmp)
   captcha <- tryCatch(captchasaj::decodificar(tmp, captchasaj::modelo$modelo),
                       error = function(e) 'xxxxx')
-}
-
-#' @export
-tem_captcha <- function(r) {
-  (r %>%
-     httr::content('text') %>%
-     xml2::read_html() %>%
-     rvest::html_nodes('#captchaCodigo') %>%
-     length()) > 0
 }
