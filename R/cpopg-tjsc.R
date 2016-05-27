@@ -140,7 +140,6 @@ raspar_arq_unico <- function(arq) {
     stringr::str_extract(mascara_cnj)
 }
 
-
 build_url_cpopg_nome <- function(nm) {
   u <- paste0('http://esaj.tjsc.jus.br/cpopg/search.do?conversationId=',
               '&dadosConsulta.localPesquisa.cdLocal=-1&cbPesquisa=NMPARTE&dados',
