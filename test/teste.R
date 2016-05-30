@@ -7,7 +7,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   if(.parallel){
     clust <- multidplyr::create_cluster(parallel::detectCores())
     d <- multidplyr::partition(d, id, n_processo, cluster = clust)
-    parallel::clusterExport(clust, list('cpo_pg_um','tem_captcha'))
+    parallel::clusterExport(clust, list('cpo_pg_um','tem_captcha','quebra_captcha'))
     d <- dplyr::do(d,{
       cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
     })
@@ -21,15 +21,6 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   }
   d <- dplyr::ungroup(d)
   d
-}
-
-#' @export
-tem_captcha <- function(r) {
-  (r %>%
-     httr::content('text') %>%
-     xml2::read_html() %>%
-     rvest::html_nodes('#captchaCodigo') %>%
-     length()) > 0
 }
 
 #' @export
@@ -66,6 +57,7 @@ build_url_cpo_pg <- function(p, tj, captcha = NULL) {
 
 #' @export
 cpo_pg_um <- function(p, path, tj){
+
   f <- function(p, path, tj) {
     p <- gsub("[^0-9]", "", p)
     arq <- sprintf("%s/%s.html", path, p)
@@ -76,15 +68,26 @@ cpo_pg_um <- function(p, path, tj){
 
     # Sys.sleep(1)
     if(tj == 'TJSC'){
-      u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
-      r0 <- httr::GET(u0, httr::set_cookies(NULL))
+       u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
+       r0 <- httr::GET(u0, httr::set_cookies(NULL))
+       val <- tem_captcha(r0)
+    if (val) {
+      captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
+    } else {
+      captcha <- NULL
+    }
+       u <- "http://esaj.tjsc.jus.br/cpopg/search.do"
+       param <- esaj::build_url_cpo_pg(p, tj, captcha)
+       if (!file.exists(arq)) {
+         r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
+       }
 
-      if (tem_captcha(r0)) {
- #       captcha <- esaj::quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-      } else {
-#        captcha <- NULL
-      }
-      return(dplyr::data_frame(result = "OK"))
+       while(tem_captcha(r)){
+         message('errei captcha')
+         captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
+         param <- esaj::build_url_cpo_pg(p, tj, captcha)
+         r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
+       }
     } else {
       u <- esaj::build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T), httr::config(ssl_verifypeer = FALSE))
@@ -120,3 +123,13 @@ quebra_captcha <- function(u_captcha){
   captcha <- tryCatch(captchasaj::decodificar(tmp, captchasaj::modelo$modelo),
                       error = function(e) 'xxxxx')
 }
+
+#' @export
+tem_captcha <- function(r) {
+  texto <- httr::content(r, 'text')
+  xml <- xml2::read_html(texto)
+  nodes <- rvest::html_nodes(xml, '#captchaCodigo')
+  return(length(nodes) > 0)
+}
+
+ex <- Filter(function(x) is.function(get(x, .GlobalEnv)), ls(.GlobalEnv))
