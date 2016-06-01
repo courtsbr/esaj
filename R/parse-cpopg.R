@@ -93,7 +93,6 @@ parse_cpopg_info_ <- function(a) {
     dplyr::mutate(erro = FALSE)
 }
 
-
 #' @export
 parse_cpopg_infos_ <- function(html) {
   arrumar_key <- function(x) desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
