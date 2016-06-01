@@ -1,5 +1,3 @@
-#' Consulta processos primeiro grau TJSP
-#'
 #' @export
 cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel = F) {
   d <- dplyr::data_frame(n_processo = unique(processos))
