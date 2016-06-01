@@ -113,6 +113,7 @@ cpo_pg_um <- function(p, path, tj){
            error = function(e) dplyr::data_frame(result = 'erro'))
 }
 
+#' @export
 tem_captcha <- function(r) {
   (r %>%
      httr::content('text') %>%
@@ -121,6 +122,7 @@ tem_captcha <- function(r) {
      length()) > 0
 }
 
+#' @export
 quebra_captcha <- function(u_captcha){
   tmp <- tempfile()
   #  u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
