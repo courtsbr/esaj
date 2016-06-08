@@ -6,6 +6,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
     clust <- multidplyr::create_cluster(parallel::detectCores())
     d <- multidplyr::partition(d, id, n_processo, cluster = clust)
     parallel::clusterExport(clust, list('cpo_pg_um','tem_captcha','quebra_captcha'))
+    parallel::clusterCall(clust, function() library(magrittr))
     d <- dplyr::do(d,{
         cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
       })

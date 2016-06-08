@@ -1,7 +1,7 @@
 library(dplyr)
 
 lista_sc <- readRDS('/home/fcorrea/Documentos/p_tjsc_convertido_mini.rds') %>%
-  with(n_processo[1:30])
+  with(n_processo[1:100])
 
 lista_sp <- list.files('/home/fcorrea/Projects/senasp_tjal/tjsp_amostra/')[1:60] %>%
   gsub(pattern = '.html|.rds',replacement = '') %>%
@@ -25,8 +25,8 @@ lista_al[16:30] %>%
 lista_sc[1:15] %>%
   esaj::cpo_pg(path, tj = 'TJSC', .parallel = F)
 
-lista_sc[16:30] %>%
-  esaj::cpo_pg(path, tj = 'TJSC', .parallel = T)
+lista_sc[40:60] %>%
+  cpo_pg(path, tj = 'TJSC', .parallel = T)
 
 lista_sp[1:15] %>%
   esaj::cpo_pg(path, tj = 'TJSP', .parallel = T)
