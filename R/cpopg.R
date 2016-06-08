@@ -80,7 +80,7 @@ cpo_pg_um <- function(p, path, tj){
         r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
       }
 
-      while(tem_captcha(r)){
+      while(tem_captcha(r) | r$status_code != 200){
  #       message('errei captcha')
         captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
         param <- esaj::build_url_cpo_pg(p, tj, captcha)
