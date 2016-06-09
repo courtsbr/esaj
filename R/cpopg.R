@@ -5,7 +5,10 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   if(.parallel){
     clust <- multidplyr::create_cluster(parallel::detectCores())
     d <- multidplyr::partition(d, id, n_processo, cluster = clust)
-    parallel::clusterExport(clust, list('cpo_pg_um','tem_captcha','quebra_captcha'))
+    parallel::clusterExport(clust, list('cpo_pg_um',
+                                        'tem_captcha',
+                                        'quebra_captcha',
+                                        'build_url_cpo_pg'))
     parallel::clusterCall(clust, function() library(magrittr))
     d <- dplyr::do(d,{
         cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
@@ -76,7 +79,7 @@ cpo_pg_um <- function(p, path, tj){
         captcha <- NULL
       }
       u <- "http://esaj.tjsc.jus.br/cpopg/search.do"
-      param <- esaj::build_url_cpo_pg(p, tj, captcha)
+      param <- build_url_cpo_pg(p, tj, captcha)
       if (!file.exists(arq)) {
         r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
       }
@@ -84,11 +87,11 @@ cpo_pg_um <- function(p, path, tj){
       while(tem_captcha(r) | r$status_code != 200){
  #       message('errei captcha')
         captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-        param <- esaj::build_url_cpo_pg(p, tj, captcha)
+        param <- build_url_cpo_pg(p, tj, captcha)
         r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
       }
     } else {
-      u <- esaj::build_url_cpo_pg(p,tj)
+      u <- build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T), httr::config(ssl_verifypeer = FALSE))
     }
 
