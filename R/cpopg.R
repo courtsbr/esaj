@@ -75,22 +75,28 @@ cpo_pg_um <- function(p, path, tj){
 
       cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
 
+      captcha <- NULL
       link_im <- paste0(cpopg,'imagemCaptcha.do')
       link_som <- paste0(cpopg,'somCaptcha.do')
       link_form <- paste0(cpopg,'open.do')
 
-      s <- rvest::html_session(link_im) %>%
-        rvest::jump_to(link_som)
+      s <- rvest::html_session(link_form)
 
-      s %>%
-        '$'('response') %>%
-        httr::content('raw')  %>%
-        writeBin(tmp)
+      if(tem_captcha(s$response)){
+
+        s <- rvest::html_session(link_im) %>%
+          rvest::jump_to(link_som)
+
+        s %>%
+          '$'('response') %>%
+          httr::content('raw')  %>%
+          writeBin(tmp)
 
       captcha <- captchaTJSC::decifrar(tmp)
 
       s %<>%
         rvest::jump_to(link_form)
+      }
 
       params <- build_url_cpo_pg(p,tj,captcha)
 
