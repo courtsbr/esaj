@@ -61,72 +61,51 @@ build_url_cpo_pg <- function(p, tj, captcha = NULL) {
 cpo_pg_um <- function(p, path, tj){
 
   f <- function(p, path, tj) {
-
     p <- gsub("[^0-9]", "", p)
     arq <- sprintf("%s/%s.html", path, p)
-
     if (!is.null(path) & file.exists(arq)){
       return(dplyr::data_frame(result = "arquivo existe"))
     }
-
     # Sys.sleep(1)
-    if(tj == 'TJSC'){
+    if (tj == 'TJSC') {
       tmp <- tempfile()
-
       cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
-
       captcha <- NULL
       link_im <- paste0(cpopg,'imagemCaptcha.do')
       link_som <- paste0(cpopg,'somCaptcha.do')
       link_form <- paste0(cpopg,'open.do')
-
       s <- rvest::html_session(link_form)
-
-      if(tem_captcha(s$response)){
-
+      if(tem_captcha(s$response)) {
         s <- rvest::html_session(link_im) %>%
           rvest::jump_to(link_som)
-
         s$response %>%
-          # `$`('response') %>%
           httr::content('raw')  %>%
           writeBin(tmp)
-
-      captcha <- captchaTJSC::decifrar(tmp)
-
-      s %<>%
-        rvest::jump_to(link_form)
+        captcha <- captchaTJSC::decifrar(tmp)
+        s %<>% rvest::jump_to(link_form)
       }
-
       params <- build_url_cpo_pg(p,tj,captcha)
-
       form <- s %>%
         rvest::html_form() %>%
         dplyr::first() %>%
         set_values2(params)
-
       r <- s %>% rvest::submit_form(form)
       r <- r$response
-
       cat(httr::content(r, 'text'), file = arq)
     } else {
       u <- build_url_cpo_pg(p,tj)
-      r <- httr::GET(u, httr::write_disk(arq, overwrite = T), httr::config(ssl_verifypeer = FALSE))
+      r <- httr::GET(u, httr::write_disk(arq, overwrite = T),
+                     httr::config(ssl_verifypeer = FALSE))
     }
-
-#    k <- TRUE
-    while (r$status_code != 200) {
-      # if (k)
-      #   cat("\nesperando...")
-      # else cat("...")
+    i <- 0
+    while (r$status_code != 200 & i < 10) {
+      cat('bugou...')
+      i <- i + 1
       if (!file.exists(arq)) {
-        r <- httr::GET(u,
-                       httr::config(ssl_verifypeer = FALSE),
+        r <- httr::GET(u, httr::config(ssl_verifypeer = FALSE),
                        httr::write_disk(arq))
       }
-#      k <- FALSE
     }
-    # if (!k) cat("\n")
     return(dplyr::data_frame(result = "OK"))
   }
 
