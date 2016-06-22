@@ -22,12 +22,12 @@ parse_cpopg <- function(arqs, .parallel = TRUE) {
       #   return(dplyr::data_frame(arq = x, infos, partes, movs))
       # }
       fail <- list(dplyr::data_frame(erro = 'erro'))
-      infos <- tryCatch(list(senaspTJAL::parse_cpopg_infos_(h)), error = function(e) fail)
-      partes <- tryCatch(list(senaspTJAL::parse_cpopg_partes_(h)), error = function(e) fail)
-      movs <- tryCatch(list(senaspTJAL::parse_cpopg_movs_(h)), error = function(e) fail)
-      deleg <- tryCatch(list(senaspTJAL::parse_cpopg_delegacia_(h)), error = function(e) fail)
-      auds <- tryCatch(list(senaspTJAL::parse_cpopg_audiencias_(h)), error = function(e) fail)
-      histclass <- tryCatch(list(senaspTJAL::parse_cpopg_histclasses_(h)), error = function(e) fail)
+      infos <- tryCatch(list(esaj::parse_cpopg_infos_(h)), error = function(e) fail)
+      partes <- tryCatch(list(esaj::parse_cpopg_partes_(h)), error = function(e) fail)
+      movs <- tryCatch(list(esaj::parse_cpopg_movs_(h)), error = function(e) fail)
+      deleg <- tryCatch(list(esaj::parse_cpopg_delegacia_(h)), error = function(e) fail)
+      auds <- tryCatch(list(esaj::parse_cpopg_audiencias_(h)), error = function(e) fail)
+      histclass <- tryCatch(list(esaj::parse_cpopg_histclasses_(h)), error = function(e) fail)
       d <- dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass)
       saveRDS(d, rds)
     } else {
