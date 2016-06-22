@@ -87,8 +87,8 @@ cpo_pg_um <- function(p, path, tj){
         s <- rvest::html_session(link_im) %>%
           rvest::jump_to(link_som)
 
-        s %>%
-          `$`('response') %>%
+        s$response %>%
+          # `$`('response') %>%
           httr::content('raw')  %>%
           writeBin(tmp)
 
@@ -105,9 +105,8 @@ cpo_pg_um <- function(p, path, tj){
         dplyr::first() %>%
         set_values2(params)
 
-      s %>%
-        rvest::submit_form(form) %>%
-        `$`('response') -> r
+      r <- s %>% rvest::submit_form(form)
+      r <- r$response
 
       cat(httr::content(r, 'text'), file = arq)
     } else {
