@@ -71,25 +71,39 @@ cpo_pg_um <- function(p, path, tj){
 
     # Sys.sleep(1)
     if(tj == 'TJSC'){
-      u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
-      r0 <- httr::GET(u0, httr::set_cookies(NULL))
-      if (tem_captcha(r0)) {
-        captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-      } else {
-        captcha <- NULL
-      }
-      u <- "http://esaj.tjsc.jus.br/cpopg/search.do"
-      param <- build_url_cpo_pg(p, tj, captcha)
-      if (!file.exists(arq)) {
-        r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
-      }
+      tmp <- tempfile()
 
-      while(tem_captcha(r) | r$status_code != 200){
- #       message('errei captcha')
-        captcha <- quebra_captcha('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
-        param <- build_url_cpo_pg(p, tj, captcha)
-        r <- httr::GET(u, query = param, httr::write_disk(arq, overwrite = TRUE))
-      }
+      cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
+
+      link_im <- paste0(cpopg,'imagemCaptcha.do')
+      link_som <- paste0(cpopg,'somCaptcha.do')
+      link_form <- paste0(cpopg,'open.do')
+
+      s <- rvest::html_session(link_im) %>%
+        rvest::jump_to(link_som)
+
+      s %>%
+        '$'('response') %>%
+        httr::content('raw')  %>%
+        writeBin(tmp)
+
+      captcha <- captchaTJSC::decifrar(tmp)
+
+      s %<>%
+        rvest::jump_to(link_form)
+
+      params <- build_url_cpo_pg(p,tj,captcha)
+
+      form <- s %>%
+        rvest::html_form() %>%
+        dplyr::first() %>%
+        set_values2(params)
+
+      s %>%
+        rvest::submit_form(form) %>%
+        '$'('response') -> r
+
+      cat(httr::content(r, 'text'), file = arq)
     } else {
       u <- build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T), httr::config(ssl_verifypeer = FALSE))
@@ -134,3 +148,29 @@ quebra_captcha <- function(u_captcha){
   captcha <- tryCatch(captchasaj::decodificar(tmp, captchasaj::modelo$modelo),
                       error = function(e) 'xxxxx')
 }
+
+set_values2 <-  function (form, l)
+  {
+    new_values <- l
+    no_match <- setdiff(names(new_values), names(form$fields))
+    if (length(no_match) > 0) {
+      stop("Unknown field names: ", paste(no_match, collapse = ", "),
+           call. = FALSE)
+    }
+    for (field in names(new_values)) {
+      type <- form$fields[[field]]$type %||% "non-input"
+      if (type == "hidden") {
+        warning("Setting value of hidden field '", field,
+                "'.", call. = FALSE)
+      }
+      else if (type == "submit") {
+        stop("Can't change value of submit input '", field,
+             "'.", call. = FALSE)
+      }
+      form$fields[[field]]$value <- new_values[[field]]
+    }
+    form
+}
+
+`%||%` <- rvest:::`%||%`
+`%<>%` <- magrittr:::`%<>%`
