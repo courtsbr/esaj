@@ -215,8 +215,14 @@ parse_cpopg_audiencias_ <- function(html) {
   } else {
     d <- html %>%
       rvest::html_nodes(xpath = xp) %>%
-      rvest::html_table(header = FALSE) %>%
-      {.[1:(which(purrr::map_lgl(., ~any(.x$X3 == 'Classe')))[1] - 1)]} %>%
+      rvest::html_table(header = FALSE)
+    #     {.[1:(which(purrr::map_lgl(., ~any(.x$X3 == 'Classe')))[1] - 1)]} %>%
+
+    X3 <- unlist(lapply(d, function(x){x$X3[1]}))
+    k_max = ifelse(sum(X3 == 'Classe') > 0, (which(X3 == 'Classe')[1]-1), length(X3))
+    d <- lapply(1:k_max,function(i){d[[i]]})
+
+    d <- d %>%
       lapply(function(x) dplyr::mutate_each(x, dplyr::funs(as.character))) %>%
       dplyr::bind_rows() %>%
       dplyr::filter(X1 != '') %>%
