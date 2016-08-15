@@ -14,6 +14,8 @@ parse_cpopg <- function(arqs, .parallel = TRUE) {
       if(length(rvest::html_nodes(h, '#spwTabelaMensagem')) > 0) {
         # nao existe
         infos <- partes <- movs <- deleg <- auds <- histclass <- list(dplyr::data_frame(erro = 'nao existe'))
+        d <- dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass)
+        saveRDS(d, rds)
         return(dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass))
       }
       # if(length(rvest::html_nodes(h, '#tableTodasPartes')) > 0) {
