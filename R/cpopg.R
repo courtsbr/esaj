@@ -69,20 +69,23 @@ cpo_pg_um <- function(p, path, tj){
     # Sys.sleep(1)
     if (tj == 'TJSC') {
       tmp <- tempfile()
-      cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
-      captcha <- NULL
-      link_im <- paste0(cpopg,'imagemCaptcha.do')
-      link_som <- paste0(cpopg,'somCaptcha.do')
-      link_form <- paste0(cpopg,'open.do')
-      s <- rvest::html_session(link_form)
+  #    cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
+  #    captcha <- NULL
+  #    link_im <- paste0(cpopg,'imagemCaptcha.do')
+  #    link_som <- paste0(cpopg,'somCaptcha.do')
+  #    link_form <- paste0(cpopg,'open.do')
+  #    s <- rvest::html_session(link_form)
+      s <- rvest::html_session('http://esaj.tjsc.jus.br/cpopg')
       if(tem_captcha(s$response)) {
-        s <- rvest::html_session(link_im) %>%
-          rvest::jump_to(link_som)
+        s <- s %>%
+          rvest::jump_to('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
+
         s$response %>%
           httr::content('raw')  %>%
           writeBin(tmp)
-        captcha <- captchaTJSC::decifrar(tmp)
-        s %<>% rvest::jump_to(link_form)
+
+        captcha <- captchaTJSC::predizer(tmp)
+        s %<>% rvest::jump_to('http://esaj.tjsc.jus.br/cpopg')
       }
       params <- build_url_cpo_pg(p,tj,captcha)
       form <- s %>%
