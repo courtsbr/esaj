@@ -16,22 +16,12 @@ path = '~/testes'
 
 dir.create(path)
 
-lista_al[1:15] %>%
-  esaj::cpo_pg(path, tj = 'TJAL', .parallel = T)
-
+system.time({
 lista_al[16:30] %>%
   esaj::cpo_pg(path, tj = 'TJAL', .parallel = F)
+})
 
+system.time({
 lista_sc[1:15] %>%
   esaj::cpo_pg(path, tj = 'TJSC', .parallel = F)
-
-lista_sc[40:60] %>%
-  cpo_pg(path, tj = 'TJSC', .parallel = T)
-
-lista_sp[1:15] %>%
-  esaj::cpo_pg(path, tj = 'TJSP', .parallel = T)
-
-lista_sp[16:30] %>%
-  esaj::cpo_pg(path, tj = 'TJSP', .parallel = F)
-
-
+})
