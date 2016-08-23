@@ -81,10 +81,12 @@ cpo_pg_um <- function(p, path, tj){
           rvest::jump_to('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
 
         s$response %>%
-          httr::content('raw')  %>%
-          writeBin(tmp)
+          httr::content() %>%
+          captchaTJSC:::ler_new() %>%
+          captchaTJSC:::limpar_new() %>%
+          captchaTJSC:::ocr() -> captcha
 
-        captcha <- captchaTJSC::predizer(tmp)
+
         s %<>% rvest::jump_to('http://esaj.tjsc.jus.br/cpopg')
       }
       params <- build_url_cpo_pg(p,tj,captcha)
