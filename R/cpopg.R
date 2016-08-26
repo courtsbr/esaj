@@ -69,6 +69,7 @@ build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO',
 
   paste(url1, paste0(parametros, collapse = "&"), sep = "?")
 }
+
 #' @export
 cpo_pg_um <- function(p, path, tj){
 
