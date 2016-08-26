@@ -26,37 +26,49 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
 }
 
 #' @export
-build_url_cpo_pg <- function(p, tj, captcha = NULL) {
-  p <- gsub("[^0-9]", "", as.character(p))
+build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO', uid = NULL) {
+  #  p <- gsub("[^0-9]", "", as.character(p))
+
   dados_url <- list(conversationId = "",
                     dadosConsulta.localPesquisa.cdLocal = "-1",
                     cbPesquisa = "NUMPROC",
-                    dadosConsulta.tipoNuProcesso = "UNIFICADO",
+                    dadosConsulta.tipoNuProcesso = tipo_processo,
                     numeroDigitoAnoUnificado = "",
                     foroNumeroUnificado = "",
                     dadosConsulta.valorConsultaNuUnificado = "",
                     dadosConsulta.valorConsulta = "")
-  dados_url[["numeroDigitoAnoUnificado"]] <- stringr::str_sub(p, start = 1, end = 13)
-  dados_url[["foroNumeroUnificado"]] <- stringr::str_sub(p, start = 17)
-  dados_url[["dadosConsulta.valorConsultaNuUnificado"]] <- p
-  if (tj == 'TJSP') {
-   url1 <- "https://esaj.tjsp.jus.br/cpopg/search.do"
- } else if (tj == 'TJAL') {
-   url1 <- 'http://www2.tjal.jus.br/cpopg/search.do'
- } else if (tj == 'TJSC') {
-   url1 <- "https://esaj.tjsc.jus.br/cpopg/search.do"
-   if(!is.null(captcha)){dados_url[['vlCaptcha']] = tolower(captcha)}
 
-   # No TJSC o cpopg_um não consegue baixar via link quando tem captcha,
-   # precisa fazer a requisição via formulário, com os parâmetros
-   # de dados_url.
-   return(dados_url)
- }
+  if(tipo_processo == 'UNIFICADO'){
+
+    dados_url[["numeroDigitoAnoUnificado"]] <- stringr::str_sub(p, start = 1, end = 15)
+    dados_url[["foroNumeroUnificado"]] <- stringr::str_sub(p, start = 22)
+    dados_url[["dadosConsulta.valorConsultaNuUnificado"]] <- p
+
+  } else {
+
+    dados_url[["dadosConsulta.valorConsulta"]] <- p
+
+  }
+  if (tj == 'TJSP') {
+    url1 <- "https://esaj.tjsp.jus.br/cpopg/search.do"
+  } else if (tj == 'TJAL') {
+    url1 <- 'http://www2.tjal.jus.br/cpopg/search.do'
+  } else if (tj == 'TJSC') {
+    url1 <- "https://esaj.tjsc.jus.br/cpopg/search.do"
+    if(!is.null(captcha)){
+      dados_url[['vlCaptcha']] = tolower(captcha)
+      dados_url[['uuidCaptcha']] = uid
+      dados_url[['novoVlCaptcha']] = ''
+    }
+    # No TJSC o cpopg_um não consegue baixar via link quando tem captcha,
+    # precisa fazer a requisição via formulário, com os parâmetros
+    # de dados_url.
+    return(dados_url)
+  }
   parametros <- paste(names(dados_url), unlist(dados_url), sep = "=")
 
   paste(url1, paste0(parametros, collapse = "&"), sep = "?")
 }
-
 #' @export
 cpo_pg_um <- function(p, path, tj){
 
