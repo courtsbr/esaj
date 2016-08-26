@@ -98,7 +98,7 @@ cpo_pg_um <- function(p, path, tj){
       httr::GET(url = 'http://esaj.tjsc.jus.br/cpopg/search.do',
                 query = params,
                 handle = s$handle,
-                httr::write_disk(arq, overwrite = T))
+                httr::write_disk(arq, overwrite = T)) -> r
     } else {
       u <- build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T),
