@@ -69,34 +69,23 @@ cpo_pg_um <- function(p, path, tj){
     # Sys.sleep(1)
     if (tj == 'TJSC') {
       tmp <- tempfile()
-  #    cpopg <- 'http://esaj.tjsc.jus.br/cpopg/'
-  #    captcha <- NULL
-  #    link_im <- paste0(cpopg,'imagemCaptcha.do')
-  #    link_som <- paste0(cpopg,'somCaptcha.do')
-  #    link_form <- paste0(cpopg,'open.do')
-  #    s <- rvest::html_session(link_form)
-      s <- rvest::html_session('http://esaj.tjsc.jus.br/cpopg')
-      if(tem_captcha(s$response)) {
-        s <- s %>%
-          rvest::jump_to('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
+      # timestamp <- V8::v8()$eval("new Date().getTime();")
+      s <- rvest::html_session('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
 
-        s$response %>%
-          httr::content() %>%
-          captchaTJSC:::ler_new() %>%
-          captchaTJSC:::limpar_new() %>%
-          captchaTJSC:::ocr() -> captcha
-
-
-        s %<>% rvest::jump_to('http://esaj.tjsc.jus.br/cpopg')
+      aff <- s$response %>% httr::content() %>% captchaTJSC:::ler_new()
+      # aff %>% desenhar()
+      captcha <- aff %>% captchaTJSC:::limpar_new() %>% captchaTJSC:::ocr()
+      # captcha
+      uid <- aff$uuid[1]
+      if(nchar(p) == 20){
+        params <- build_url_cpo_pg(p,tj,captcha, 'UNIFICADO', uid)
+      } else {
+        params <- build_url_cpo_pg(p,tj,captcha, 'SAJ', uid)
       }
-      params <- build_url_cpo_pg(p,tj,captcha)
-      form <- s %>%
-        rvest::html_form() %>%
-        dplyr::first() %>%
-        set_values2(params)
-      r <- s %>% rvest::submit_form(form)
-      r <- r$response
-      cat(httr::content(r, 'text'), file = arq)
+      httr::GET(url = 'http://esaj.tjsc.jus.br/cpopg/search.do',
+                query = params,
+                handle = s$handle,
+                httr::write_disk(arq, overwrite = T))
     } else {
       u <- build_url_cpo_pg(p,tj)
       r <- httr::GET(u, httr::write_disk(arq, overwrite = T),
