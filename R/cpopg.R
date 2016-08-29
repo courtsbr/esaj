@@ -78,8 +78,9 @@ cpo_pg_um <- function(p, path, tj){
     if (!is.null(path) & file.exists(arq)){
       return(dplyr::data_frame(result = "arquivo existe"))
     }
-    # Sys.sleep(1)
     if (tj == 'TJSC') {
+      Sys.sleep(1)
+
       httr::handle_reset('http://esaj.tjsc.jus.br/cpopg/open.do')
       httr::GET('http://esaj.tjsc.jus.br/cpopg/open.do')
       tmp <- tempfile()
