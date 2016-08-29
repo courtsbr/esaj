@@ -18,7 +18,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
     d <- d %>%
       dplyr::select(-id) %>%
       dplyr::rename(p = n_processo) %>%
-      plyr::mlply(cpo_pg_um)
+      plyr::mlply(cpo_pg_um, .progress = 'text')
   }
   d <- dplyr::ungroup(d)
   d
