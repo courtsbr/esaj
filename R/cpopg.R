@@ -16,10 +16,8 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
     d <- dplyr::collect(d)
   } else {
     d <- d %>%
-      dplyr::group_by(n_processo) %>%
-      dplyr::do({
-        cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
-        })
+      dplyr::select(-id) %>%
+      plyr::mdply(cpo_pg_um)
   }
   d <- dplyr::ungroup(d)
   d
