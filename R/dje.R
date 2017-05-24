@@ -359,6 +359,7 @@ dje_tjce <- function(dates, path, verbose) {
   return(d)
 }
 
+#' @export
 dje_tjba <- function(dates, path, verbose) {
   edicoes_tjba <- function() {
     # essa foi dificil!
