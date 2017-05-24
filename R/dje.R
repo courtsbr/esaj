@@ -359,15 +359,15 @@ dje_tjce <- function(dates, path, verbose) {
   return(d)
 }
 
-
 dje_tjba <- function(dates, path, verbose) {
   edicoes_tjba <- function() {
     # essa foi dificil!
     u0 <- 'http://www2.tjba.jus.br/diario/internet/pesquisar.wsp'
     r0 <- httr::GET(u0, httr::config(followlocation = 0L))
-    u <- httr::headers(r0)[['location']]
-    r00 <- httr::GET(u)
-    token <- r00 %>%
+    #u <- httr::headers(r0)[['location']]
+    #r00 <- httr::GET(u)
+    #F: comentei essa requisição porque não tem "location" no cabeçalho desse GET.
+    token <- r0 %>%
       httr::content('text', encoding = 'ISO-8859-1') %>%
       xml2::read_html() %>%
       rvest::html_node(xpath = '//input[@id="wi.token"]') %>%
@@ -380,14 +380,14 @@ dje_tjba <- function(dates, path, verbose) {
               'tmp.diario.pal_chave' = '',
               'wi.token' = token,
               'tmp.diario.id_advogado' = '')
-    r1 <- httr::POST(u, body = b, encode = 'form')
+    r1 <- httr::POST(u0, body = b, encode = 'form')
     d_edicoes <- r1 %>%
       httr::content('text', encoding = 'ISO-8859-1') %>%
       xml2::read_html() %>%
       rvest::html_node('table.grid') %>%
       rvest::html_table() %>%
-      dplyr::tbl_df() %>%
-      setNames(letters[1:length(.)]) %>%
+      janitor::clean_names() %>%
+      #os nomes podem vir repetidos
       tidyr::gather() %>%
       dplyr::filter(stringr::str_trim(value) != '') %>%
       tidyr::separate(value, c('edicao', 'date'), sep = '\\(') %>%
