@@ -10,4 +10,3 @@ cpo_sg(processos, path = "data-raw/cpo-sg", tj = "TJSP")
 \description{
 Retorna um data.frame com os metadados basicos e andamentos do processo
 }
-
