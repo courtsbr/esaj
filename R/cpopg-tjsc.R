@@ -140,7 +140,6 @@ raspar_arq_unico <- function(arq) {
     stringr::str_extract(mascara_cnj)
 }
 
-
 build_url_cpopg_nome <- function(nm) {
   u <- paste0('http://esaj.tjsc.jus.br/cpopg/search.do?conversationId=',
               '&dadosConsulta.localPesquisa.cdLocal=-1&cbPesquisa=NMPARTE&dados',
@@ -181,14 +180,6 @@ build_url_cpopg_nome_pag_captcha <- function(nm, pag, captcha) {
               'cbPesquisa=NMPARTE&dadosConsulta.tipoNuProcesso=UNIFICADO',
               '&dadosConsulta.valorConsulta=%s&vlCaptcha=%s')
   sprintf(u, pag, gsub(' ', '+', nm), tolower(captcha))
-}
-
-tem_captcha <- function(r) {
-  (r %>%
-     httr::content('text') %>%
-     xml2::read_html() %>%
-     rvest::html_nodes('#captchaCodigo') %>%
-     length()) > 0
 }
 
 diagnostico <- function(arqs) {

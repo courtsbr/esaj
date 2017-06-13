@@ -49,4 +49,3 @@ tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
 tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
 
 }
-
