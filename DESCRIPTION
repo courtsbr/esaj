@@ -23,7 +23,7 @@ Imports:
   stringr,
   tidyr,
   xml2,
-    rlang
+  rlang
 Remotes:
   hadley/multidplyr
 Suggests:

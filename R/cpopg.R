@@ -87,9 +87,9 @@ cpo_pg_um <- function(p, path, tj){
       # timestamp <- V8::v8()$eval("new Date().getTime();")
       s <- rvest::html_session('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
 
-      aff <- s$response %>% httr::content() %>% captchaTJSC::ler_new()
+      aff <- s$response %>% httr::content() %>% captchaTJSC:::ler_new()
       # aff %>% desenhar()
-      captcha <- aff %>% captchaTJSC::limpar_new() %>% captchaTJSC::ocr()
+      captcha <- aff %>% captchaTJSC:::limpar_new() %>% captchaTJSC:::ocr()
       # captcha
       uid <- aff$uuid[1]
       if(nchar(p) == 20){
