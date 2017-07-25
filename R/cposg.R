@@ -7,10 +7,10 @@
 #   d
 # }
 
-#' Funcao que faz o download das informacoes de um processo de segundo
-#' grau (SG) no TJSP.
-#'
-#' @export
+# Funcao que faz o download das informacoes de um processo de segundo
+# grau (SG) no TJSP.
+#
+# @export
 # cpo_sg_um <- function(p, path) {
 #   p <- gsub('[^0-9]', '', p)
 #   if(!is.null(path) & file.exists(sprintf('%s/%s.html', path, p))) {
@@ -78,7 +78,7 @@ build_url_cpo_sg <- function(p, tj) {
   url2
 }
 
-#' @export
+# @export
 decisao_cpo_sg_um <- function(h) {
   try({
     html <- rvest::html(h, encoding = 'UTF-8')
@@ -92,12 +92,10 @@ decisao_cpo_sg_um <- function(h) {
   return(erro)
 }
 
-#' @export
+# @export
 decisao_cpo_sg <- function(arqs) {
   d <- dplyr::data_frame(arq = arqs)
   d <- dplyr::do(dplyr::group_by(d, arq), decisao_cpo_sg_um(.$arq))
   d <- dplyr::ungroup(d)
   d
 }
-
-

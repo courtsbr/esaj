@@ -1,4 +1,4 @@
-#' @export
+# @export
 parse_cpo_sg <- function(path, s = NULL, keyval = FALSE) {
   l <- list.files(path, full.names = TRUE)
   if(!is.null(s)) {
@@ -10,14 +10,14 @@ parse_cpo_sg <- function(path, s = NULL, keyval = FALSE) {
   if(keyval) {
     d <- dplyr::do(d, parse_cpo_sg_um_keyval(.$l))
   } else {
-    d <- dplyr::do(d, parse_cpo_sg_um(.$l))
+    d <- dplyr::do(d, parse_cpo_sg(.$l))
   }
   d <- dplyr::ungroup(d)
   d <- dplyr::select(d, -l)
   d
 }
 
-#' @export
+# @export
 parse_cpo_sg_um_keyval <- function(r) {
   try({
     xpath <- "//table[@id != 'secaoFormConsulta' and (@class='secaoFormBody' "
@@ -67,12 +67,12 @@ parse_cpo_sg_um_keyval <- function(r) {
   return(d)
 }
 
-#' Funcao que faz o download das informacoes de um processo de segundo
-#' grau (SG) no TJSP.
-#'
-#' Retorna um data.frame com os metadados basicos e andamentos do processo
-#'
-#' @export
+# Funcao que faz o download das informacoes de um processo de segundo
+# grau (SG) no TJSP.
+#
+# Retorna um data.frame com os metadados basicos e andamentos do processo
+#
+# @export
 cpo_sg <- function(processos, path = "data-raw/cpo-sg", tj = 'TJSP') {
   if(tj == 'TJSC') {
     d <- pesquisar_processos(processos, path)
@@ -91,7 +91,7 @@ cpo_sg <- function(processos, path = "data-raw/cpo-sg", tj = 'TJSP') {
         return(dplyr::data_frame(result = "arquivo existe"))
       }
       # Sys.sleep(1)
-      u <- esaj:::build_url_cpo_sg(p, tj)
+      u <- build_url_cpo_sg(p, tj)
       if (!file.exists(arq)) {
         r <- httr::GET(u, httr::config(ssl_verifypeer = FALSE),
                        httr::write_disk(arq))

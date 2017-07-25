@@ -2,11 +2,11 @@ arrumar_key <- function(x) {
   desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
 }
 
-#' @export
+# @export
 parse_cpopg <- function(arqs, .parallel = TRUE) {
 
   fun <- function(i) {
-    if(runif(1) < 0.01) cat(i, "de", n, "\n")
+    if(stats::runif(1) < 0.01) cat(i, "de", n, "\n")
     x <- arqs[i]
     rds <- gsub('.html$', '.rds', x)
     if(!file.exists(rds)) {
@@ -24,12 +24,12 @@ parse_cpopg <- function(arqs, .parallel = TRUE) {
       #   return(dplyr::data_frame(arq = x, infos, partes, movs))
       # }
       fail <- list(dplyr::data_frame(erro = 'erro'))
-      infos <- tryCatch(list(esaj::parse_cpopg_infos_(h)), error = function(e) fail)
-      partes <- tryCatch(list(esaj::parse_cpopg_partes_(h)), error = function(e) fail)
-      movs <- tryCatch(list(esaj::parse_cpopg_movs_(h)), error = function(e) fail)
-      deleg <- tryCatch(list(esaj::parse_cpopg_delegacia_(h)), error = function(e) fail)
-      auds <- tryCatch(list(esaj::parse_cpopg_audiencias_(h)), error = function(e) fail)
-      histclass <- tryCatch(list(esaj::parse_cpopg_histclasses_(h)), error = function(e) fail)
+      infos <- tryCatch(list(parse_cpopg_infos_(h)), error = function(e) fail)
+      partes <- tryCatch(list(parse_cpopg_partes_(h)), error = function(e) fail)
+      movs <- tryCatch(list(parse_cpopg_movs_(h)), error = function(e) fail)
+      deleg <- tryCatch(list(parse_cpopg_delegacia_(h)), error = function(e) fail)
+      auds <- tryCatch(list(parse_cpopg_audiencias_(h)), error = function(e) fail)
+      histclass <- tryCatch(list(parse_cpopg_histclasses_(h)), error = function(e) fail)
       d <- dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass)
       saveRDS(d, rds)
     } else {
@@ -105,12 +105,12 @@ parse_cpopg_info_ <- function(a) {
     dplyr::mutate(erro = FALSE)
 }
 
-#' @export
+# @export
 desacentuar <- function(x) {
   gsub("`|\\'", "", iconv(x, to = "ASCII//TRANSLIT"))
 }
 
-#' @export
+# @export
 parse_cpopg_infos_ <- function(html) {
   arrumar_key <- function(x) desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
   infos <- html %>%
@@ -153,7 +153,7 @@ parse_cpopg_infos_ <- function(html) {
     dplyr::tbl_df()
 }
 
-#' @export
+# @export
 parse_cpopg_partes_ <- function(html) {
   arrumar_forma <- function(x) {
     x <- desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
@@ -184,7 +184,7 @@ parse_cpopg_partes_ <- function(html) {
     }
 }
 
-#' @export
+# @export
 parse_cpopg_movs_ <- function(html) {
   html %>%
     rvest::html_node("#tabelaTodasMovimentacoes") %>%
@@ -195,7 +195,7 @@ parse_cpopg_movs_ <- function(html) {
     dplyr::tbl_df()
 }
 
-#' @export
+# @export
 parse_cpopg_delegacia_ <- function(html) {
   html %>%
     rvest::html_node(xpath = '//tbody[@id="dadosDaDelegacia"]/..') %>%
@@ -205,7 +205,7 @@ parse_cpopg_delegacia_ <- function(html) {
     dplyr::tbl_df()
 }
 
-#' @export
+# @export
 parse_cpopg_audiencias_ <- function(html) {
   xp <- '//a[@name="audienciasPlaceHolder"]/following-sibling::table'
   d <- html %>%
@@ -235,7 +235,7 @@ parse_cpopg_audiencias_ <- function(html) {
   d
 }
 
-#' @export
+# @export
 parse_cpopg_histclasses_ <- function(html) {
   html %>%
     rvest::html_node(xpath = '//table[@id="tdHistoricoDeClasses"]') %>% {
@@ -251,7 +251,7 @@ parse_cpopg_histclasses_ <- function(html) {
 
 #' Daqui pra baixo é versão antiga, mas não apaguei pq não chequei
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg <- function(arqs, .parallel = TRUE) {
 #'   fun <- function(i) {
 #'     if(runif(1) < 0.01) cat(i, "de", n, "\n")
@@ -268,12 +268,12 @@ parse_cpopg_histclasses_ <- function(html) {
 #'       return(dplyr::data_frame(arq = x, infos, partes, movs))
 #'     }
 #'     fail <- list(dplyr::data_frame(erro = 'erro'))
-#'     infos <- tryCatch(list(esaj::parse_cpopg_infos_(h)), error = function(e) fail)
-#'     partes <- tryCatch(list(esaj::parse_cpopg_partes_(h)), error = function(e) fail)
-#'     movs <- tryCatch(list(esaj::parse_cpopg_movs_(h)), error = function(e) fail)
-#'     deleg <- tryCatch(list(esaj::parse_cpopg_delegacia_(h)), error = function(e) fail)
-#'     auds <- tryCatch(list(esaj::parse_cpopg_audiencias_(h)), error = function(e) fail)
-#'     histclass <- tryCatch(list(esaj::parse_cpopg_histclasses_(h)), error = function(e) fail)
+#'     infos <- tryCatch(list(parse_cpopg_infos_(h)), error = function(e) fail)
+#'     partes <- tryCatch(list(parse_cpopg_partes_(h)), error = function(e) fail)
+#'     movs <- tryCatch(list(parse_cpopg_movs_(h)), error = function(e) fail)
+#'     deleg <- tryCatch(list(parse_cpopg_delegacia_(h)), error = function(e) fail)
+#'     auds <- tryCatch(list(parse_cpopg_audiencias_(h)), error = function(e) fail)
+#'     histclass <- tryCatch(list(parse_cpopg_histclasses_(h)), error = function(e) fail)
 #'     d <- dplyr::data_frame(arq = x, infos, partes, movs, deleg, auds, histclass)
 #'     saveRDS(d, gsub('.html$', '.rds', x))
 #'     d
@@ -346,7 +346,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'     dplyr::mutate(erro = FALSE)
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_infos_ <- function(html) {
 #'   arrumar_key <- function(x) desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
 #'   infos <- html %>%
@@ -389,7 +389,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'     dplyr::tbl_df()
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_partes_ <- function(html) {
 #'   arrumar_forma <- function(x) {
 #'     x <- desacentuar(stringr::str_replace_all(tolower(x), " +", "_"))
@@ -420,7 +420,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'     }
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_movs_ <- function(html) {
 #'   html %>%
 #'     rvest::html_node("#tabelaTodasMovimentacoes") %>%
@@ -431,7 +431,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'     dplyr::tbl_df()
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_delegacia_ <- function(html) {
 #'   html %>%
 #'     rvest::html_node(xpath = '//tbody[@id="dadosDaDelegacia"]/..') %>%
@@ -441,7 +441,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'     dplyr::tbl_df()
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_audiencias_ <- function(html) {
 #'   xp <- '//a[@name="audienciasPlaceHolder"]/following-sibling::table'
 #'   d <- html %>%
@@ -465,7 +465,7 @@ parse_cpopg_histclasses_ <- function(html) {
 #'   d
 #' }
 #'
-#' #' @export
+#' # @export
 #' parse_cpopg_histclasses_ <- function(html) {
 #'   html %>%
 #'     rvest::html_node(xpath = '//table[@id="tdHistoricoDeClasses"]') %>% {

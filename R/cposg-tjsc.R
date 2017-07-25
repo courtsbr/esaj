@@ -1,42 +1,5 @@
-#' @export
+# @export
 pesquisar_processos_2inst <- function(processos, path, sleep = 3) {
-
-  pesquisar_processo <- function(x, sleep = 3) {
-    x <- '10000406320168240000'
-
-    x <- gsub('[^0-9]', '', x)
-    arq <- sprintf('%s/%s.html', path, gsub('[^0-9]', '', x))
-    if (file.exists(arq)) return(dplyr::data_frame())
-    Sys.sleep(sleep)
-
-    r0 <- httr::GET('http://esaj.tjsc.jus.br/cposgtj/open.do')
-    timestamp <- V8::v8()$eval("new Date().getTime();")
-    r1 <- httr::POST('http://esaj.tjsc.jus.br/cposgtj/imagemCaptcha.do',
-                     body = list('timestamp' = timestamp,
-                                 'uuidCaptcha' = '',
-                                 'conversationId' = ''))
-    s <- jsonlite::fromJSON(httr::content(r1, 'text'))
-    uid <- s$uuidCaptcha
-    u <- sprintf('http://esaj.tjsc.jus.br/cposgtj/somCaptcha.do?timestamp=&uuidCaptcha=%s', uid)
-    if (is.null(arq)) arq <- tempfile()
-    httr::GET(u, httr::write_disk(arq, overwrite = TRUE))
-    captcha <- captchaTJSC::decifrar(arq)
-
-    q <- list('conversationId' = '',
-              'paginaConsulta' = '1',
-              'cbPesquisa' = 'NUMPROC',
-              'tipoNuProcesso' = 'UNIFICADO',
-              'numeroDigitoAnoUnificado' = stringr::str_sub(x, 1, -8L),
-              'foroNumeroUnificado' = stringr::str_sub(x, 17L, 20L),
-              'dePesquisaNuUnificado' = x,
-              'dePesquisa' = '',
-              'uuidCaptcha' = uid,
-              'vlCaptcha' = captcha,
-              'novoVlCaptcha' = '')
-
-  }
-
-
 
   pesquisar_processo <- function(x) {
     arq <- sprintf('%s/%s.html', path, gsub('[^0-9]', '', x))
@@ -378,6 +341,3 @@ n_nomes <- function(nm, path) {
     dplyr::do({f(.$nome)}) %>%
     dplyr::ungroup()
 }
-
-
-

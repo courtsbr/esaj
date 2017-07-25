@@ -1,4 +1,4 @@
-#' @export
+# @export
 pesquisar_processos <- function(processos, path) {
   pesquisar_processo <- function(x) {
     arq <- sprintf('%s/%s.html', path, gsub('[^0-9]', '', x))

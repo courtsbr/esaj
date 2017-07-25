@@ -2,11 +2,29 @@ Package: esaj
 Title: Robo de buscas de todos os sistemas do e-SAJ
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: Robo de buscas de todos os sistemas do e-SAJ
+Description: Robo de buscas de todos os sistemas do e-SAJ.
 Depends: R (>= 3.2.3)
-License: GPL v2.0
+License: file LICENSE
 Imports:
-  magrittr
+  magrittr,
+  V8,
+  captchaTJSC,
+  captchasaj,
+  doParallel,
+  dplyr,
+  httr,
+  janitor,
+  jsonlite,
+  lubridate,
+  multidplyr,
+  plyr,
+  readr,
+  rvest,
+  stringr,
+  tidyr,
+  xml2
+Remotes:
+  hadley/multidplyr
 Suggests:
   knitr,
   rmarkdown
