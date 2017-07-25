@@ -1,4 +1,4 @@
-#' @export
+# @export
 cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel = F) {
   d <- dplyr::data_frame(n_processo = unique(processos))
   d <- dplyr::mutate(d, id = 1:n(), path = path, tj = tj)
@@ -9,7 +9,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
                                         'tem_captcha',
                                         'quebra_captcha',
                                         'build_url_cpo_pg'))
-    parallel::clusterCall(clust, function() library(magrittr))
+    # parallel::clusterCall(clust, function() library(magrittr))
     d <- dplyr::do(d,{
         cpo_pg_um(.$n_processo, path = .$path, tj = .$tj)
       })
@@ -24,7 +24,7 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   d
 }
 
-#' @export
+# @export
 build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO', uid = NULL) {
   #  p <- gsub("[^0-9]", "", as.character(p))
 
@@ -69,7 +69,7 @@ build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO',
   paste(url1, paste0(parametros, collapse = "&"), sep = "?")
 }
 
-#' @export
+# @export
 cpo_pg_um <- function(p, path, tj){
 
   f <- function(p, path, tj) {
@@ -122,7 +122,7 @@ cpo_pg_um <- function(p, path, tj){
            error = function(e) dplyr::data_frame(result = 'erro'))
 }
 
-#' @export
+# @export
 tem_captcha <- function(r) {
   (r %>%
      httr::content('text') %>%
@@ -131,7 +131,7 @@ tem_captcha <- function(r) {
      length()) > 0
 }
 
-#' @export
+# @export
 quebra_captcha <- function(u_captcha){
   tmp <- tempfile()
   #  u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
@@ -142,28 +142,25 @@ quebra_captcha <- function(u_captcha){
                       error = function(e) 'xxxxx')
 }
 
-set_values2 <-  function (form, l)
-  {
-    new_values <- l
-    no_match <- setdiff(names(new_values), names(form$fields))
-    if (length(no_match) > 0) {
-      stop("Unknown field names: ", paste(no_match, collapse = ", "),
-           call. = FALSE)
-    }
-    for (field in names(new_values)) {
-      type <- form$fields[[field]]$type %||% "non-input"
-      if (type == "hidden") {
-        warning("Setting value of hidden field '", field,
-                "'.", call. = FALSE)
-      }
-      else if (type == "submit") {
-        stop("Can't change value of submit input '", field,
-             "'.", call. = FALSE)
-      }
-      form$fields[[field]]$value <- new_values[[field]]
-    }
-    form
-}
-
-`%||%` <- rvest:::`%||%`
-`%<>%` <- magrittr:::`%<>%`
+# set_values2 <-  function (form, l)
+#   {
+#     new_values <- l
+#     no_match <- setdiff(names(new_values), names(form$fields))
+#     if (length(no_match) > 0) {
+#       stop("Unknown field names: ", paste(no_match, collapse = ", "),
+#            call. = FALSE)
+#     }
+#     for (field in names(new_values)) {
+#       type <- form$fields[[field]]$type %||% "non-input"
+#       if (type == "hidden") {
+#         warning("Setting value of hidden field '", field,
+#                 "'.", call. = FALSE)
+#       }
+#       else if (type == "submit") {
+#         stop("Can't change value of submit input '", field,
+#              "'.", call. = FALSE)
+#       }
+#       form$fields[[field]]$value <- new_values[[field]]
+#     }
+#     form
+# }

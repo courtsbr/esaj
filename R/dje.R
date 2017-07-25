@@ -1,47 +1,47 @@
-#' Baixa diários oficiais
-#'
-#' Acessa os Diários de Justiça Eletrônicos dos Tribunais de Justiça e baixa
-#' os arquivos em PDF.
-#'
-#' @param tj character vector indicando o Tribunal. Atualmente funciona com
-#' TJSP, TJAC, TJAL, TJAM, TJMS, TJRN, TJSC, TJCE, TJBA. Default \code{'TJSP'}.
-#' @param dates Date vector ou character vector em YYYY-MM-DD com as datas
-#' que se deseja baixar. Default \code{Sys.Date()}.
-#' @param path pasta onde os arquivos serão gravados. Para cada data, uma pasta
-#' será criada e os arquivos PDF serão salvos nessa pasta. Default \code{'data-raw/dje_pdf'}
-#' @param verbose imprimir mensagens? Default \code{FALSE}.
-#'
-#' @return \code{tbl_df} com diagnóstico dos resultados.
-#'
-#' @examples
-#'
-#' dir.create('data-raw/dje_pdf', recursive = TRUE, showWarnings = FALSE)
-#' tjsp_dje <- dje(dates = Sys.Date() - 0:3)
-#' table(tjsp_dje$result)
-#'
-#' # --------------------------------------------------------------------------
-#' tjal_dje <- dje(tj = 'TJAL', dates = Sys.Date() - 0:3)
-#' tjam_dje <- dje(tj = 'TJAM', dates = Sys.Date() - 0:3)
-#' tjce_dje <- dje(tj = 'TJCE', dates = Sys.Date() - 0:3)
-#' tjba_dje <- dje(tj = 'TJBA', dates = Sys.Date() - 0:3)
-#' tjms_dje <- dje(tj = 'TJMS', dates = Sys.Date() - 0:3)
-#' tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
-#' tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
-#' tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
-#'
-#' @export
+# Baixa diários oficiais
+#
+# Acessa os Diários de Justiça Eletrônicos dos Tribunais de Justiça e baixa
+# os arquivos em PDF.
+#
+# @param tj character vector indicando o Tribunal. Atualmente funciona com
+# TJSP, TJAC, TJAL, TJAM, TJMS, TJRN, TJSC, TJCE, TJBA. Default \code{'TJSP'}.
+# @param dates Date vector ou character vector em YYYY-MM-DD com as datas
+# que se deseja baixar. Default \code{Sys.Date()}.
+# @param path pasta onde os arquivos serão gravados. Para cada data, uma pasta
+# será criada e os arquivos PDF serão salvos nessa pasta. Default \code{'data-raw/dje_pdf'}
+# @param verbose imprimir mensagens? Default \code{FALSE}.
+#
+# @return \code{tbl_df} com diagnóstico dos resultados.
+#
+# @examples
+# \dontrun{
+# dir.create('data-raw/dje_pdf', recursive = TRUE, showWarnings = FALSE)
+# tjsp_dje <- dje(dates = Sys.Date() - 0:3)
+# table(tjsp_dje$result)
+#
+# # --------------------------------------------------------------------------
+# tjal_dje <- dje(tj = 'TJAL', dates = Sys.Date() - 0:3)
+# tjam_dje <- dje(tj = 'TJAM', dates = Sys.Date() - 0:3)
+# tjce_dje <- dje(tj = 'TJCE', dates = Sys.Date() - 0:3)
+# tjba_dje <- dje(tj = 'TJBA', dates = Sys.Date() - 0:3)
+# tjms_dje <- dje(tj = 'TJMS', dates = Sys.Date() - 0:3)
+# tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
+# tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
+# tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
+# }
+# # @export
 dje <- function(tj = 'TJSP', dates = Sys.Date(), path = 'data-raw/dje_pdf',
                 verbose = FALSE) {
   f <- sprintf('dje_%s', tolower(tj))
   eval(call(f, dates, path, verbose))
 }
 
-#' @rdname dje
-#'
-#' @param from,to Date vector ou character vector em formato YYYY-MM-DD.
-#' @inheritParams dje
-#'
-#' @export
+# @rdname dje
+#
+# @param from,to Date vector ou character vector em formato YYYY-MM-DD.
+# @inheritParams dje
+#
+# @export
 dje_range <- function(from, to, tj = 'TJSP', path = 'data-raw/dje_pdf',
                       verbose = FALSE) {
   dates <- seq(as.Date(from), as.Date(to), by = 1)
@@ -359,7 +359,7 @@ dje_tjce <- function(dates, path, verbose) {
   return(d)
 }
 
-#' @export
+# @export
 dje_tjba <- function(dates, path, verbose) {
   edicoes_tjba <- function() {
     # essa foi dificil!
@@ -442,5 +442,3 @@ download_arq <- function(u, a, verbose = FALSE) {
   if (verbose) cat('ERRO!\n')
   return(dplyr::data_frame(result = 'nao tem dje'))
 }
-
-

@@ -10,5 +10,21 @@ desacentuar <- function(x) {
 #' @rdname pipe
 #' @keywords internal
 #' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
 NULL
+
+#' Double-pipe operator
+#'
+#' See \code{\link[magrittr]{\%<>\%}} for more details.
+#'
+#' @name %<>%
+#' @rdname pipe
+#' @keywords internal
+#' @importFrom magrittr %<>%
+NULL
+
+globalVariables(c(
+  ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "caderno",
+  "cor", "date_link", "desc", "edicao", "forma", "g", "head", "id",
+  "info", "key", "link", "n", "n_processo", "nome", "r", "result",
+  "rm_accent", "setNames", "value", "y"))
+
