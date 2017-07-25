@@ -33,7 +33,7 @@ Acessa os Diários de Justiça Eletrônicos dos Tribunais de Justiça e baixa
 os arquivos em PDF.
 }
 \examples{
-
+\dontrun{
 dir.create('data-raw/dje_pdf', recursive = TRUE, showWarnings = FALSE)
 tjsp_dje <- dje(dates = Sys.Date() - 0:3)
 table(tjsp_dje$result)
@@ -47,5 +47,5 @@ tjms_dje <- dje(tj = 'TJMS', dates = Sys.Date() - 0:3)
 tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
 tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
 tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
-
+}
 }

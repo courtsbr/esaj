@@ -14,7 +14,7 @@
 #' @return \code{tbl_df} com diagnóstico dos resultados.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' dir.create('data-raw/dje_pdf', recursive = TRUE, showWarnings = FALSE)
 #' tjsp_dje <- dje(dates = Sys.Date() - 0:3)
 #' table(tjsp_dje$result)
@@ -28,7 +28,7 @@
 #' tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
 #' tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
 #' tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
-#'
+#'}
 #' @export
 dje <- function(tj = 'TJSP', dates = Sys.Date(), path = 'data-raw/dje_pdf',
                 verbose = FALSE) {
