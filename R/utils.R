@@ -22,6 +22,11 @@ NULL
 #' @importFrom magrittr %<>%
 NULL
 
+"%||%" <- function(x, y) {
+  if (rlang::is_null(x)) y else x
+}
+
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "caderno",
   "cor", "date_link", "desc", "edicao", "forma", "g", "head", "id",

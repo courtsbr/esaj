@@ -23,7 +23,8 @@ cpo_pg <- function(processos, path = "data-raw/cpo-pg", tj = 'TJSP', .parallel =
   d
 }
 
-build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO', uid = NULL) {
+build_url_cpo_pg <- function(p, tj, captcha = NULL, tipo_processo = 'UNIFICADO',
+                             uid = NULL) {
   #  p <- gsub("[^0-9]", "", as.character(p))
 
   dados_url <- list(conversationId = "",
@@ -84,9 +85,9 @@ cpo_pg_um <- function(p, path, tj){
       # timestamp <- V8::v8()$eval("new Date().getTime();")
       s <- rvest::html_session('http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do')
 
-      aff <- s$response %>% httr::content() %>% captchaTJSC:::ler_new()
+      aff <- s$response %>% httr::content() %>% captchaTJSC::ler_new()
       # aff %>% desenhar()
-      captcha <- aff %>% captchaTJSC:::limpar_new() %>% captchaTJSC:::ocr()
+      captcha <- aff %>% captchaTJSC::limpar_new() %>% captchaTJSC::ocr()
       # captcha
       uid <- aff$uuid[1]
       if(nchar(p) == 20){
@@ -302,7 +303,7 @@ diagnostico <- function(arqs) {
       return(dplyr::data_frame(result = '1 processo',
                                n_processos = 1))
     if ((xml2::read_html(x) %>%
-         rvest::html_nodes(xpath = '//a[@title="Próxima página"]') %>%
+         rvest::html_nodes(xpath = '//a[@title="Pr\u00f3xima p\u00e1gina"]') %>%
          length()) > 0) {
       num_docs <- x %>%
         stringr::str_match('</strong>[ \n\t]+de [0-9]+[ \n\t]+</td>') %>%
@@ -321,11 +322,11 @@ diagnostico <- function(arqs) {
       return(dplyr::data_frame(result = '1 pagina',
                                n_processos = num_docs))
     }
-    if (stringr::str_detect(x, 'Digite o código aqui'))
+    if (stringr::str_detect(x, 'Digite o codigo aqui'))
       return(dplyr::data_frame(result = 'captcha errado',
                                n_processos = NA_real_))
-    if (stringr::str_detect(x, 'Não existem informações'))
-      return(dplyr::data_frame(result = 'Não achou',
+    if (stringr::str_detect(x, 'Nao existem informacoes'))
+      return(dplyr::data_frame(result = 'Nao achou',
                                n_processos = NA_real_))
     if (stringr::str_detect(x, 'muitos processos para os'))
       return(dplyr::data_frame(result = 'Processos demais',

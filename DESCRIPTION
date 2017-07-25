@@ -22,7 +22,8 @@ Imports:
   rvest,
   stringr,
   tidyr,
-  xml2
+  xml2,
+    rlang
 Remotes:
   hadley/multidplyr
 Suggests:

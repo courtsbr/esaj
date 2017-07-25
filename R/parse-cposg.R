@@ -29,13 +29,13 @@ parse_cpo_sg_um_keyval <- function(r) {
       rvest::html_nodes(xpath = xpath) %>%
       rvest::html_text()
     keyval <- iconv(keyval, to = 'UTF-8')
-    keyval <- gsub('às [0-9]+\\:[0-9]+', '', keyval)
+    keyval <- gsub('\u00e0s [0-9]+\\:[0-9]+', '', keyval)
     keyval <- stringr::str_trim(gsub('\\&nbsp', ' ', keyval))
     keyval <- stringr::str_trim(gsub(" +", " ", gsub("[ \t\r\n\v\f]+", " ", keyval)))
     keyval <- keyval[!duplicated(keyval, incomparables = '') | stringr::str_detect(keyval, ':[^[:alpha:]]*$')]
     keyval <- paste(keyval, collapse = ' ')
 
-    re <- '(([[:alpha:]]+:)|(Valor da ação:)|(Outros assuntos:)|(Local Físico:))'
+    re <- "(([[:alpha:]]+:)|(Valor da a\u00e7\u00e3o:)|(Outros assuntos:)|(Local F\u00edsico:))"
     key <- stringr::str_match_all(keyval, re)[[1]][, 2]
     key <- stringr::str_trim(gsub(':', '', key))
     key <- rm_accent(gsub(' +', '_', tolower(key)))

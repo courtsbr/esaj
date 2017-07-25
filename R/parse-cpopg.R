@@ -96,7 +96,7 @@ parse_cpopg_info_ <- function(a) {
         ""
       else rvest::html_text(dplyr::first(.))
     } %>% {
-      digital <- stringr::str_detect(., "Este processo é digital")
+      digital <- stringr::str_detect(., "Este processo \u00e9 digital")
       dplyr::data_frame(key = "digital", value = as.character(digital))
     }
 
@@ -146,7 +146,7 @@ parse_cpopg_infos_ <- function(html) {
         ""
       else rvest::html_text(dplyr::first(.))
     } %>% {
-      digital <- stringr::str_detect(., "Este processo é digital")
+      digital <- stringr::str_detect(., "Este processo \u00e9 digital")
       dplyr::data_frame(key = "digital", value = as.character(digital))
     }
   dplyr::bind_rows(infos, infos_p, infos_cdp, infos_digital) %>%
@@ -212,7 +212,7 @@ parse_cpopg_audiencias_ <- function(html) {
     rvest::html_nodes(xpath = xp) %>%
     dplyr::first() %>%
     rvest::html_table(header = FALSE)
-  if (any(stringr::str_detect(d$X1, 'Não há Audiências futuras'))) {
+  if (any(stringr::str_detect(d$X1, 'N\u00e3o h\u00e1 Audi\u00eancias futuras'))) {
     d <- dplyr::data_frame(erro = 'nao_tem')
   } else {
     d <- html %>%

@@ -199,7 +199,7 @@ diagnostico <- function(arqs) {
       return(dplyr::data_frame(result = '1 processo',
                                n_processos = 1))
     if ((xml2::read_html(x) %>%
-         rvest::html_nodes(xpath = '//a[@title="Próxima página"]') %>%
+         rvest::html_nodes(xpath = '//a[@title="Pr\u00f3xima p\u00e1gina"]') %>%
          length()) > 0) {
       num_docs <- x %>%
         stringr::str_match('</strong>[ \n\t]+de [0-9]+[ \n\t]+</td>') %>%
@@ -218,11 +218,11 @@ diagnostico <- function(arqs) {
       return(dplyr::data_frame(result = '1 pagina',
                                n_processos = num_docs))
     }
-    if (stringr::str_detect(x, 'Digite o código aqui'))
+    if (stringr::str_detect(x, 'Digite o codigo aqui'))
       return(dplyr::data_frame(result = 'captcha errado',
                                n_processos = NA_real_))
-    if (stringr::str_detect(x, 'Não existem informações'))
-      return(dplyr::data_frame(result = 'Não achou',
+    if (stringr::str_detect(x, 'Nao existem informacoes'))
+      return(dplyr::data_frame(result = 'Nao achou',
                                n_processos = NA_real_))
     if (stringr::str_detect(x, 'muitos processos para os'))
       return(dplyr::data_frame(result = 'Processos demais',

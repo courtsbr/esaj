@@ -318,7 +318,7 @@ dje_tjsc <- function(dates, path, verbose) {
       u_final <- paste0(u_base, stringr::str_match(loc, '/([^/]+)$')[, 2])
       return(u_final)
     }
-    existe <- !(stringr::str_detect(httr::content(r0, 'text'), 'Não há|não hav'))
+    existe <- !(stringr::str_detect(httr::content(r0, 'text'), 'N\u00e3o h\u00e1|n\u00e3o hav'))
     if (existe) return(u)
     if (r0$status_code != 302) return(r0$status_code)
   }
