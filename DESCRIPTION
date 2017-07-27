@@ -25,7 +25,8 @@ Imports:
   xml2,
   rlang
 Remotes:
-  hadley/multidplyr
+  hadley/multidplyr,
+  tidyverse/purrr
 Suggests:
   knitr,
   rmarkdown
