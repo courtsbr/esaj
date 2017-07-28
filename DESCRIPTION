@@ -23,7 +23,8 @@ Imports:
   stringr,
   tidyr,
   xml2,
-  rlang
+  rlang,
+  purrr
 Remotes:
   hadley/multidplyr,
   tidyverse/purrr
