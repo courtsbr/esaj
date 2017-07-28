@@ -21,10 +21,8 @@ baixar_tjba <- function(cod_processo, dir_processo = '.') {
     writeBin(httr::content(r_captcha, "raw"), tmp)
 
     # Decodificar captcha
-    decodificar <- captchasaj::decodificar %>%
-      purrr::possibly('xxxxx') %>%
-      purrr::quietly()
-    valor <- decodificar(tmp, captchasaj::modelo$modelo)$result
+    decodificar <- purrr::possibly(captchasaj::decodificar, 'xxxxx')
+    valor <- decodificar(tmp, captchasaj::modelo$modelo)
 
     # Preencher query
     query$vlCaptcha <- valor

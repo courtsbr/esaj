@@ -184,13 +184,13 @@ build_url_cpopg_nome_pag_captcha <- function(nm, pag, captcha) {
   sprintf(u, pag, gsub(' ', '+', nm), tolower(captcha))
 }
 
-tem_captcha <- function(r) {
-  (r %>%
-     httr::content('text') %>%
-     xml2::read_html() %>%
-     rvest::html_nodes('#captchaCodigo') %>%
-     length()) > 0
-}
+# tem_captcha <- function(r) {
+#   (r %>%
+#      httr::content('text') %>%
+#      xml2::read_html() %>%
+#      rvest::html_nodes('#captchaCodigo') %>%
+#      length()) > 0
+# }
 
 diagnostico <- function(arqs) {
   diag_um <- function(a) {
