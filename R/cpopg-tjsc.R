@@ -1,14 +1,14 @@
 
 # Baixar processo do TJSC
-# cod_processo <- "0303349-44.2014.8.24.0020"
-baixar_tjsc <- function(cod_processo, dir_processo = '.') {
+# id <- "0303349-44.2014.8.24.0020"
+baixar_tjsc <- function(id, path = '.') {
 
   # Tentar 10 vezes no máximo
   for (i in 1:10) {
 
     # Query
-    query <- query_processo(cod_processo)
-    cod_processo_clean <- gsub('[^0-9]', '', cod_processo)
+    query <- query_processo(id)
+    id_clean <- gsub('[^0-9]', '', id)
 
     # Acesso inicial
     u_open <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
@@ -16,20 +16,20 @@ baixar_tjsc <- function(cod_processo, dir_processo = '.') {
 
     # Captcha
     time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
-    arq_captcha <- baixar_captcha_cor(dir_processo, time_stamp)
+    captcha <- baixar_captcha_cor(path, time_stamp)
 
     # Preencher query
-    query$uuidCaptcha <- uuid_captcha(arq_captcha)
-    query$vlCaptcha <- quebrar_captcha_cor(arq_captcha)
+    query$uuidCaptcha <- uuid_captcha(captcha)
+    query$vlCaptcha <- quebrar_captcha_cor(captcha)
 
     # Baixar processo
     u_search <- 'http://esaj.tjsc.jus.br/cpopg/search.do'
-    arq_processo <- sprintf('%s/%s.html', dir_processo, cod_processo_clean)
+    file <- sprintf('%s/%s.html', path, id_clean)
     r <- httr::GET(u_search, query = query,
-                   httr::write_disk(arq_processo, overwrite = TRUE))
+                   httr::write_disk(file, overwrite = TRUE))
 
     # Break
     if (!tem_captcha(r)) { break }
-    else { file.remove(arq_processo) }
+    else { file.remove(file) }
   }
 }

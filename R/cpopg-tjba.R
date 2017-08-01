@@ -1,14 +1,14 @@
 
 # Baixar processo do TJBA
-# cod_processo <- "0501676-29.2016.8.05.0137"
-baixar_tjba <- function(cod_processo, dir_processo = '.') {
+# id <- "0501676-29.2016.8.05.0137"
+baixar_tjba <- function(id, path = '.') {
 
   # Tentar 10 vezes no máximo
   for (i in 1:10) {
 
     # Query
-    query <- query_processo(cod_processo)
-    cod_processo_clean <- gsub('[^0-9]', '', cod_processo)
+    query <- query_processo(id)
+    id_clean <- gsub('[^0-9]', '', id)
 
     # Acesso inicial
     u_open <- 'http://esaj.tjba.jus.br/cpopg/open.do'
@@ -29,12 +29,12 @@ baixar_tjba <- function(cod_processo, dir_processo = '.') {
 
     # Baixar processo
     u_search <- "http://esaj.tjba.jus.br/cpopg/search.do"
-    arq_processo <- sprintf('%s/%s.html', dir_processo, cod_processo_clean)
+    file <- sprintf('%s/%s.html', path, id_clean)
     r <- httr::GET(u_search, query = query,
-                   httr::write_disk(arq_processo, overwrite = TRUE))
+                   httr::write_disk(file, overwrite = TRUE))
 
     # Break
     if (!tem_captcha(r)) { break }
-    else { file.remove(arq_processo) }
+    else { file.remove(file) }
   }
 }
