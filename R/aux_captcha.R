@@ -110,10 +110,10 @@ quebrar_captcha_cor <- function(arq) {
 quebrar_captcha_cor <- purrr::possibly(quebrar_captcha_cor, "xxxx")
 
 # Baixar um captcha com cores
-baixar_captcha_cor <- function(u_captcha, dir = '.', ts = '') {
+baixar_captcha_cor <- function(u_captcha, dir = ".", ts = "") {
   tmp <- tempfile()
   r <- httr::POST(u_captcha,
-    body = list(timestamp = ts, uuidCaptcha = '', conversationId = ''),
+    body = list(timestamp = ts, uuidCaptcha = "", conversationId = ""),
     httr::write_disk(tmp, overwrite = TRUE))
 
   invisible(tmp)
