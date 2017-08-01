@@ -43,7 +43,7 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search) {
     file.remove(f_captcha)
 
     # Breaking condition
-    if (!tem_captcha(f_search)) { break }
+    if (!tem_captcha(f_search)) { return(f_lwst) }
     else { file.remove(f_lwst) }
   }
 }
@@ -73,7 +73,7 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search) {
     file.remove(f_captcha)
 
     # Breaking condition
-    if (!tem_captcha(f_search)) { break }
+    if (!tem_captcha(f_search)) { return(f_lwst) }
     else { file.remove(f_lwst) }
   }
 }
