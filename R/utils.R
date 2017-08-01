@@ -1,9 +1,4 @@
 
-# Desacentuar uma string
-desacentuar <- function(x) {
-  gsub("`|\\'", "", iconv(x, to = "ASCII//TRANSLIT"))
-}
-
 #' Pipe operator
 #'
 #' See \code{\link[magrittr]{\%>\%}} for more details.

@@ -1,9 +1,13 @@
 
-# c("0257518-22.2013.8.04.0001", "0303349-44.2014.8.24.0020", "0552486-62.2015.8.05.0001")
+# ids <- c("02575182220138040001", "0303349-44.2014.8.24.0020", "0552486-62.2015.8.05.0001")
 
 # Download a lawsuit from a TJ
 # @export
 download_lawsuit <- function(id, path = ".") {
+
+  # Strip ID down
+  id <- stringr::str_replace_all(id, "[^0-9]", "")
+  if (stringr::str_length(id) != 20) { stop("Invalid ID") }
 
   # Choose appropriate download function
   if (get_n(id) %in% c("05")) { download <- download_bw_lawsuit }
@@ -32,7 +36,7 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search) {
     query$vlCaptcha <- quebrar_captcha_cor(f_captcha)
 
     # Download lawsuit
-    f_lwst <- sprintf("%s/%s.html", path, gsub("[^0-9]", "", id))
+    f_lwst <- sprintf("%s/%s.html", path, id)
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file
@@ -62,7 +66,7 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search) {
     query$vlCaptcha <- break_captcha(f_captcha, captchasaj::modelo$modelo)
 
     # Download lawsuit
-    f_lwst <- sprintf("%s/%s.html", path, gsub("[^0-9]", "", id))
+    f_lwst <- sprintf("%s/%s.html", path, id)
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file

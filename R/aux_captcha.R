@@ -27,14 +27,14 @@ uuid_captcha <- function(arq) {
 uuid_captcha <- purrr::possibly(uuid_captcha, "xxxx")
 
 # Criar um query de processo
-query_processo <- function(p) {
+query_processo <- function(id) {
   list('conversationId' = '',
        'dadosConsulta.localPesquisa.cdLocal' = '-1',
        'cbPesquisa' = 'NUMPROC',
        'dadosConsulta.tipoNuProcesso' = 'UNIFICADO',
-       'numeroDigitoAnoUnificado' = stringr::str_sub(p, 1, 15),
-       'foroNumeroUnificado' = stringr::str_sub(p, -4, -1),
-       'dadosConsulta.valorConsultaNuUnificado' = p,
+       'numeroDigitoAnoUnificado' = stringr::str_sub(id, 1, 13),
+       'foroNumeroUnificado' = stringr::str_sub(id, -4, -1),
+       'dadosConsulta.valorConsultaNuUnificado' = id,
        'dadosConsulta.valorConsulta' = '',
        'uuidCaptcha' = '',
        'vlCaptcha' = '',

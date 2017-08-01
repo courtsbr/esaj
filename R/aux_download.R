@@ -18,5 +18,7 @@ get_urls <- function(id) {
 
 # Get TJ's number
 get_n <- function(id) {
-  stringr::str_split(id, "\\.")[[1]][4]
+  if (stringr::str_length(id) == 20) { stringr::str_sub(id, 15, 16) }
+  else if (stringr::str_length(id) == 25) { stringr::str_sub(id, 19, 20) }
+  else { stop("Ivalid ID") }
 }
