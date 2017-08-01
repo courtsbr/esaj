@@ -80,7 +80,7 @@ quebrar_captcha_cor <- function(arq) {
          y = min(img_df$y):max(img_df$y))
   )
 
-  # Mostrar imagem
+  # Salvar imagem
   img_df %>%
     filtrar_cor(cor_json) %>%
     dplyr::mutate(preto = 0) %>%
@@ -110,10 +110,9 @@ quebrar_captcha_cor <- function(arq) {
 quebrar_captcha_cor <- purrr::possibly(quebrar_captcha_cor, "xxxx")
 
 # Baixar um captcha com cores
-baixar_captcha_cor <- function(dir = '.', ts = '') {
+baixar_captcha_cor <- function(u_captcha, dir = '.', ts = '') {
   tmp <- tempfile()
-  r <- httr::POST(
-    'http://consultasaj.tjam.jus.br/cpopg/imagemCaptcha.do',
+  r <- httr::POST(u_captcha,
     body = list(timestamp = ts, uuidCaptcha = '', conversationId = ''),
     httr::write_disk(tmp, overwrite = TRUE))
 

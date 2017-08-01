@@ -1,6 +1,6 @@
 
 # Baixar processo do TJBA
-# id <- "0501676-29.2016.8.05.0137"
+# id <- "0552486-62.2015.8.05.0001"
 baixar_tjba <- function(id, path = '.') {
 
   # Tentar 10 vezes no máximo

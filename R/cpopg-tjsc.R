@@ -15,8 +15,9 @@ baixar_tjsc <- function(id, path = '.') {
     r_open <- httr::GET(u_open)
 
     # Captcha
+    u_captcha <- "http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do"
     time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
-    captcha <- baixar_captcha_cor(path, time_stamp)
+    captcha <- baixar_captcha_cor(u_captcha, path, time_stamp)
 
     # Preencher query
     query$uuidCaptcha <- uuid_captcha(captcha)
