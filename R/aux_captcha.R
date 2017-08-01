@@ -104,6 +104,7 @@ quebrar_captcha_cor <- function(arq) {
     tolower() %>%
     stringr::str_replace_all('[^a-z]', '')
 
+  file.remove(tmp)
   return(res)
 }
 quebrar_captcha_cor <- purrr::possibly(quebrar_captcha_cor, "xxxx")

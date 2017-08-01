@@ -21,6 +21,7 @@ baixar_tjam <- function(id, path = '.') {
     # Preencher query
     query$uuidCaptcha <- uuid_captcha(captcha)
     query$vlCaptcha <- quebrar_captcha_cor(captcha)
+    file.remove(captcha)
 
     # Baixar processo
     u_search <- 'http://consultasaj.tjam.jus.br/cpopg/search.do'
