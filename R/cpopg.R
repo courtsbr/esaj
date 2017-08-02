@@ -14,10 +14,10 @@ download_lawsuit <- function(id, path = ".") {
   else { download <- download_rgb_lawsuit }
 
   # Get URLs for the download
-  urls <- get_urls(id)
+  data <- get_lwst_data(id)
 
   # Download lawsuit
-  download(id, path, urls$u_captcha, urls$u_search)
+  download(id, path, data$u_captcha, data$u_search)
 }
 
 # Download lawsuit from a TJ that uses RGB captchas

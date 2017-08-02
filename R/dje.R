@@ -30,10 +30,22 @@
 # tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
 # }
 # # @export
-dje <- function(tj = 'TJSP', dates = Sys.Date(), path = 'data-raw/dje_pdf',
-                verbose = FALSE) {
-  f <- sprintf('dje_%s', tolower(tj))
-  eval(call(f, dates, path, verbose))
+download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
+
+  # Collect TJ-specific data
+  tj <- stringr::str_to_lower(tj)
+  data <- get_dje_data(tj)
+
+  # Set different types of DJE collection
+  type_a <- c("tjsp", "tjal", "tjam", "tjce")
+
+  # Run appropriate functions to download
+  if (tj %in% type_a) {
+    results <- dje_a(data$u_dje, dates, path, tj, data$booklet, verbose)
+  } else {
+    f <- sprintf('dje_%s', tj)
+    eval(call(f, dates, path, verbose))
+  }
 }
 
 # @rdname dje
@@ -48,24 +60,33 @@ dje_range <- function(from, to, tj = 'TJSP', path = 'data-raw/dje_pdf',
   dje(tj, dates, path, verbose)
 }
 
-dje_tjsp <- function(dates, path, verbose = FALSE) {
-  u <- 'http://www.dje.tjsp.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjsp_dje_%s', path, sort(dates))
-  invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
-  f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- expand.grid(date = dates, caderno = as.character(c(11:15, 18)),
-                   KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
+dje_a <- function(u_dje, dates, path, tj, booklets, verbose) {
+
+  # Safe function for downloading files
+  dwld <- purrr::possibly(download_arq, dplyr::data_frame(result = "error"))
+
+  # Paths
+  paths <- stringr::str_c(path, "/", tj, "_dje_", sort(dates))
+  rep_paths <- rep(paths, each = length(booklets))
+
+  # Create folders
+  invisible(purrr::map(paths, dir.create, showWarnings = FALSE))
+
+  # Download files
+  results <- expand.grid(date = dates, booklet = booklets) %>%
     dplyr::tbl_df() %>%
     dplyr::arrange(date) %>%
-    dplyr::mutate(date_link = format(as.Date(date), '%d/%m/%Y'),
-                  link = sprintf('%sdtDiario=%s&cdCaderno=%s', u, date_link, caderno),
-                  arq = sprintf('%s/tjsp_dje_%s_%s.pdf', rep(pastas, each = 6), caderno, date)) %>%
+    dplyr::mutate(
+      date_link = format(as.Date(date), "%d/%m/%Y"),
+      link = stringr::str_c(u_dje, "dtDiario=", date_link, "&cdCaderno=", booklet),
+      file = stringr::str_c(rep_paths, "/tjsp_dje_", booklet, "_", date, ".pdf")) %>%
     dplyr::arrange(desc(date)) %>%
-    dplyr::group_by(date, caderno, date_link, link, arq) %>%
-    dplyr::do(f(.$link, .$arq, verbose)) %>%
+    dplyr::group_by(date, booklet, date_link, link, file) %>%
+    dplyr::do(dwld(.$link, .$file, verbose)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(date, caderno, link, arq, result)
-  return(d)
+    dplyr::select(date, booklet, link, file, result)
+
+  return(results)
 }
 
 dje_tjac <- function(dates, path, verbose) {
@@ -109,47 +130,6 @@ dje_tjac <- function(dates, path, verbose) {
     dplyr::do(f(.$link, .$arq, verbose)) %>%
     dplyr::ungroup() %>%
     dplyr::select(date, caderno, link, arq, result)
-}
-
-dje_tjal <- function(dates, path, verbose) {
-  u <- 'http://www2.tjal.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjal_dje_%s', path, sort(dates))
-  invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
-  f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- expand.grid(date = dates, caderno = as.character(c(2,3)),
-                   KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
-    dplyr::tbl_df() %>%
-    dplyr::arrange(date) %>%
-    dplyr::mutate(date_link = format(as.Date(date), '%d/%m/%Y'),
-                  link = sprintf('%sdtDiario=%s&cdCaderno=%s', u, date_link, caderno),
-                  arq = sprintf('%s/tjal_dje_%s_%s.pdf', rep(pastas, each = 2), caderno, date)) %>%
-    dplyr::arrange(desc(date)) %>%
-    dplyr::group_by(date, caderno, date_link, link, arq) %>%
-    dplyr::do(f(.$link, .$arq, verbose)) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(date, caderno, link, arq, result)
-  return(d)
-
-}
-
-dje_tjam <- function(dates, path, verbose) {
-  u <- 'http://esaj.tjam.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjam_dje_%s', path, sort(dates))
-  invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
-  f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- expand.grid(date = dates, caderno = as.character(c(1:3)),
-                   KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
-    dplyr::tbl_df() %>%
-    dplyr::arrange(date) %>%
-    dplyr::mutate(date_link = format(as.Date(date), '%d/%m/%Y'),
-                  link = sprintf('%sdtDiario=%s&cdCaderno=%s', u, date_link, caderno),
-                  arq = sprintf('%s/tjam_dje_%s_%s.pdf', rep(pastas, each = 3), caderno, date)) %>%
-    dplyr::arrange(desc(date)) %>%
-    dplyr::group_by(date, caderno, date_link, link, arq) %>%
-    dplyr::do(f(.$link, .$arq, verbose)) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(date, caderno, link, arq, result)
-  return(d)
 }
 
 dje_tjms <- function(dates, path, verbose) {
@@ -339,26 +319,6 @@ dje_tjsc <- function(dates, path, verbose) {
   return(d)
 }
 
-dje_tjce <- function(dates, path, verbose) {
-  u <- 'http://esaj.tjce.jus.br/cdje/downloadCaderno.do?'
-  pastas <- sprintf('%s/tjce_dje_%s', path, sort(dates))
-  invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
-  f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- expand.grid(date = dates, caderno = as.character(c(1:2)),
-                   KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE) %>%
-    dplyr::tbl_df() %>%
-    dplyr::arrange(date) %>%
-    dplyr::mutate(date_link = format(as.Date(date), '%d/%m/%Y'),
-                  link = sprintf('%sdtDiario=%s&cdCaderno=%s', u, date_link, caderno),
-                  arq = sprintf('%s/tjce_dje_%s_%s.pdf', rep(pastas, each = 2), caderno, date)) %>%
-    dplyr::arrange(desc(date)) %>%
-    dplyr::group_by(date, caderno, date_link, link, arq) %>%
-    dplyr::do(f(.$link, .$arq, verbose)) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(date, caderno, link, arq, result)
-  return(d)
-}
-
 # @export
 dje_tjba <- function(dates, path, verbose) {
   edicoes_tjba <- function() {
@@ -440,5 +400,5 @@ download_arq <- function(u, a, verbose = FALSE) {
     return(dplyr::data_frame(result = 'timeout'))
   }
   if (verbose) cat('ERRO!\n')
-  return(dplyr::data_frame(result = 'nao tem dje'))
+  return(dplyr::data_frame(result = 'invalid dje'))
 }
