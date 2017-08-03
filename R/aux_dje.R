@@ -84,19 +84,19 @@ tjba_link <- function(date) {
   stringr::str_c(u_dje, edicao)
 }
 
-tjsc_link <- function(date_link) {
+tjsc_link <- function(date) {
 
-  date_link <- format(lubridate::as_date(date_link), '%d/%m/%Y')
+  date <- format(lubridate::as_date(date), '%d/%m/%Y')
 
   u <- 'http://busca.tjsc.jus.br/consultadje/visualizadiario.action'
-  r0 <- httr::POST(u, body = list('dtselecionada' = date_link),
+  r0 <- httr::POST(u, body = list('dtselecionada' = date),
                    httr::config(followlocation = 0L),
                    encode = 'form')
   if (r0$status_code == 302) {
     loc <- r0$headers$location
     # print(loc)
     u_base <- sprintf('http://www.tjsc.jus.br/institucional/diario/a%d/',
-                      lubridate::year(lubridate::dmy(date_link)))
+                      lubridate::year(lubridate::dmy(date)))
     u_final <- paste0(u_base, stringr::str_match(loc, '/([^/]+)$')[, 2])
     return(u_final)
   }
@@ -105,7 +105,7 @@ tjsc_link <- function(date_link) {
   if (r0$status_code != 302) return(r0$status_code)
 }
 
-tjrn_link <- function(d, booklet) {
+tjrn_link <- function(date, booklet) {
   pega_jsf <- function(r) {
     r %>%
       httr::content('text') %>%
@@ -127,7 +127,7 @@ tjrn_link <- function(d, booklet) {
   r_pesq <- httr::POST(u, body = dados_pesq,
                        httr::config(ssl_verifypeer = FALSE))
   jsf <- r_pesq %>% pega_jsf()
-  date_link0 <- format(as.Date(d), '%d/%m/%Y')
+  date_link0 <- format(as.Date(date), '%d/%m/%Y')
   dados0 <- list(
     'jsf_tree_64' = jsf[1],
     'jsf_state_64' = jsf[2],
@@ -185,16 +185,16 @@ tjrn_link <- function(d, booklet) {
   links$link[booklet]
 }
 
-tjac_link <- function(d) {
-  d <- as.Date(d)
+tjac_link <- function(date) {
+  date <- as.Date(date)
   u <- sprintf('http://diario.tjac.jus.br/edicoes.php?Ano=%d&Mes=%d',
-               lubridate::year(d), lubridate::month(d))
+               lubridate::year(date), lubridate::month(date))
   r <- httr::GET(u)
   l <- r %>%
     httr::content('text') %>%
     xml2::read_html() %>%
     rvest::html_nodes('table tr.texto_normal') %>% {
-      date <- rvest::html_node(., 'a.texto_normal') %>%
+      dates <- rvest::html_node(., 'a.texto_normal') %>%
         rvest::html_text() %>%
         stringr::str_trim() %>%
         purrr::map_chr(conv_months) %>%
@@ -203,9 +203,9 @@ tjac_link <- function(d) {
       link <- rvest::html_node(., xpath = './/a[@title="Baixar"]') %>%
         rvest::html_attr('href') %>%
         {paste0('http://diario.tjac.jus.br', .)}
-      dplyr::data_frame(date, link)
+      dplyr::data_frame(dates, link)
     } %>%
-    dplyr::filter(date %in% d) %>%
+    dplyr::filter(dates %in% date) %>%
     with(link)
   if (length(l) == 0) return('http://diario.tjac.jus.br/edicoes.php')
   l
@@ -233,7 +233,7 @@ conv_months <- function(str) {
 }
 
 # Download DJE file
-download_arq <- function(u, a, verbose = FALSE) {
+download_pdf <- function(u, a, verbose = FALSE) {
   if (file.exists(a)) {
     if (verbose) cat('\narquivo ',  a, ' ja existe!\n')
     return(dplyr::data_frame(result = 'exists'))
@@ -258,3 +258,5 @@ download_arq <- function(u, a, verbose = FALSE) {
   if (verbose) cat('ERRO!\n')
   return(dplyr::data_frame(result = 'invalid dje'))
 }
+download_pdf <- purrr::possibly(
+  download_pdf, dplyr::data_frame(result = "error"))
