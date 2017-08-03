@@ -37,7 +37,7 @@ download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
   data <- get_dje_data(tj)
 
   # Set different types of DJE collection
-  type_a <- c("tjsp", "tjal", "tjam", "tjce", "tjac", "tjms", "tjba")
+  type_a <- c("tjsp", "tjal", "tjam", "tjce", "tjac", "tjms", "tjba", "tjrn")
 
   # Run appropriate functions to download
   if (tj %in% type_a) {
@@ -75,26 +75,4 @@ dje_a <- function(u_dje, dates, path, tj, booklets, verbose) {
     dplyr::select(date, booklet, link, file, result)
 
   return(results)
-}
-
-dje_tjrn <- function(dates, path, verbose) {
-
-  pastas <- sprintf('%s/tjrn_dje_%s', path, sort(dates))
-  invisible(sapply(pastas, dir.create, showWarnings = FALSE, recursive = TRUE))
-
-  f <- dplyr::failwith(dplyr::data_frame(result = 'erro'), download_arq)
-  d <- dplyr::data_frame(date = dates) %>%
-    dplyr::group_by(date) %>%
-    dplyr::do(tjrn_link(.$date)) %>%
-    dplyr::ungroup() %>%
-    dplyr::tbl_df() %>%
-    dplyr::arrange(date) %>%
-    dplyr::mutate(arq = sprintf('%s/tjrn_dje_%s_%s.pdf',
-                                rep(pastas, each = 2), caderno, date)) %>%
-    dplyr::arrange(desc(date)) %>%
-    dplyr::group_by(date, caderno, link, arq) %>%
-    dplyr::do(f(.$link, .$arq, verbose)) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(date, caderno, link, arq, result)
-  return(d)
 }

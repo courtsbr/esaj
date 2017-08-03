@@ -1,9 +1,37 @@
+# Get data for downloading DJE depending on its TJ
+get_dje_data <- function(tj) {
+  switch (tj,
+    "tjsp" = list(
+      u_dje = "http://www.dje.tjsp.jus.br/cdje/downloadCaderno.do?",
+      booklets = c(11:15, 18)),
+    "tjal" = list(
+      u_dje = "http://www2.tjal.jus.br/cdje/downloadCaderno.do?",
+      booklets = c(2, 3)),
+    "tjam" = list(
+      u_dje = "http://esaj.tjam.jus.br/cdje/downloadCaderno.do?",
+      booklets = c(1:3)),
+    "tjce" = list(
+      u_dje = "http://esaj.tjce.jus.br/cdje/downloadCaderno.do?",
+      booklets = c(1:2)),
+    "tjac" = list(
+      u_dje = "",
+      booklets = c(1)),
+    "tjms" = list(
+      u_dje = "http://www.tjms.jus.br/cdje/downloadCaderno.do?",
+      booklets = c(1)),
+    "tjba" = list(
+      u_dje = "",
+      booklets = c(1)),
+    "tjrn" = list(
+      u_dje = "",
+      booklets = c(1:2)))
+}
 
 get_dje_link <- function(tj, date, ...) {
   switch(tj,
     "tjac" = tjac_link(date),
     "tjba" = tjba_link(date),
-    "tjrn" = tjrn_link(date),
+    "tjrn" = tjrn_link(date, ..2),
     "tjsc" = tjsc_link(date),
     default_link(date, ...)
   )
@@ -77,7 +105,7 @@ tjsc_link <- function(date_link) {
   if (r0$status_code != 302) return(r0$status_code)
 }
 
-tjrn_link <- function(d) {
+tjrn_link <- function(d, booklet) {
   pega_jsf <- function(r) {
     r %>%
       httr::content('text') %>%
@@ -153,7 +181,8 @@ tjrn_link <- function(d) {
       rvest::html_attr('href') %>%
       {paste0('https://www.diario.tjrn.jus.br', gsub('\\', '/', ., fixed = T))}
   })
-  dplyr::data_frame(link = links, caderno = 1:2)
+  links <- dplyr::data_frame(link = links, caderno = 1:2)
+  links$link[booklet]
 }
 
 tjac_link <- function(d) {
