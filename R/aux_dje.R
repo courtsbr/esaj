@@ -24,7 +24,10 @@ get_dje_data <- function(tj) {
       booklets = c(1)),
     "tjrn" = list(
       u_dje = "",
-      booklets = c(1:2)))
+      booklets = c(1:2)),
+    "tjsc" = list(
+      u_dje = "",
+      booklets = c(1:4)))
 }
 
 get_dje_link <- function(tj, date, ...) {
@@ -32,7 +35,7 @@ get_dje_link <- function(tj, date, ...) {
     "tjac" = tjac_link(date),
     "tjba" = tjba_link(date),
     "tjrn" = tjrn_link(date, ..2),
-    "tjsc" = tjsc_link(date),
+    "tjsc" = tjsc_link(date, ..2),
     default_link(date, ...)
   )
 }
@@ -84,25 +87,22 @@ tjba_link <- function(date) {
   stringr::str_c(u_dje, edicao)
 }
 
-tjsc_link <- function(date) {
+tjsc_link <- function(date, booklet) {
 
   date <- format(lubridate::as_date(date), '%d/%m/%Y')
 
-  u <- 'http://busca.tjsc.jus.br/consultadje/visualizadiario.action'
-  r0 <- httr::POST(u, body = list('dtselecionada' = date),
-                   httr::config(followlocation = 0L),
-                   encode = 'form')
-  if (r0$status_code == 302) {
-    loc <- r0$headers$location
-    # print(loc)
-    u_base <- sprintf('http://www.tjsc.jus.br/institucional/diario/a%d/',
-                      lubridate::year(lubridate::dmy(date)))
-    u_final <- paste0(u_base, stringr::str_match(loc, '/([^/]+)$')[, 2])
-    return(u_final)
-  }
-  existe <- !(stringr::str_detect(httr::content(r0, 'text'), 'N\u00e3o h\u00e1|n\u00e3o hav'))
-  if (existe) return(u)
-  if (r0$status_code != 302) return(r0$status_code)
+  u <- 'http://busca.tjsc.jus.br/dje-consulta/rest/diario/dia?dia='
+  edicao <- httr::GET(stringr::str_c(u, date)) %>%
+    xml2::read_html() %>%
+    stringr::str_extract("\"edicao\":[0-9]+") %>%
+    stringr::str_extract("[0-9]+")
+
+  stringr::str_c(
+    "http://busca.tjsc.jus.br/dje-consulta/rest/diario/caderno?edicao=",
+    edicao,
+    "&cdCaderno=",
+    booklet
+  )
 }
 
 tjrn_link <- function(date, booklet) {
