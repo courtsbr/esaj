@@ -35,7 +35,6 @@ download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
   # Collect TJ-specific data
   tj <- stringr::str_to_lower(tj)
   data <- get_dje_data(tj)
-  # u_dje <- data$u_dje; booklets <- data$booklets
 
   # Set different types of DJE collection
   type_a <- c("tjsp", "tjal", "tjam", "tjce", "tjac", "tjms", "tjba")

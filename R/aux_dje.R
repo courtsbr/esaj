@@ -203,3 +203,29 @@ conv_months <- function(str) {
   stringr::str_replace(str, "[a-z]+", month)
 }
 
+# Download DJE file
+download_arq <- function(u, a, verbose = FALSE) {
+  if (file.exists(a)) {
+    if (verbose) cat('\narquivo ',  a, ' ja existe!\n')
+    return(dplyr::data_frame(result = 'exists'))
+  }
+  if (verbose) cat('\nbaixando ', a, '...', sep = '')
+  res <- tryCatch({
+    r <- suppressWarnings({
+      httr::GET(u, httr::write_disk(a, overwrite = TRUE),
+                httr::config(ssl_verifypeer = FALSE))
+    })
+    ct <- httr::headers(r)[['content-type']]
+    ct <- ifelse(is.null(ct), 'application', ct)
+    if (httr::status_code(r) == 200 && stringr::str_detect(ct, 'application')) {
+      if (verbose) cat('OK!\n')
+      return(dplyr::data_frame(result = 'ok'))
+    }
+  }, error = function(e) as.character(e))
+  if (stringr::str_detect(res, 'Timeout')) {
+    if (verbose) cat('ERRO!\n')
+    return(dplyr::data_frame(result = 'timeout'))
+  }
+  if (verbose) cat('ERRO!\n')
+  return(dplyr::data_frame(result = 'invalid dje'))
+}
