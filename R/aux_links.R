@@ -2,9 +2,9 @@
 get_dje_link <- function(tj, date, ...) {
   switch(tj,
     "tjac" = tjac_link(date),
-    "tjba" = NULL,
+    "tjba" = tjba_link(date),
     "tjrn" = tjrn_link(date),
-    "tjsc" = tjsc_link(format(lubridate::as_date(date), '%d/%m/%Y')),
+    "tjsc" = tjsc_link(date),
     default_link(date, ...)
   )
 }
@@ -16,7 +16,7 @@ default_link <- function(date, ...) {
   stringr::str_c(u_dje, "dtDiario=", date_link, "&cdCaderno=", booklet)
 }
 
-edicoes_tjba <- function() {
+tjba_link <- function(date) {
   # essa foi dificil!
   u0 <- 'http://www2.tjba.jus.br/diario/internet/pesquisar.wsp'
   r0 <- httr::GET(u0, httr::config(followlocation = 0L))
@@ -49,10 +49,17 @@ edicoes_tjba <- function() {
     tidyr::separate(value, c('edicao', 'date'), sep = '\\(') %>%
     dplyr::mutate(date = lubridate::dmy(date, locale = "pt_BR.UTF-8"),
                   date = as.Date(date))
-  d_edicoes
+
+  u_dje <- "http://www.tjba.jus.br/diario/internet/download.wsp?tmp.diario.nu_edicao="
+  edicao <- d_edicoes$edicao[match(as.Date(date), d_edicoes$date)]
+
+  stringr::str_c(u_dje, edicao)
 }
 
 tjsc_link <- function(date_link) {
+
+  date_link <- format(lubridate::as_date(date_link), '%d/%m/%Y')
+
   u <- 'http://busca.tjsc.jus.br/consultadje/visualizadiario.action'
   r0 <- httr::POST(u, body = list('dtselecionada' = date_link),
                    httr::config(followlocation = 0L),
@@ -182,7 +189,7 @@ conv_months <- function(str) {
   month <- switch (month,
     "janeiro" = "1",
     "fevereiro" = "2",
-    "março" = "3",
+    "mar\u00e7o" = "3",
     "abril" = "4",
     "maio" = "5",
     "junho" = "6",
