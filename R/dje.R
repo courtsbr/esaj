@@ -36,23 +36,6 @@ download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
   tj <- stringr::str_to_lower(tj)
   data <- get_dje_data(tj)
 
-  # Set different types of DJE collection
-  type_a <- c("tjsp", "tjal", "tjam", "tjce", "tjac", "tjms", "tjba", "tjrn")
-
-  # Run appropriate functions to download
-  if (tj %in% type_a) {
-    results <- dje_a(data$u_dje, dates, path, tj, data$booklets, verbose)
-  } else {
-    f <- sprintf('dje_%s', tj)
-    eval(call(f, dates, path, verbose))
-  }
-}
-
-dje_a <- function(u_dje, dates, path, tj, booklets, verbose) {
-
-  # Safe function for downloading files
-  dwld <- purrr::possibly(download_arq, dplyr::data_frame(result = "error"))
-
   # Paths
   paths <- stringr::str_c(path, "/", tj, "_dje_", sort(dates))
   rep_paths <- rep(paths, each = length(booklets))
@@ -67,10 +50,10 @@ dje_a <- function(u_dje, dates, path, tj, booklets, verbose) {
     dplyr::mutate(
       date_link = format(lubridate::as_date(date), "%d/%m/%Y"),
       link = purrr::map2_chr(date, booklet, ~get_dje_link(tj, .x, u_dje, .y)),
-      file = stringr::str_c(rep_paths, "/", tj, "_dje_", booklet, "_", date, ".pdf")) %>%
+      file = stringr::str_c(rep_paths, "/", tj, booklet, "_", date, ".pdf")) %>%
     dplyr::arrange(desc(date)) %>%
     dplyr::group_by(date, booklet, date_link, link, file) %>%
-    dplyr::do(dwld(.$link, .$file, verbose)) %>%
+    dplyr::do(download_pdf(.$link, .$file, verbose)) %>%
     dplyr::ungroup() %>%
     dplyr::select(date, booklet, link, file, result)
 

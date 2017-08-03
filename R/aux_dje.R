@@ -233,7 +233,7 @@ conv_months <- function(str) {
 }
 
 # Download DJE file
-download_arq <- function(u, a, verbose = FALSE) {
+download_pdf <- function(u, a, verbose = FALSE) {
   if (file.exists(a)) {
     if (verbose) cat('\narquivo ',  a, ' ja existe!\n')
     return(dplyr::data_frame(result = 'exists'))
@@ -258,3 +258,4 @@ download_arq <- function(u, a, verbose = FALSE) {
   if (verbose) cat('ERRO!\n')
   return(dplyr::data_frame(result = 'invalid dje'))
 }
+download_pdf <- purrr::possibly(download_pdf, dplyr::data_frame(result = "error"))
