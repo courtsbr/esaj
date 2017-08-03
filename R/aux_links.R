@@ -1,3 +1,21 @@
+
+get_dje_link <- function(tj, date, ...) {
+  switch(tj,
+    "tjac" = tjac_link(date),
+    "tjba" = NULL,
+    "tjrn" = tjrn_link(date),
+    "tjsc" = tjsc_link(format(lubridate::as_date(date), '%d/%m/%Y')),
+    default_link(date, ...)
+  )
+}
+
+default_link <- function(date, ...) {
+  u_dje <- ..1
+  date_link <- format(lubridate::as_date(date), "%d/%m/%Y")
+  booklet <- ..2
+  stringr::str_c(u_dje, "dtDiario=", date_link, "&cdCaderno=", booklet)
+}
+
 edicoes_tjba <- function() {
   # essa foi dificil!
   u0 <- 'http://www2.tjba.jus.br/diario/internet/pesquisar.wsp'
@@ -52,7 +70,7 @@ tjsc_link <- function(date_link) {
   if (r0$status_code != 302) return(r0$status_code)
 }
 
-link_tjrn <- function(d) {
+tjrn_link <- function(d) {
   pega_jsf <- function(r) {
     r %>%
       httr::content('text') %>%
@@ -131,36 +149,7 @@ link_tjrn <- function(d) {
   dplyr::data_frame(link = links, caderno = 1:2)
 }
 
-link_tjms <- function(d) {
-  q <- list(
-    'calendarCurrentDate' = d,
-    'opt' = 'doCalendarSearch',
-    'number' = '',
-    'startDate' = '',
-    'endDate' = '',
-    'searchText' = '',
-    'searchTextType' = 'exact'
-  )
-  u <- 'https://www.tjms.jus.br/DailyWeb/dailyAction.do?'
-  u0 <- 'http://www.tjms.jus.br/webfiles/producao/GP/diarios/'
-  r <-  httr::GET(u, query = q, httr::config(ssl_verifypeer = FALSE))
-  nao_tem <- r %>%
-    httr::content('text') %>%
-    stringr::str_detect('Nothing found to display')
-  if (nao_tem) return(u0)
-  if (r$status_code != 200) return(r$status_code)
-  r %>%
-    httr::content('text') %>%
-    xml2::read_html() %>%
-    rvest::html_node('#daily tbody a') %>%
-    rvest::html_attr('href') %>%
-    stringr::str_match("'(.*)'") %>%
-    as.character() %>%
-    dplyr::last() %>%
-    {paste0(u0, .)}
-}
-
-link_tjac <- function(d) {
+tjac_link <- function(d) {
   d <- as.Date(d)
   u <- sprintf('http://diario.tjac.jus.br/edicoes.php?Ano=%d&Mes=%d',
                lubridate::year(d), lubridate::month(d))
@@ -172,8 +161,9 @@ link_tjac <- function(d) {
       date <- rvest::html_node(., 'a.texto_normal') %>%
         rvest::html_text() %>%
         stringr::str_trim() %>%
+        purrr::map_chr(conv_months) %>%
         lubridate::dmy() %>%
-        as.Date()
+        lubridate::as_date()
       link <- rvest::html_node(., xpath = './/a[@title="Baixar"]') %>%
         rvest::html_attr('href') %>%
         {paste0('http://diario.tjac.jus.br', .)}
@@ -184,3 +174,25 @@ link_tjac <- function(d) {
   if (length(l) == 0) return('http://diario.tjac.jus.br/edicoes.php')
   l
 }
+
+conv_months <- function(str) {
+  str <- stringr::str_replace_all(str, " de ", "-")
+  month <- stringr::str_extract(str, "[a-z]+")
+
+  month <- switch (month,
+    "janeiro" = "1",
+    "fevereiro" = "2",
+    "março" = "3",
+    "abril" = "4",
+    "maio" = "5",
+    "junho" = "6",
+    "julho" = "7",
+    "agosto" = "8",
+    "setembro" = "9",
+    "outubro" = "10",
+    "novembro" = "11",
+    "dezembro" = "12")
+
+  stringr::str_replace(str, "[a-z]+", month)
+}
+

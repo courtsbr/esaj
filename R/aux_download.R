@@ -28,16 +28,22 @@ get_dje_data <- function(tj) {
   switch (tj,
   "tjsp" = list(
     u_dje = "http://www.dje.tjsp.jus.br/cdje/downloadCaderno.do?",
-    booklet = c(11:15, 18)),
+    booklets = c(11:15, 18)),
   "tjal" = list(
     u_dje = "http://www2.tjal.jus.br/cdje/downloadCaderno.do?",
-    booklet = c(2, 3)),
+    booklets = c(2, 3)),
   "tjam" = list(
     u_dje = "http://esaj.tjam.jus.br/cdje/downloadCaderno.do?",
-    booklet = c(1:3)),
+    booklets = c(1:3)),
   "tjce" = list(
     u_dje = "http://esaj.tjce.jus.br/cdje/downloadCaderno.do?",
-    booklet = c(1:2)))
+    booklets = c(1:2)),
+  "tjac" = list(
+    u_dje = "",
+    booklets = c(1)),
+  "tjms" = list(
+    u_dje = "http://www.tjms.jus.br/cdje/downloadCaderno.do?",
+    booklets = c(1)))
 }
 
 # Download DJE file
