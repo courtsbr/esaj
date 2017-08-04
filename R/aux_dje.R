@@ -58,7 +58,7 @@ tjba_link <- function(date) {
   token <- r0 %>%
     httr::content("text", encoding = "ISO-8859-1") %>%
     xml2::read_html() %>%
-    rvest::html_node(xpath = "//input[@id="wi.token"]") %>%
+    rvest::html_node(xpath = '//input[@id="wi.token"]') %>%
     rvest::html_attr("value")
   b <- list("tmp_origem" = "",
             "tmp.diario.dt_inicio" = "25/01/2001",
@@ -113,7 +113,7 @@ tjrn_link <- function(date, booklet) {
     r %>%
       httr::content("text") %>%
       xml2::read_html() %>%
-      rvest::html_nodes(xpath = "//input[contains(@id, "_64")]") %>%
+      rvest::html_nodes(xpath = '//input[contains(@id, "_64")]') %>%
       rvest::html_attr("value")
   }
   u_inicial <- "http://www.diario.tjrn.jus.br/djonline/inicial.jsf"
@@ -149,12 +149,12 @@ tjrn_link <- function(date, booklet) {
     httr::content("text") %>%
     xml2::read_html() %>%
     rvest::html_nodes(
-      xpath = "//tbody[@id="pesquisarEdicaoCompletaBean:dados:tbody_element"]//a"
+      xpath = '//tbody[@id="pesquisarEdicaoCompletaBean:dados:tbody_element"]//a'
     ) %>% {
       if (length(.) == 2) {
         id <- rvest::html_attr(., "id")
         nm <- rvest::html_attr(., "onclick")
-        nm <- stringr::str_match(nm, "\\.value="([0-9]{8}_[A-Z]{3})"")[,2]
+        nm <- stringr::str_match(nm, '\\.value="([0-9]{8}_[A-Z]{3})"')[,2]
         list(list(id[1], nm[1]), list(id[2], nm[2]))
       } else {
         FALSE
@@ -204,7 +204,7 @@ tjac_link <- function(date) {
         purrr::map_chr(conv_month) %>%
         lubridate::dmy() %>%
         lubridate::as_date()
-      link <- rvest::html_node(., xpath = ".//a[@title="Baixar"]") %>%
+      link <- rvest::html_node(., xpath = './/a[@title="Baixar"]') %>%
         rvest::html_attr("href") %>%
         {paste0("http://diario.tjac.jus.br", .)}
       dplyr::data_frame(dates, link)
@@ -213,72 +213,4 @@ tjac_link <- function(date) {
     with(link)
   if (length(l) == 0) return("http://diario.tjac.jus.br/edicoes.php")
   l
-}
-
-# Convert Portuguese months to number
-conv_month <- function(str) {
-  str <- stringr::str_replace_all(str, " de ", "-")
-  month <- stringr::str_extract(str, "[a-z]+")
-
-  month <- switch (month,
-    "janeiro" = "1",
-    "fevereiro" = "2",
-    "mar\u00e7o" = "3",
-    "abril" = "4",
-    "maio" = "5",
-    "junho" = "6",
-    "julho" = "7",
-    "agosto" = "8",
-    "setembro" = "9",
-    "outubro" = "10",
-    "novembro" = "11",
-    "dezembro" = "12")
-  stringr::str_replace(str, "[a-z]+", month)
-}
-
-# Download DJE file
-download_pdf <- function(u_dje, file, verbose) {
-
-  # Don"t download if file exists
-  if (file.exists(file)) { return(dplyr::data_frame(result = "EXISTS")) }
-
-  # Set verbose variables
-  msg <- stringr::str_c("Downloading '", file, "'... ")
-  bkspc <- stringr::str_c(rep("\b", 51), collapse = "")
-
-  # Print download message
-  if (verbose) { message(msg) }
-
-  # Wrapper to download file
-  download <- purrr::possibly(function(u, f, verbose) {
-
-    # Download page
-    GET <- purrr::safely(httr::GET)
-    r <- GET(u, httr::write_disk(f), httr::config(ssl_verifypeer = FALSE))
-
-    # Return TIMEOUT
-    if(!is.null(r$error) && stringr::str_detect(r$error, "Timeout")) {
-      return(dplyr::data_frame(result = "TIMEOUT"))
-    }
-
-    # Get content type
-    r <- r$result
-    ct <- httr::headers(r)[["content-type"]] %>%
-      ifelse(is.null(.), "application", .)
-
-    # Return OK
-    if (r$status_code == 200 && stringr::str_detect(ct, "application")) {
-      return(dplyr::data_frame(result = "OK"))
-    }
-  }, {
-
-    # Return ERROR
-    dplyr::data_frame(result = "ERROR")
-  })
-
-  # Collect result
-  result <- download(u, f, verbose)
-  if (verbose) { message(bkspc, msg, result[[1]], "!") }
-
-  return(result)
 }

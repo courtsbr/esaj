@@ -51,7 +51,7 @@ download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
     dplyr::mutate(
       date_link = format(lubridate::as_date(date), "%d/%m/%Y"),
       link = purrr::map2_chr(date, booklet, ~get_dje_link(tj, .x, u_dje, .y)),
-      file = stringr::str_c(rep_paths, "/", tj, booklet, "_", date, ".pdf")) %>%
+      file = stringr::str_c(rep_paths, "/", tj, "_", booklet, "_", date, ".pdf")) %>%
     dplyr::arrange(desc(date)) %>%
     dplyr::group_by(date, booklet, date_link, link, file) %>%
     dplyr::do(download_pdf(.$link, .$file, verbose)) %>%
@@ -59,4 +59,51 @@ download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
     dplyr::select(date, booklet, link, file, result)
 
   return(results)
+}
+
+# Download DJE file
+download_pdf <- function(u_dje, file, verbose) {
+
+  # Don't download if file exists
+  if (file.exists(file)) { return(dplyr::data_frame(result = "EXISTS")) }
+
+  # Set verbose variables
+  msg <- stringr::str_c("Downloading '", file, "'... ")
+  bkspc <- stringr::str_c(rep("\b", stringr::str_length(msg) + 1), collapse = "")
+
+  # Print download message
+  if (verbose) { message(msg) }
+
+  # Wrapper to download file
+  download <- purrr::possibly(function(u, f, verbose) {
+
+    # Download page
+    GET <- purrr::safely(httr::GET)
+    r <- GET(u, httr::write_disk(f), httr::config(ssl_verifypeer = FALSE))
+
+    # Return TIMEOUT
+    if(!is.null(r$error) && stringr::str_detect(r$error, "Timeout")) {
+      return(dplyr::data_frame(result = "TIMEOUT"))
+    }
+
+    # Get content type
+    r <- r$result
+    ct <- httr::headers(r)[["content-type"]] %>%
+      ifelse(is.null(.), "application", .)
+
+    # Return OK
+    if (r$status_code == 200 && stringr::str_detect(ct, "application")) {
+      return(dplyr::data_frame(result = "OK"))
+    }
+  }, {
+
+    # Return ERROR
+    dplyr::data_frame(result = "ERROR")
+  })
+
+  # Collect result
+  result <- download(u_dje, file, verbose)
+  if (verbose) { message(bkspc, msg, result[[1]], "!") }
+
+  return(result)
 }
