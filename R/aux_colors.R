@@ -1,59 +1,48 @@
-filtrar_cor <- function(d, cor_nm) {
-  cor_correta <- eval(call(tolower(cor_nm), d))
-  dplyr::filter(d, cor == cor_correta)
+
+# Filter captcha's requested color
+filter_color <- function(img_df, color_nm) {
+  right_color <- eval(call(tolower(color_nm), img_df)) %>%
+    head(1) %>% with(color)
+  dplyr::filter(img_df, color == right_color)
 }
 
+# Orange
 laranja <- function(d) {
-  d %>%
-    dplyr::filter(b < .5) %>%
-    dplyr::filter(r + g == max(r + g)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, b < .5) %>%
+    dplyr::filter(r + g == max(r + g))
 }
 
+# Blue
 azul <- function(d) {
-  d %>%
-    dplyr::filter(r < .5, g < .8) %>%
-    dplyr::filter(b == max(b)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, r < .5, g < .8) %>%
+    dplyr::filter(b == max(b))
 }
 
+# Green
 verde <- function(d) {
-  d %>%
-    dplyr::filter(r < .5, b < .5) %>%
-    dplyr::filter(g == max(g)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, r < .5, b < .5) %>%
+    dplyr::filter(g == max(g))
 }
 
+# Red
 vermelho <- function(d) {
-  d %>%
-    dplyr::filter(b < .5, g < .5) %>%
-    dplyr::filter(r == max(r)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, b < .5, g < .5) %>%
+    dplyr::filter(r == max(r))
 }
 
+# Pink
 rosa <- function(d) {
-  d %>%
-    dplyr::filter(g < .8) %>%
-    dplyr::filter(r + b == max(r + b)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, g < .8) %>%
+    dplyr::filter(r + b == max(r + b))
 }
 
+# Purple
 roxo <- function(d) {
-  d %>%
-    dplyr::filter(g < .5) %>%
-    dplyr::filter(r + b == max(r + b)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, g < .5) %>%
+    dplyr::filter(r + b == max(r + b))
 }
 
+# Black
 preto <- function(d) {
-  d %>%
-    dplyr::filter(r + b + g == min(r + b + g)) %>%
-    head(1) %>%
-    with(cor)
+  dplyr::filter(d, r + b + g == min(r + b + g))
 }

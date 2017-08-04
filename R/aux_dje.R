@@ -33,22 +33,22 @@ get_dje_data <- function(tj) {
 # Call appropriate function to get link depending on TJ
 get_dje_link <- function(tj, date, u_dje, booklet) {
   switch(tj,
-    "tjac" = tjac_link(date, u_dje),
-    "tjba" = tjba_link(date, u_dje),
-    "tjrn" = tjrn_link(date, u_dje, booklet),
-    "tjsc" = tjsc_link(date, u_dje, booklet),
+    "tjac" = get_tjac_link(date, u_dje),
+    "tjba" = get_tjba_link(date, u_dje),
+    "tjrn" = get_tjrn_link(date, u_dje, booklet),
+    "tjsc" = get_tjsc_link(date, u_dje, booklet),
     default_link(date, u_dje, booklet)
   )
 }
 
 # Get link for many TJ"s DJEs
-default_link <- function(date, u_dje, booklet) {
+get_default_link <- function(date, u_dje, booklet) {
   date_link <- format(lubridate::as_date(date), "%d/%m/%Y")
   stringr::str_c(u_dje, "dtDiario=", date_link, "&cdCaderno=", booklet)
 }
 
 # Get link for TJAC"s DJE
-tjac_link <- function(date, u_dje) {
+get_tjac_link <- function(date, u_dje) {
 
   # Convert date to appropriate format
   date <- lubridate::as_date(date)
@@ -82,7 +82,7 @@ tjac_link <- function(date, u_dje) {
 }
 
 # Get link for TJBA"s DJE
-tjba_link <- function(date, u_dje) {
+get_tjba_link <- function(date, u_dje) {
 
   # Get token for access
   token <- "http://www2.tjba.jus.br/diario/internet/pesquisar.wsp" %>%
@@ -123,7 +123,7 @@ tjba_link <- function(date, u_dje) {
 }
 
 # Get link for TJRN"s DJE
-tjrn_link <- function(date, u_dje, booklet) {
+get_tjrn_link <- function(date, u_dje, booklet) {
 
   # Conver date to link format
   date <- format(lubridate::as_date(date), "%d/%m/%Y")
@@ -226,7 +226,7 @@ tjrn_link <- function(date, u_dje, booklet) {
 }
 
 # Get link for TJSC"s DJE
-tjsc_link <- function(date, u_dje, booklet) {
+get_tjsc_link <- function(date, u_dje, booklet) {
 
   # Get edition number for date
   edition <- stringr::str_c(

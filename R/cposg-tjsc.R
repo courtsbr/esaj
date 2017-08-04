@@ -8,7 +8,7 @@ pesquisar_processos_2inst <- function(processos, path, sleep = 3) {
     Sys.sleep(1)
     u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
     r0 <- httr::GET(u0, httr::set_cookies(NULL))
-    if (tem_captcha(r0)) {
+    if (has_captcha(r0)) {
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
       r_captcha <- httr::GET(u_captcha)
@@ -23,7 +23,7 @@ pesquisar_processos_2inst <- function(processos, path, sleep = 3) {
     u <- "http://esaj.tjsc.jus.br/cpopg/search.do"
     arq <- sprintf('%s/%s.html', path, gsub('[^0-9]', '', x))
     r <- httr::GET(u, query = parm, httr::write_disk(arq, overwrite = TRUE))
-    while (tem_captcha(r)) {
+    while (has_captcha(r)) {
       message('errei captcha')
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
@@ -184,7 +184,7 @@ build_url_cpopg_nome_pag_captcha <- function(nm, pag, captcha) {
   sprintf(u, pag, gsub(' ', '+', nm), tolower(captcha))
 }
 
-# tem_captcha <- function(r) {
+# has_captcha <- function(r) {
 #   (r %>%
 #      httr::content('text') %>%
 #      xml2::read_html() %>%
@@ -247,7 +247,7 @@ pesquisar_nomes <- function(nm, path) {
     # nm <- 'EDSON LUIZ BARBOZA DE DEOS'
     u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
     r0 <- httr::GET(u0, httr::set_cookies(NULL))
-    if (tem_captcha(r0)) {
+    if (has_captcha(r0)) {
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
       r_captcha <- httr::GET(u_captcha)
@@ -260,7 +260,7 @@ pesquisar_nomes <- function(nm, path) {
       u <- build_url_cpopg_nome(x)
     }
     r <- httr::GET(u, httr::write_disk(arq))
-    while (tem_captcha(r)) {
+    while (has_captcha(r)) {
       message('errei captcha')
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
@@ -287,7 +287,7 @@ pesquisar_nomes <- function(nm, path) {
                        path, gsub(' ', '_', x), gsub(' ', '_', x), i)
         u <- build_url_cpopg_nome_pag(x, i)
         r <- httr::GET(u, httr::write_disk(arq))
-        while (tem_captcha(r)) {
+        while (has_captcha(r)) {
           message('errei captcha na pagina!')
           tmp <- tempfile()
           u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
@@ -320,7 +320,7 @@ n_nomes <- function(nm, path) {
     # nm <- 'EDSON LUIZ BARBOZA DE DEOS'
     u0 <- 'http://esaj.tjsc.jus.br/cpopg/open.do'
     r0 <- httr::GET(u0, httr::set_cookies(NULL))
-    if (tem_captcha(r0)) {
+    if (has_captcha(r0)) {
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
       r_captcha <- httr::GET(u_captcha)
