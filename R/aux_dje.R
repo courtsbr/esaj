@@ -37,7 +37,7 @@ get_dje_link <- function(tj, date, u_dje, booklet) {
     "tjba" = get_tjba_link(date, u_dje),
     "tjrn" = get_tjrn_link(date, u_dje, booklet),
     "tjsc" = get_tjsc_link(date, u_dje, booklet),
-    default_link(date, u_dje, booklet)
+    get_default_link(date, u_dje, booklet)
   )
 }
 

@@ -1,35 +1,50 @@
-# Baixa diários oficiais
-#
-# Acessa os Diários de Justiça Eletrônicos dos Tribunais de Justiça e baixa
-# os arquivos em PDF.
-#
-# @param tj character vector indicando o Tribunal. Atualmente funciona com
-# TJSP, TJAC, TJAL, TJAM, TJMS, TJRN, TJSC, TJCE, TJBA. Default \code{'TJSP'}.
-# @param dates Date vector ou character vector em YYYY-MM-DD com as datas
-# que se deseja baixar. Default \code{Sys.Date()}.
-# @param path pasta onde os arquivos serão gravados. Para cada data, uma pasta
-# será criada e os arquivos PDF serão salvos nessa pasta. Default \code{'data-raw/dje_pdf'}
-# @param verbose imprimir mensagens? Default \code{FALSE}.
-#
-# @return \code{tbl_df} com diagnóstico dos resultados.
-#
-# @examples
-# \dontrun{
-# dir.create('data-raw/dje_pdf', recursive = TRUE, showWarnings = FALSE)
-# tjsp_dje <- dje(dates = Sys.Date() - 0:3)
-# table(tjsp_dje$result)
-#
-# # --------------------------------------------------------------------------
-# tjal_dje <- dje(tj = 'TJAL', dates = Sys.Date() - 0:3)
-# tjam_dje <- dje(tj = 'TJAM', dates = Sys.Date() - 0:3)
-# tjce_dje <- dje(tj = 'TJCE', dates = Sys.Date() - 0:3)
-# tjba_dje <- dje(tj = 'TJBA', dates = Sys.Date() - 0:3)
-# tjms_dje <- dje(tj = 'TJMS', dates = Sys.Date() - 0:3)
-# tjsc_dje <- dje(tj = 'TJSC', dates = Sys.Date() - 0:3)
-# tjrn_dje <- dje(tj = 'TJRN', dates = Sys.Date() - 0:3)
-# tjac_dje <- dje(tj = 'TJAC', dates = Sys.Date() - 0:3)
-# }
-# # @export
+#' @title Download Diarios da Justica Eletronicos (DJEs) from a Tribunal
+#' de Justica (TJ)
+#'
+#' @description
+#' This function downloads Diarios da Justica Eletronicos
+#' (Electronic Court Records) as PDFs. Given a Tribunal de Justica
+#' (Justice Court), a character vector of dates, and the path to a
+#' directory it will collect the DJEs published on these dates, and
+#' save them to the provided directory.
+#'
+#' @section About DJEs:
+#' Electronic Court Records are documents published almost
+#' daily by every state's Justice Court containing important information
+#' regarding new lawsuits being filed, decisions being made by judges,
+#' and so on. Note that DJEs may be split into multiple "booklets"; when
+#' this happens it means that each booklet contains information about
+#' only one type of lawsuit.
+#'
+#' @section Implemented TJs:
+#' Unfortunatelly `download_dje()` doesn't yet work with all 27 TJs in
+#' Brazil. Here are the ones already implemented:
+#' \itemize{
+#'   \item TJAC: Acre
+#'   \item TJAL: Alagoas
+#'   \item TJAM: Amazonas
+#'   \item TJBA: Bahia
+#'   \item TJCE: Ceara
+#'   \item TJMS: Mato Grosso do Sul
+#'   \item TJRN: Rio Grande do Norte
+#'   \item TJSC: Santa Catarina
+#'   \item TJSP: Sao Paulo
+#' }
+#'
+#' @param tj Abbreviation of a Justice Court (i.e. "TJSP")
+#' @param dates A character vector of dates of the form *YYYY-MM-DD*
+#' @param path Path to the directory where the DJEs should be downloaded
+#' @param verbose Whether to print download statuses
+#'
+#' @return A character vector with the paths to the downloaded DJEs
+#'
+#' @examples
+#' \dontrun{
+#' download_dje("TJSP", Sys.Date())
+#' download_dje("TJSC", Sys.Date() - 0:3, verbose = TRUE)
+#' }
+#'
+#' @export
 download_dje <- function(tj, dates = Sys.Date(), path = '.', verbose = FALSE) {
 
   # Collect TJ-specific data
