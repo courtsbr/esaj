@@ -2,7 +2,7 @@ Package: esaj
 Title: A scraper for all e-SAJ systems
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: A simple interface that allows you to download DJEs, CPOPGs and CPOSGs from
+Description: A simple interface that allows you to download CPOPGs and CPOSGs from
   Brazil's multiple e-SAJ portals.
 Depends: R (>= 3.2.3)
 License: file LICENSE
