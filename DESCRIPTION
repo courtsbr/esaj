@@ -31,7 +31,8 @@ Remotes:
   tidyverse/purrr
 Suggests:
   knitr,
-  rmarkdown
+  rmarkdown,
+  testthat
 VignetteBuilder: knitr
 LazyData: true
 RoxygenNote: 6.0.1
