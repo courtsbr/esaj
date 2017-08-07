@@ -23,7 +23,7 @@
 #' }
 #'
 #' @param id A lawsuit's unique identifier
-#' @param path Path to the directory where the DJEs should be downloaded
+#' @param path Path to the directory where the lawsuit should be downloaded
 #'
 #' @return A character vector with the path to the downloaded lawsuit
 #'
