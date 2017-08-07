@@ -73,7 +73,7 @@ break_rgb_captcha <- function(file) {
 
   # Fill in data frame
   tmp <- tempfile(fileext = ".png")
-  complete_df <- purrr::cross_df(list(
+  complete_df <- purrr::cross_d(list(
     x = min(img_df$x):max(img_df$x),
     y = min(img_df$y):max(img_df$y)))
 
