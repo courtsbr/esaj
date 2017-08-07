@@ -23,7 +23,7 @@ devtools::install_github("courtsbr/esaj")
 ## Usage
 
 `esaj` has only one exported function: `download_esaj()`. Its arguments are a
-lawsuit ID and the path to the directory where the lawsuit should be downloaded.
+lawsuit ID a,nd the path to the directory where the lawsuit should be downloaded.
 
 ```r
 library(esaj)
@@ -45,8 +45,9 @@ where they will be saved (the default is the current working directory).
 
 ## Implemented TJs
 
-Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs in
-Brazil. Here is a list of the ones implemented:
+Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs i
+(Justice Courts) 
+B azil. Here is a list of the ones implemented:
 - [ ] Acre (AC)
 - [ ] Alagoas (AL)
 - [ ] Amapá (AP)
