@@ -17,7 +17,7 @@ test_that("download_lawsuit() is working", {
   ba <- download_lawsuit("0552486-62.2015.8.05.0001", path) # Bahia
 
   # Expectations
-  expect_true(stringr::str_detect(am, ".pdf$"))
-  expect_true(stringr::str_detect(sc, ".pdf$"))
-  expect_true(stringr::str_detect(ba, ".pdf$"))
+  expect_true(stringr::str_detect(am, ".html$"))
+  expect_true(stringr::str_detect(sc, ".html$"))
+  expect_true(stringr::str_detect(ba, ".html$"))
 })

@@ -34,9 +34,9 @@ information, and collects the PDF.
 Unfortunatelly \code{\link[=download_lawsuit]{download_lawsuit()}} doesn't yet work with all 27 TJs in
 Brazil. Here are the ones already implemented:
 \itemize{
-\item TJAM: Amazonas
-\item TJBA: Bahia
-\item TJSC: Santa Catarina
+\item TJAM (Amazonas)
+\item TJBA (Bahia)
+\item TJSC (Santa Catarina)
 }
 }
 
