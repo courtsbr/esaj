@@ -1,6 +1,6 @@
 # esaj
 
-[![Made In Brazil](https://img.shields.io/badge/made%20in-brazil-green.svg)](http://www.abj.org.br)[![Travis-CI Build Status](https://travis-ci.org/courtsbr/esaj.svg?branch=master)](https://travis-ci.org/courtsbr/esaj)[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&svg=true)](https://ci.appveyor.com/project/courtsbr/esaj)
+[![Made In Brazil](https://img.shields.io/badge/made%20in-brazil-green.svg)](http://www.abj.org.br) [![Travis-CI Build Status](https://travis-ci.org/courtsbr/esaj.svg?branch=master)](https://travis-ci.org/courtsbr/esaj) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&svg=true)](https://ci.appveyor.com/project/courtsbr/esaj)
 
 ## Overview
 
