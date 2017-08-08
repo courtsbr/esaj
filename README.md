@@ -1,5 +1,6 @@
 # esaj
-🇧🇷
+
+[![Made In Brazil](https://img.shields.io/badge/made%20in-brazil-green.svg)](http://www.abj.org.br)[![Travis-CI Build Status](https://travis-ci.org/courtsbr/esaj.svg?branch=master)](https://travis-ci.org/courtsbr/esaj)[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&svg=true)](https://ci.appveyor.com/project/courtsbr/esaj)
 
 ## Overview
 
@@ -45,9 +46,8 @@ where they will be saved (the default is the current working directory).
 
 ## Implemented TJs
 
-Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs i
-(Justice Courts) 
-B azil. Here is a list of the ones implemented:
+Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs
+(Justice Courts) in Brazil. Here is a list of the ones implemented:
 - [ ] Acre (AC)
 - [ ] Alagoas (AL)
 - [ ] Amapá (AP)

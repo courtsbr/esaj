@@ -28,7 +28,9 @@ Imports:
   purrr
 Remotes:
   hadley/multidplyr,
-  tidyverse/purrr
+  tidyverse/purrr,
+  jtrecenti/captchaTJSC,
+  jtrecenti/captchasaj
 Suggests:
   knitr,
   rmarkdown,
