@@ -20,6 +20,7 @@
 #'   \item TJAM (Amazonas)
 #'   \item TJBA (Bahia)
 #'   \item TJSC (Santa Catarina)
+#'   \item TJSP (Sao Paulo)
 #' }
 #'
 #' @param id A lawsuit's unique identifier
@@ -43,6 +44,7 @@ download_lawsuit <- function(id, path = ".") {
 
   # Choose appropriate download function
   if (get_n(id) %in% c("05")) { download <- download_bw_lawsuit }
+  else if (get_n(id) %in% c("26")) { download <- download_noc_lawsuit }
   else { download <- download_rgb_lawsuit }
 
   # Get URLs for the download
@@ -108,4 +110,17 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search) {
     if (!has_captcha(f_search)) { return(f_lwst) }
     else { file.remove(f_lwst) }
   }
+}
+
+# Download a lawsuit from a TJ that uses no captcha system at all
+download_noc_lawsuit <- function(id, path, u_captcha, u_search) {
+
+  # Create GET query
+  query <- lawsuit_query(id)
+
+  # Download lawsuit
+  f_lwst <- sprintf("%s/%s.html", path, id)
+  f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
+
+  return(f_lwst)
 }

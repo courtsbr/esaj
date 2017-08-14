@@ -72,6 +72,6 @@ Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs
 - [ ] Rondônia (RO)
 - [ ] Roraima (RR)
 - [X] Santa Catarina (SC)
-- [ ] São Paulo (SP)
+- [X] São Paulo (SP)
 - [ ] Sergipe (SE)
 - [ ] Tocantins (TO)
