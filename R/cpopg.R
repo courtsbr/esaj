@@ -38,6 +38,10 @@
 #' @export
 download_lawsuit <- function(id, path = ".") {
 
+  # Normalize path
+  path <- normalizePath(path) %>%
+    stringr::str_c("/")
+
   # Strip ID down
   id <- stringr::str_replace_all(id, "[^0-9]", "")
   if (stringr::str_length(id) != 20) { stop("Invalid ID") }
@@ -70,7 +74,7 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search) {
     query$vlCaptcha <- break_rgb_captcha(f_captcha)
 
     # Download lawsuit
-    f_lwst <- sprintf("%s/%s.html", path, id)
+    f_lwst <- stringr::str_c(path, id, ".html")
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file
@@ -100,7 +104,7 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search) {
     query$vlCaptcha <- break_bw_captcha(f_captcha, captchasaj::modelo$modelo)
 
     # Download lawsuit
-    f_lwst <- sprintf("%s/%s.html", path, id)
+    f_lwst <- stringr::str_c(path, id, ".html")
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file
@@ -119,7 +123,7 @@ download_noc_lawsuit <- function(id, path, u_captcha, u_search) {
   query <- lawsuit_query(id)
 
   # Download lawsuit
-  f_lwst <- sprintf("%s/%s.html", path, id)
+  f_lwst <- stringr::str_c(path, id, ".html")
   f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
   return(f_lwst)
