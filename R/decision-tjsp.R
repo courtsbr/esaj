@@ -1,14 +1,3 @@
-baixar_captcha_cor_tjsp <- function(dir = '.', ts = '') {
-  tmp <- tempfile()
-  r <- httr::POST(
-    'https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do',
-    body = list(timestamp = ts, uuidCaptcha = '', conversationId = ''),
-    httr::config(ssl_verifypeer = FALSE),
-    httr::write_disk(tmp, overwrite = TRUE)
-  )
-  invisible(tmp)
-}
-
 download_decision_tjsp <- function(cod_decision, path,
                                    ntry = 10, verbose = FALSE) {
   link <- 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do'
@@ -17,16 +6,17 @@ download_decision_tjsp <- function(cod_decision, path,
   r0 <- httr::GET(link, query = query, config = configs)
   pdf_file <- sprintf('%s/%s.pdf', path, cod_decision)
   tentativas <- 0
-  while (r0$headers[['content-type']] != "application/pdf;charset=UTF-8" &&
-         tentativas < ntry) {
+  mime <- "application/pdf;charset=UTF-8"
+  while (r0$headers[['content-type']] != mime && tentativas < ntry) {
     if (verbose) cat('quebrando captcha...\n')
     # nao baixou, tem captcha
     time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
-    arq_captcha <- baixar_captcha_cor_tjsp(dir_processo, time_stamp)
+    u_captcha <- 'https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do'
+    arq_captcha <- download_rgb_captcha(u_captcha, time_stamp)
     query$conversationId <- ''
     query$cdForo <- '0'
-    query$uuidCaptcha <- uuid_captcha(arq_captcha)
-    query$vlCaptcha <- quebrar_captcha_cor(arq_captcha)
+    query$uuidCaptcha <- captcha_uuid(arq_captcha)
+    query$vlCaptcha <- break_rgb_captcha(arq_captcha)
     query$novoVlCaptcha <- ''
     r0 <- httr::GET(link, query = query, config = configs)
     tentativas <- tentativas + 1
