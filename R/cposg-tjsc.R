@@ -12,7 +12,7 @@ pesquisar_processos_2inst <- function(processos, path, sleep = 3) {
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
       r_captcha <- httr::GET(u_captcha)
-      # obs: a funcao "write_disk" não é apropriada pois salva o arq duas vezes.
+      # obs: a funcao write disk nao e apropriada pois salva o arq duas vezes.
       writeBin(httr::content(r_captcha, "raw"), tmp)
       captcha <- tryCatch(captchasaj::decodificar(tmp, captchasaj::modelo$modelo),
                           error = function(e) 'xxxxx')
@@ -28,7 +28,7 @@ pesquisar_processos_2inst <- function(processos, path, sleep = 3) {
       tmp <- tempfile()
       u_captcha <- 'http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do'
       r_captcha <- httr::GET(u_captcha)
-      # obs: a funcao "write_disk" não é apropriada pois salva o arq duas vezes.
+      # obs: a funcao "write_disk" nao e apropriada pois salva o arq duas vezes.
       writeBin(httr::content(r_captcha, "raw"), tmp)
       captcha <- tryCatch(captchasaj::decodificar(tmp, captchasaj::modelo$modelo),
                           error = function(e) 'xxxxx')
