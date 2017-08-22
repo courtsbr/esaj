@@ -111,9 +111,12 @@ download_rgb_captcha <- function(u_captcha, ts = "") {
 
   # Download captcha useing time stamp
   tmp <- tempfile()
-  r <- httr::POST(u_captcha,
+  r <- httr::POST(
+    u_captcha,
     body = list(timestamp = ts, uuidCaptcha = "", conversationId = ""),
-    httr::write_disk(tmp, overwrite = TRUE))
+    config = httr::config(ssl_verifypeer = FALSE),
+    httr::write_disk(tmp, overwrite = TRUE)
+  )
 
   return(tmp)
 }
