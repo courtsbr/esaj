@@ -52,4 +52,6 @@ globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",
   "info", "key", "link", "n", "n_processo", "nome", "r", "result",
-  "rm_accent", "setNames", "value", "y"))
+  "rm_accent", "setNames", "value", "y", "cd_acordao", "cod", "cod0",
+  "id_processo", "item", "pai", "pesquisar_processos", "secao",
+  "titulo0", "titulo_leaf", "txt_ementa", "val"))

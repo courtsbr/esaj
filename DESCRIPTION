@@ -9,15 +9,14 @@ License: file LICENSE
 Imports:
   magrittr,
   V8,
-  captchaTJSC,
   captchasaj,
   doParallel,
+  multidplyr,
   dplyr,
   httr,
   janitor,
   jsonlite,
   lubridate,
-  multidplyr,
   plyr,
   readr,
   rvest,
@@ -25,12 +24,18 @@ Imports:
   tidyr,
   xml2,
   rlang,
-  purrr
+  purrr,
+  XML,
+  abjutils,
+  captchaSajAudio,
+  progress,
+  tibble
 Remotes:
   hadley/multidplyr,
   tidyverse/purrr,
-  jtrecenti/captchaTJSC,
-  jtrecenti/captchasaj
+  jtrecenti/captchasaj,
+  decryptr/captchaSajAudio,
+  abjur/abjutils
 Suggests:
   knitr,
   rmarkdown,
