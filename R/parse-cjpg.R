@@ -47,27 +47,27 @@ parse_cjpg_arq <- function(arq) {
     dplyr::select(-item)
 }
 
-#' Parser do CJPG
+#' @title CJPG parser
 #'
-#' Parser dos arquivos HTML baixados pela fun????o \code{\link{cjpg}}.
+#' @description Parser for files downloaded by [cjpg()].
 #'
-#' @param arqs vetor de arquivos (caminho completo) a serem lidos.
+#' @param arqs Character vector with the paths of the files to be parsed
 #'
-#' @return tibble com as colunas
+#' @return A tibble with the columns
 #' \itemize{
-#'   \item \code{arq} nome do arquivo lido.
-#'   \item \code{id} id contido na p??gina lida.
-#'   \item \code{cd_acordao} c??digo ??nico do ac??rd??o.
-#'   \item \code{n_processo} n??mero do processo (pode repetir).
-#'   \item \code{comarca} nome da comarca.
-#'   \item \code{data_julgamento} data de julgamento em formato \%d/\%m/\%Y.
-#'   \item \code{data_registro} data de registro no sistem em formato \%d/\%m/\%Y.
-#'   \item \code{ementa} ementa do ac??rd??o (muitos vazios).
-#'   \item \code{orgao_julgador} c??mara julgadora do recurso.
-#'   \item \code{outros_numeros} n??meros antigos / complementares.
-#'   \item \code{relatora} Nome do relator ou relatora do recurso.
-#'   \item \code{classe_assunto} Classe / assunto, separados por " / ".
-#'   \item \code{txt_ementa} Texto da ementa sem formata????o.
+#'   \item `arq` Name of the file
+#'   \item `id` ID found in the page read
+#'   \item `cd_acordao` Unique ID of the ruling
+#'   \item `n_processo` Number of the lawsuit (doesn't have to be unique)
+#'   \item `comarca` Name of the district
+#'   \item `data_julgamento` Date of the judgement (\%d/\%m/\%Y)
+#'   \item `data_registro` Date of registration in the system (\%d/\%m/\%Y)
+#'   \item `ementa` Summary of the ruling
+#'   \item `orgao_julgador` Body responsible for the appeal
+#'   \item `outros_numeros` Old/additional IDs
+#'   \item `relatora` Name of the rapporteur
+#'   \item `classe_assunto` Class/subject, separated by slashes
+#'   \item `txt_ementa` Text of the summary with no formatting
 #' }
 #' @export
 parse_cjpg <- function(arqs) {
