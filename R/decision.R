@@ -9,7 +9,7 @@ download_decision_tjsp <- function(cod_decision, path,
   mime <- "application/pdf;charset=UTF-8"
   while (r0$headers[['content-type']] != mime && tentativas < ntry) {
     if (verbose) cat('quebrando captcha...\n')
-    # nao baixou, tem captcha
+    # Hasn't downloaded, there's a captcha
     time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
     u_captcha <- 'https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do'
     arq_captcha <- download_rgb_captcha(u_captcha, time_stamp)
@@ -25,15 +25,17 @@ download_decision_tjsp <- function(cod_decision, path,
   invisible(pdf_file)
 }
 
-#' Download decisions
+#' @title Download decisions
 #'
-#' Download decisions from TJSP
+#' @description Download decisions from TJSP
 #'
-#' @param cod_decision column cd_acordao of d_cjsg
-#' @param path folder
+#' @param cod_decision Column cd_acordao of d_cjsg
+#' @param tj TJ to download decisions (only works with TJSP for now)
+#' @param path Path to the directory where the lawsuit should be downloaded
 #'
 #' @export
-download_decisions_tjsp <- function(cod_decision, path = '.') {
+download_decisions <- function(cod_decision, tj = "tjsp", path = '.') {
+  stopifnot(tj == "tjsp")
   safe_download <- purrr::possibly(download_decision_tjsp, '')
   p <- progress::progress_bar$new(total = length(cod_decision))
   purrr::walk(cod_decision, ~{
