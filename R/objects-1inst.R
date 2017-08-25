@@ -31,16 +31,18 @@ tree_to_tibble <- function(tree, n = 0) {
 }
 
 
-#' Baixa tabela de itens da CJPG.
+#' @title Downloads table of CJPG items
 #'
-#' Baixa uma tabela com os elementos de classe, assunto ou varas, para ajudar a baixar usando a fun????o CJPG.
+#' @description Downloads a table with the elements of class, subject and circuit to help with [cjpg()]
 #'
-#' @param tipo classe, assunto ou varas
+#' @param tipo class, subject or circuit
+#' @param tj TJ of the table (only works with TJSP for now)
 #'
-#' @return \code{data.frame} com titulos e cods das folhas e titulos e cods dos pais (??ndice 0 ?? a raiz e quanto menor o ??ndice, mais pr??ximo da raiz)
+#' @return `data.frame` with titles and ID of the leaves and nodes of the table tree
 #'
 #' @export
-cjpg_tabs <- function(tipo = c('classe', 'assunto', 'varas')) {
+cjpg_table <- function(tipo = c('classe', 'assunto', 'varas'), tj = "tjsp") {
+  stopifnot(tj == "tjsp")
   r <- get_obj(tipo)
   tree <- r %>%
     httr::content('text') %>%

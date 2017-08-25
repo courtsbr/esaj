@@ -1,11 +1,14 @@
-#' Se????es de segunda inst??ncia.
+#' @title Sections of the second instance
 #'
-#' Baixa lista das se????es de segunda inst??ncia.
+#' @description Downloads list of sections of the second instance (can be used in [cjsg_parms()])
 #'
-#' @return \code{tibble} com as colunas \code{pai}, \code{secao} e \code{cod}. Usualmente \code{cod} ser?? usado na fun????o \code{\link{cjsg_parms}}
+#' @param tj TJ of the table (only works with TJSP for now)
+#'
+#' @return `tibble` with columns `pai`, `secao` and `cod`
 #'
 #' @export
-list_secoes_2inst <- function() {
+list_secoes_2inst <- function(tj = "tjsp") {
+  stopifnot(tj == "tjsp")
   u <- 'https://esaj.tjsp.jus.br/cjsg/secaoTreeSelect.do?campoId=secoes'
   xp_child <- './/li[@class="leafItem"]//span[contains(@id, "secoes_tree")]'
   xp_parent <- './/span[contains(@id, "secoes_tree")]'
@@ -35,16 +38,19 @@ get_obj_2inst <- function(tipo) {
                  httr::config(ssl_verifypeer = FALSE))
 }
 
-#' Baixa tabela de itens da CJPG.
+
+#' @title Downloads table of CJSG items
 #'
-#' Baixa uma tabela com os elementos de classe, assunto ou varas, para ajudar a baixar usando a fun????o CJPG.
+#' @description Downloads a table with the elements of class, subject and circuit to help with [cjsg()]
 #'
-#' @param tipo classe, assunto ou varas
+#' @param tipo class, subject or circuit
+#' @param tj TJ of the table (only works with TJSP for now)
 #'
-#' @return \code{data.frame} com titulos e cods das folhas e titulos e cods dos pais (??ndice 0 ?? a raiz e quanto menor o ??ndice, mais pr??ximo da raiz)
+#' @return `data.frame` with titles and ID of the leaves and nodes of the table tree
 #'
 #' @export
-cjsg_tabs <- function(tipo = c('classes', 'assuntos')) {
+cjsg_tables <- function(tipo = c('classes', 'assuntos'), tj = "tjsp") {
+  stopifnot(tj == "tjsp")
   r <- get_obj_2inst(tipo)
   tree <- r %>%
     httr::content('text') %>%

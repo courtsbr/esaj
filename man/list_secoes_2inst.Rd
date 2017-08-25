@@ -2,13 +2,16 @@
 % Please edit documentation in R/objects-2inst-tjsp.R
 \name{list_secoes_2inst}
 \alias{list_secoes_2inst}
-\title{Se????es de segunda inst??ncia.}
+\title{Sections of the second instance}
 \usage{
-list_secoes_2inst()
+list_secoes_2inst(tj = "tjsp")
+}
+\arguments{
+\item{tj}{TJ of the table (only works with TJSP for now)}
 }
 \value{
-\code{tibble} com as colunas \code{pai}, \code{secao} e \code{cod}. Usualmente \code{cod} ser?? usado na fun????o \code{\link{cjsg_parms}}
+\code{tibble} with columns \code{pai}, \code{secao} and \code{cod}
 }
 \description{
-Baixa lista das se????es de segunda inst??ncia.
+Downloads list of sections of the second instance (can be used in \code{\link[=cjsg_parms]{cjsg_parms()}})
 }
