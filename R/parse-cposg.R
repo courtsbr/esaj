@@ -17,9 +17,118 @@ parse_cpo_sg <- function(path, s = NULL, keyval = FALSE) {
   d
 }
 
+
+
+
+
+
+formbody <- "//table[@id != 'secaoFormConsulta' and @class='secaoFormBody']//tr//td"
+todaspartes <- "//table[@id != 'secaoFormConsulta' and @id='tableTodasPartes']//tr//td"
+partesprincipais <- "//table[@id != 'secaoFormConsulta' and @id='tablePartesPrincipais' and @id!='tableTodasPartes']//tr//td"
+
+
+make_parser <- function() { list(name = NULL, xpath = NULL) %>% rlang::set_attrs("class" = "parser") }
+
+parse_formbody <- function(parser) {
+  purrr::list_merge(parser, name = "Form Body", xpath = formbody)
+}
+
+parse_todaspartes <- function(parser) {
+  purrr::list_merge(parser, name = "Todas Partes", xpath = todaspartes)
+}
+
+parse_partesprincipais <- function(parser) {
+  purrr::list_merge(parser, name = "Partes Principais", xpath = partesprincipais)
+}
+
+run_parser <- function(files, parser) {
+
+  # Check if parser is a parser
+  stopifnot(class(parser) == "parser")
+
+  # Parse key-value pair given an xpath
+  parse_keyval <- function(html, xpath) {
+
+    # Regex used later
+    regex <- stringr::str_c(
+      "(([[:alpha:]]+:)|(Valor da a\u00e7\u00e3o:)|",
+      "(Outros assuntos:)|(Local F\u00edsico:))")
+
+    # Parse values
+    value <- html %>%
+      rvest::html_nodes(xpath = xpath) %>%
+      rvest::html_text() %>%
+      str_replace_all("\\&nbsp", " ") %>%
+      str_replace_all("[ \t\r\n\v\f]+", " ") %>%
+      str_replace_all(" +", " ") %>%
+      stringr::str_trim() %>%
+      extract_or(
+        !duplicated(., incomparables = ''),
+        str_detect(., ":[^[:alpha:]]*$")) %>%
+      stringr::str_c(collapse = " ")
+
+    # Parse keys
+    key <- value %>%
+      stringr::str_match_all(regex) %>%
+      purrr::pluck(1) %>%
+      dplyr::as_tibble() %>%
+      purrr::pluck(2) %>%
+      str_replace_all(":", "") %>%
+      stringr::str_to_lower() %>%
+      str_replace_all(' +', '_') %>%
+      abjutils::rm_accent()
+
+    # Join the two
+    key_val <- value %>%
+      stringr::str_split(regex) %>%
+      purrr::pluck(1) %>%
+      tail(-1) %>%
+      str_replace_all("^[^A-Za-z0-9]+|[^A-Za-z0-9]+$", "") %>%
+      stringr::str_trim() %>%
+      dplyr::tibble(key = key, value = .)
+
+    return(key_val)
+  }
+
+  # Map parse_keyval over files and xpaths
+  out <- purrr::map(files, function(file) {
+    html <- xml2::read_html(file)
+    purrr::map_dfr(parser$xpath, ~parse_keyval(html, .x))
+  })
+
+  return(out)
+}
+
+print.parser <- function(x, ...) {
+  if (length(x$name) == 0) {
+    cat("An empty parser\n")
+  }
+  else {
+    cat("A parser for the following objects\n")
+    for (i in seq_along(x$name)) {
+      name <- x$name[i]
+      diff <- getOption('width') - stringr::str_length(name) - 4
+      xpath <- stringr::str_trunc(x$xpath[i], max(diff, 10))
+      cat(stringr::str_c("- ", name, ": ", xpath, "\n"))
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 # @export
-parse_cpo_sg_um_keyval <- function(r) {
+parse_cposg_um_keyval <- function(file) {
   try({
+
     xpath <- "//table[@id != 'secaoFormConsulta' and (@class='secaoFormBody' "
     xpath <- paste0(xpath, "or @id='tableTodasPartes' or (@id='tablePartes")
     xpath <- paste0(xpath, "Principais' and @id!='tableTodasPartes'))]//tr//td")
@@ -57,7 +166,7 @@ parse_cpo_sg_um_keyval <- function(r) {
     #       key[key == 'advogado'] <- 'reqdo_adv'
     #     }
 
-    d <- data.frame(key, val, stringsAsFactors = FALSE)
+    d <- dplyr::tibble(key, val)
     if(is.character(r)) {
       d$arq <- r
     }
@@ -75,7 +184,7 @@ parse_cpo_sg_um_keyval <- function(r) {
 # @export
 cpo_sg <- function(processos, path = "data-raw/cpo-sg", tj = 'TJSP') {
   if(tj == 'TJSC') {
-    d <- pesquisar_processos(processos, path)
+    d <- pesquisar_processos_2inst(processos, path)
     return(d)
   }
   # f <- dplyr::fail\with(dplyr::data_frame(result = "erro"), cpo_pg_um)

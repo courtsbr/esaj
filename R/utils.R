@@ -22,6 +22,15 @@ NULL
   if (rlang::is_null(x)) y else x
 }
 
+# Shortcuts for stringr functions
+str_replace_all <- stringr::str_replace_all
+str_detect <- stringr::str_detect
+
+# Function for extracting elements from vector given e1 | e2
+extract_or <- function(x, e1, e2) {
+  magrittr::or(e1, e2) %>% magrittr::extract(x, .)
+}
+
 # Convert Portuguese months to number
 conv_month <- function(date) {
 
