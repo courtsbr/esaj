@@ -22,23 +22,106 @@ parse_cpo_sg <- function(path, s = NULL, keyval = FALSE) {
 
 
 
-formbody <- "//table[@id != 'secaoFormConsulta' and @class='secaoFormBody']//tr//td"
-todaspartes <- "//table[@id != 'secaoFormConsulta' and @id='tableTodasPartes']//tr//td"
-partesprincipais <- "//table[@id != 'secaoFormConsulta' and @id='tablePartesPrincipais' and @id!='tableTodasPartes']//tr//td"
+# formbody <- "//table[@id != 'secaoFormConsulta' and @class='secaoFormBody']//tr//td"
+# todaspartes <- "//table[@id != 'secaoFormConsulta' and @id='tableTodasPartes']//tr//td"
+# partesprincipais <- "//table[@id != 'secaoFormConsulta' and @id='tablePartesPrincipais' and @id!='tableTodasPartes']//tr//td"
+#
+# parse_formbody <- function(parser) {
+#   purrr::list_merge(parser, name = "Form Body", xpath = formbody)
+# }
+#
+# parse_todaspartes <- function(parser) {
+#   purrr::list_merge(parser, name = "Todas Partes", xpath = todaspartes)
+# }
+#
+# parse_partesprincipais <- function(parser) {
+#   purrr::list_merge(parser, name = "Partes Principais", xpath = partesprincipais)
+# }
 
-
-make_parser <- function() { list(name = NULL, xpath = NULL) %>% rlang::set_attrs("class" = "parser") }
-
-parse_formbody <- function(parser) {
-  purrr::list_merge(parser, name = "Form Body", xpath = formbody)
+make_parser <- function() {
+  list(name = NULL, getter = NULL) %>% rlang::set_attrs("class" = "parser")
 }
 
-parse_todaspartes <- function(parser) {
-  purrr::list_merge(parser, name = "Todas Partes", xpath = todaspartes)
+parse_parts <- function(parser) {
+
+  # Check class
+  stopifnot(class(parser) == "parser")
+
+  # Function for getting parts
+  get_parts <- function(html) {
+    html %>%
+      rvest::html_nodes(xpath = "//*[@id='tablePartesPrincipais']") %>%
+      rvest::html_table(fill = TRUE) %>%
+      purrr::pluck(1) %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        X2 = stringr::str_split(X2, "&nbsp"),
+        id = 1:nrow(.)) %>%
+      tidyr::unnest(X2) %>%
+      dplyr::mutate(
+        part = str_replace_all(X1, "[^a-zA-Z]", ""),
+        role = stringr::str_extract(dplyr::lag(X2), "\\t [a-zA-Z]+:"),
+        role = str_replace_all(role, "[^a-zA-Z]", ""),
+        role = ifelse(is.na(role), part, role),
+        name = str_replace_all(X2, " ?\\n.+", "")) %>%
+      dplyr::select(id, name, part, role)
+  }
+
+  # Add get_parts to getters
+  purrr::list_merge(parser, name = "Parts", getter = get_parts)
 }
 
-parse_partesprincipais <- function(parser) {
-  purrr::list_merge(parser, name = "Partes Principais", xpath = partesprincipais)
+parse_data <- function(parser) {
+
+  # Check class
+  stopifnot(class(parser) == "parser")
+
+  # Function for getting data
+  get_data <- function(html) {
+    html %>%
+      rvest::html_nodes(xpath = "//*[@class='secaoFormBody']") %>%
+      rvest::html_table(fill = TRUE) %>%
+      purrr::pluck(2) %>%
+      dplyr::as_tibble() %>%
+      dplyr::filter(!(is.na(X2) & is.na(X3))) %>%
+      dplyr::select(-X3) %>%
+      dplyr::add_row(
+        X1 = "Situação",
+        X2 = stringr::str_extract(.[1, 2], "[A-Za-z]+$")) %>%
+      dplyr::mutate(
+        X1 = str_replace_all(X1, ":", ""),
+        X2 = str_replace_all(X2, " ?[\\n\\t].+", ""),
+        X2 = str_replace_all(X2, "\\n", "")) %>%
+      purrr::set_names("data", "value")
+  }
+
+  # Add get_data to getters
+  purrr::list_merge(parser, name = "Data", getter = get_data)
+}
+
+parse_movements <- function(parser) {
+
+  # Check class
+  stopifnot(class(parser) == "parser")
+
+  # Function for getting movements
+  get_movs <- function(html) {
+    html %>%
+      rvest::html_nodes(xpath = "//*[@id='tabelaTodasMovimentacoes']") %>%
+      rvest::html_table(fill = TRUE) %>%
+      purrr::pluck(1) %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        X1 = lubridate::dmy(X1),
+        X3 = str_replace_all(X3, "[\\t\\n]", ""),
+        X3 = str_replace_all(X3, "\\r", " "),
+        X3 = str_replace_all(X3, " +", " ")) %>%
+      dplyr::select(-X2) %>%
+      purrr::set_names("movement", "description")
+  }
+
+  # Add get_movs to getters
+  purrr::list_merge(parser, name = "Movements", getter = get_movs)
 }
 
 run_parser <- function(files, parser) {
@@ -46,55 +129,13 @@ run_parser <- function(files, parser) {
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")
 
-  # Parse key-value pair given an xpath
-  parse_keyval <- function(html, xpath) {
-
-    # Regex used later
-    regex <- stringr::str_c(
-      "(([[:alpha:]]+:)|(Valor da a\u00e7\u00e3o:)|",
-      "(Outros assuntos:)|(Local F\u00edsico:))")
-
-    # Parse values
-    value <- html %>%
-      rvest::html_nodes(xpath = xpath) %>%
-      rvest::html_text() %>%
-      str_replace_all("\\&nbsp", " ") %>%
-      str_replace_all("[ \t\r\n\v\f]+", " ") %>%
-      str_replace_all(" +", " ") %>%
-      stringr::str_trim() %>%
-      extract_or(
-        !duplicated(., incomparables = ''),
-        str_detect(., ":[^[:alpha:]]*$")) %>%
-      stringr::str_c(collapse = " ")
-
-    # Parse keys
-    key <- value %>%
-      stringr::str_match_all(regex) %>%
-      purrr::pluck(1) %>%
-      dplyr::as_tibble() %>%
-      purrr::pluck(2) %>%
-      str_replace_all(":", "") %>%
-      stringr::str_to_lower() %>%
-      str_replace_all(' +', '_') %>%
-      abjutils::rm_accent()
-
-    # Join the two
-    key_val <- value %>%
-      stringr::str_split(regex) %>%
-      purrr::pluck(1) %>%
-      tail(-1) %>%
-      str_replace_all("^[^A-Za-z0-9]+|[^A-Za-z0-9]+$", "") %>%
-      stringr::str_trim() %>%
-      dplyr::tibble(key = key, value = .)
-
-    return(key_val)
-  }
-
   # Map parse_keyval over files and xpaths
   out <- purrr::map(files, function(file) {
     html <- xml2::read_html(file)
-    purrr::map_dfr(parser$xpath, ~parse_keyval(html, .x))
+    tbls <- purrr::invoke_map(parser$getter, list(list(html = html)))
+    tbls <- purrr::set_names(tbls, parser$name)
   })
+  out <- purrr::set_names(out, files)
 
   return(out)
 }
@@ -104,15 +145,26 @@ print.parser <- function(x, ...) {
     cat("An empty parser\n")
   }
   else {
-    cat("A parser for the following objects\n")
-    for (i in seq_along(x$name)) {
-      name <- x$name[i]
-      diff <- getOption('width') - stringr::str_length(name) - 4
-      xpath <- stringr::str_trunc(x$xpath[i], max(diff, 10))
-      cat(stringr::str_c("- ", name, ": ", xpath, "\n"))
-    }
+    cat("A parser for the following objects:\n")
+    purrr::walk(x$name, ~cat("- ", .x, "\n", sep = ""))
   }
 }
+
+
+
+
+
+
+parser <- make_parser() %>%
+  parse_data() %>%
+  parse_movements() %>%
+  parse_parts()
+
+
+run_parser(files, parser) %>% str()
+
+
+
 
 
 
