@@ -1,47 +1,12 @@
-# @export
-parse_cpo_sg <- function(path, s = NULL, keyval = FALSE) {
-  l <- list.files(path, full.names = TRUE)
-  if(!is.null(s)) {
-    l <- sample(l, s, replace = FALSE)
-  }
-  d <- dplyr::data_frame(l = l)
-  d <- dplyr::group_by(d, l)
 
-  if(keyval) {
-    d <- dplyr::do(d, parse_cpo_sg_um_keyval(.$l))
-  } else {
-    d <- dplyr::do(d, parse_cpo_sg(.$l))
-  }
-  d <- dplyr::ungroup(d)
-  d <- dplyr::select(d, -l)
-  d
-}
-
-
-
-
-
-
-# formbody <- "//table[@id != 'secaoFormConsulta' and @class='secaoFormBody']//tr//td"
-# todaspartes <- "//table[@id != 'secaoFormConsulta' and @id='tableTodasPartes']//tr//td"
-# partesprincipais <- "//table[@id != 'secaoFormConsulta' and @id='tablePartesPrincipais' and @id!='tableTodasPartes']//tr//td"
-#
-# parse_formbody <- function(parser) {
-#   purrr::list_merge(parser, name = "Form Body", xpath = formbody)
-# }
-#
-# parse_todaspartes <- function(parser) {
-#   purrr::list_merge(parser, name = "Todas Partes", xpath = todaspartes)
-# }
-#
-# parse_partesprincipais <- function(parser) {
-#   purrr::list_merge(parser, name = "Partes Principais", xpath = partesprincipais)
-# }
-
+#' Makes a parser
+#' @export
 make_parser <- function() {
   list(name = NULL, getter = NULL) %>% rlang::set_attrs("class" = "parser")
 }
 
+#' Parses parts
+#' @export
 parse_parts <- function(parser) {
 
   # Check class
@@ -68,9 +33,11 @@ parse_parts <- function(parser) {
   }
 
   # Add get_parts to getters
-  purrr::list_merge(parser, name = "Parts", getter = get_parts)
+  purrr::list_merge(parser, name = "parts", getter = get_parts)
 }
 
+#' Parses data
+#' @export
 parse_data <- function(parser) {
 
   # Check class
@@ -96,10 +63,12 @@ parse_data <- function(parser) {
   }
 
   # Add get_data to getters
-  purrr::list_merge(parser, name = "Data", getter = get_data)
+  purrr::list_merge(parser, name = "data", getter = get_data)
 }
 
-parse_movements <- function(parser) {
+#' Parses movements
+#' @export
+parse_movs <- function(parser) {
 
   # Check class
   stopifnot(class(parser) == "parser")
@@ -121,23 +90,30 @@ parse_movements <- function(parser) {
   }
 
   # Add get_movs to getters
-  purrr::list_merge(parser, name = "Movements", getter = get_movs)
+  purrr::list_merge(parser, name = "movs", getter = get_movs)
 }
 
+#' Runs a parser
+#' @export
 run_parser <- function(files, parser) {
 
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")
 
-  # Map parse_keyval over files and xpaths
-  out <- purrr::map(files, function(file) {
+  # Given a parser and a file, apply getters
+  apply_getters <- function(file, parser) {
     html <- xml2::read_html(file)
-    tbls <- purrr::invoke_map(parser$getter, list(list(html = html)))
-    tbls <- purrr::set_names(tbls, parser$name)
-  })
-  out <- purrr::set_names(out, files)
+    parser$getter %>%
+      purrr::invoke_map(list(list(html = html))) %>%
+      purrr::set_names(parser$name) %>%
+      purrr::modify(list) %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(file = file) %>%
+      dplyr::select(file, dplyr::everything())
+  }
 
-  return(out)
+  # Apply getters to all files
+  purrr::map_dfr(files, apply_getters, parser)
 }
 
 print.parser <- function(x, ...) {
@@ -148,84 +124,6 @@ print.parser <- function(x, ...) {
     cat("A parser for the following objects:\n")
     purrr::walk(x$name, ~cat("- ", .x, "\n", sep = ""))
   }
-}
-
-
-
-
-
-
-parser <- make_parser() %>%
-  parse_data() %>%
-  parse_movements() %>%
-  parse_parts()
-
-
-run_parser(files, parser) %>% str()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @export
-parse_cposg_um_keyval <- function(file) {
-  try({
-
-    xpath <- "//table[@id != 'secaoFormConsulta' and (@class='secaoFormBody' "
-    xpath <- paste0(xpath, "or @id='tableTodasPartes' or (@id='tablePartes")
-    xpath <- paste0(xpath, "Principais' and @id!='tableTodasPartes'))]//tr//td")
-    #keyval <- sapply(XML::getNodeSet(h, xpath), XML::xmlValue)
-
-    keyval <- xml2::read_html(r, encoding = "UTF-8") %>%
-      rvest::html_nodes(xpath = xpath) %>%
-      rvest::html_text()
-    keyval <- iconv(keyval, to = 'UTF-8')
-    keyval <- gsub('\u00e0s [0-9]+\\:[0-9]+', '', keyval)
-    keyval <- stringr::str_trim(gsub('\\&nbsp', ' ', keyval))
-    keyval <- stringr::str_trim(gsub(" +", " ", gsub("[ \t\r\n\v\f]+", " ", keyval)))
-    keyval <- keyval[!duplicated(keyval, incomparables = '') | stringr::str_detect(keyval, ':[^[:alpha:]]*$')]
-    keyval <- paste(keyval, collapse = ' ')
-
-    re <- "(([[:alpha:]]+:)|(Valor da a\u00e7\u00e3o:)|(Outros assuntos:)|(Local F\u00edsico:))"
-    key <- stringr::str_match_all(keyval, re)[[1]][, 2]
-    key <- stringr::str_trim(gsub(':', '', key))
-    key <- rm_accent(gsub(' +', '_', tolower(key)))
-    #key[key %in% c('reqte', 'reclamante')] <- 'reqte'
-    #key[key %in% c('reqda', 'reclamada', 'reclamado')] <- 'reqdo'
-    #key[key == 'advogada'] <- 'advogado'
-
-    val <- stringr::str_split(keyval, re)[[1]][-1]
-    val <- stringr::str_trim(gsub('^[^A-Za-z0-9]+|[^A-Za-z0-9]+$', '', val))
-
-    #     if(any(stringr::str_detect(key, 'reqte')) &
-    #        any(stringr::str_detect(key, 'reqdo')) &
-    #        any(stringr::str_detect(key, 'adv'))) {
-    #       ind <- 1:length(key) %in% (which(key == 'reqte')[1] + 1):(which(key == 'reqdo')[1] - 1)
-    #       ind <- ind & (key == 'advogado')
-    #       key[ind] <- 'reqte_adv'
-    #       val[ind] <- paste(val[ind], collapse = '\n')
-    #       val[key == 'advogado'] <- paste(val[key == 'advogado'], collapse = '\n')
-    #       key[key == 'advogado'] <- 'reqdo_adv'
-    #     }
-
-    d <- dplyr::tibble(key, val)
-    if(is.character(r)) {
-      d$arq <- r
-    }
-    return(d)
-  })
-  d <- data.frame(arq = r, key = 'erro', val = 'erro', stringsAsFactors = FALSE)
-  return(d)
 }
 
 # Funcao que faz o download das informacoes de um processo de segundo
