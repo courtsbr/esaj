@@ -6,6 +6,7 @@ make_parser <- function() {
 }
 
 #' Parses parts
+#' @param parser A parser returned by [make_parser()]
 #' @export
 parse_parts <- function(parser) {
 
@@ -37,6 +38,7 @@ parse_parts <- function(parser) {
 }
 
 #' Parses data
+#' @param parser A parser returned by [make_parser()]
 #' @export
 parse_data <- function(parser) {
 
@@ -53,7 +55,7 @@ parse_data <- function(parser) {
       dplyr::filter(!(is.na(X2) & is.na(X3))) %>%
       dplyr::select(-X3) %>%
       dplyr::add_row(
-        X1 = "Situação",
+        X1 = "Situa\u00E7\u00E3o",
         X2 = stringr::str_extract(.[1, 2], "[A-Za-z]+$")) %>%
       dplyr::mutate(
         X1 = str_replace_all(X1, ":", ""),
@@ -67,6 +69,7 @@ parse_data <- function(parser) {
 }
 
 #' Parses movements
+#' @param parser A parser returned by [make_parser()]
 #' @export
 parse_movs <- function(parser) {
 
@@ -94,8 +97,11 @@ parse_movs <- function(parser) {
 }
 
 #' Runs a parser
+#' @param files A character vector with the paths to one ore more files
+#' @param parser A parser returned by [make_parser()]
+#' @param cores The number of cores to be used when parsing
 #' @export
-run_parser <- function(files, parser) {
+run_parser <- function(files, parser, cores = 1) {
 
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")
@@ -113,7 +119,10 @@ run_parser <- function(files, parser) {
   }
 
   # Apply getters to all files
-  purrr::map_dfr(files, apply_getters, parser)
+  parallel::mcmapply(
+    apply_getters, files, list(parser = parser),
+    SIMPLIFY = FALSE, mc.cores = cores) %>%
+    dplyr::bind_rows()
 }
 
 print.parser <- function(x, ...) {
