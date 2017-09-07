@@ -99,32 +99,50 @@ parse_movs <- function(parser) {
 #' Runs a parser
 #' @param files A character vector with the paths to one ore more files
 #' @param parser A parser returned by [make_parser()]
+#' @param path The path to a directory where to save RDSs
 #' @param cores The number of cores to be used when parsing
 #' @export
-run_parser <- function(files, parser, cores = 1) {
+run_parser <- function(files, parser, path, cores = 1) {
 
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")
 
   # Given a parser and a file, apply getters
-  apply_getters <- function(file, parser) {
+  apply_getters <- function(file, parser_path) {
+
+    # Resolve parallelism problem
+    parser <- parser_path$parser
+    path <- parser_path$path
+
+    # Apply all getters
     html <- xml2::read_html(file)
-    parser$getter %>%
+    out <- parser$getter %>%
       purrr::invoke_map(list(list(html = html))) %>%
       purrr::set_names(parser$name) %>%
       purrr::modify(list) %>%
       dplyr::as_tibble() %>%
-      dplyr::mutate(file = file) %>%
-      dplyr::select(file, dplyr::everything())
+      dplyr::mutate(
+        file = file,
+        id = tools::file_path_sans_ext(basename(file))) %>%
+      dplyr::select(id, file, dplyr::everything())
+
+    # Write and return
+    readr::write_rds(out, stringr::str_c(path, "/", out$id, ".rds"))
+    return(out)
   }
 
+  # Create path if necessary
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+
   # Apply getters to all files
+  parser_path <- list(parser = parser, path = path)
   parallel::mcmapply(
-    apply_getters, files, list(parser = parser),
+    apply_getters, files, list(parser_path = parser_path),
     SIMPLIFY = FALSE, mc.cores = cores) %>%
     dplyr::bind_rows()
 }
 
+# Print parser
 print.parser <- function(x, ...) {
   if (length(x$name) == 0) {
     cat("An empty parser\n")
