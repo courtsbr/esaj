@@ -29,7 +29,9 @@ Imports:
   abjutils,
   captchaSajAudio,
   progress,
-  tibble
+  tibble,
+  magick,
+  tesseract
 Remotes:
   hadley/multidplyr,
   tidyverse/purrr,
