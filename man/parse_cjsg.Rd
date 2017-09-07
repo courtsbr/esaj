@@ -28,5 +28,5 @@ A tibble with the columns
 }
 }
 \description{
-Parser for files downloaded by \code{\link[=cjsg]{cjsg()}}.
+Parser for files downloaded by \code{\link[=download_cjsg]{download_cjsg()}}.
 }

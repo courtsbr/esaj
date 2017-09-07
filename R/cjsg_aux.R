@@ -1,12 +1,9 @@
 
 #' @title Downloads information about some CJSG structures
-#'
 #' @description Downloads a table with information about lawsuit
 #' classes, subjects or courts to help with [download_cjsg()]
-#'
 #' @param type Either `"classes"` or `"subjects"` or `"courts"`
-#' @param tj TJ to fetch from (only works with TJSP for now)
-#'
+#' @param tj TJ form which to get data (only works with TJSP for now)
 #' @export
 cjsg_table <- function(type, tj = "tjsp") {
 
@@ -79,7 +76,7 @@ courts_table <- function() {
     dplyr::select(pai, secao, cod)
 }
 
-#' @title Browse table returned by [cjsg_table()]
+#' Browse table returned by [cjsg_table()]
 #' @param table Table returned by [cjsg_table()] (only `"classes"`
 #' or `"subjects"`)
 #' @param patterns A list containing (at most) 6 character vectors

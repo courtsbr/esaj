@@ -3,7 +3,7 @@
 #' Download PDF of a decision (second instance)
 #'
 #' @param codes character vector containing id of the cases, obtainable from
-#'   \code{\link{cjsg}} function.
+#'   [download_cjsg()] function.
 #' @param dest destination folder of the pdf file
 #' @param giveup Give up after \code{giveup} failed transfers
 #' @param wait seconds to wait between failed transfers

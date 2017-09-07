@@ -45,7 +45,7 @@ parse_cjsg_arq <- function(arq) {
 
 #' @title CJSG parser
 #'
-#' @description Parser for files downloaded by [cjsg()].
+#' @description Parser for files downloaded by [download_cjsg()].
 #'
 #' @param arqs Character vector with the paths of the files to be parsed
 #'

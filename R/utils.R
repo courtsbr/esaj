@@ -78,4 +78,5 @@ globalVariables(c(
   "info", "key", "link", "n", "n_processo", "nome", "r", "result",
   "rm_accent", "setNames", "value", "y", "cd_acordao", "cod", "cod0",
   "id_processo", "item", "pai", "secao", "titulo0", "titulo_leaf",
-  "txt_ementa", "val", "role", "name", "part"))
+  "txt_ementa", "val", "role", "name", "part", "titulo0", "titulo1",
+  "titulo2", "titulo3", "titulo4"))

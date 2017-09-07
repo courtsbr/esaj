@@ -9,7 +9,7 @@ download_pdf(codes, dest = ".", giveup = 10, wait = 5,
 }
 \arguments{
 \item{codes}{character vector containing id of the cases, obtainable from
-\code{\link{cjsg}} function.}
+\code{\link[=download_cjsg]{download_cjsg()}} function.}
 
 \item{dest}{destination folder of the pdf file}
 
