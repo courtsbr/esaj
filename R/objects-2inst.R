@@ -33,13 +33,13 @@ cjsg_table <- function(type, tj = "tjsp") {
     dplyr::first() %>% dplyr::nth(2) %>%
     purrr::keep(~is.list(.x)) %>%
     tree_to_tibble() %>%
-    dplyr::select(
-      dplyr::ends_with('leaf'),
-      dplyr::ends_with('0'),
-      dplyr::everything()) %>%
     dplyr::mutate(
       titulo0 = ifelse(is.na(titulo0), titulo_leaf, titulo0),
-      cod0 = ifelse(is.na(cod0), titulo_leaf, cod0))
+      cod0 = ifelse(is.na(cod0), titulo_leaf, cod0)) %>%
+    dplyr::select(
+      dplyr::ends_with('0'), dplyr::ends_with('1'),
+      dplyr::ends_with('2'), dplyr::ends_with('3'),
+      dplyr::ends_with('4'), dplyr::ends_with('leaf'))
 }
 
 #' Download table with court information for [cjsg_table()]
@@ -77,4 +77,44 @@ courts_table <- function() {
     purrr::modify(create_row) %>%
     dplyr::bind_rows() %>%
     dplyr::select(pai, secao, cod)
+}
+
+#' @title Browse table returned by [cjsg_table()]
+#' @param table Table returned by [cjsg_table()] (only `"classes"`
+#' or `"subjects"`)
+#' @param patterns A list containing (at most) 6 character vectors
+#' of one or more regular expressions (applied from left to right
+#' on root to leaves); e.g.
+#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "")`
+#' @details Regex of the same level will be ORed and of different
+#' levels will be ANDed, e.g.,
+#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "")` becomes
+#' `list("(?:ADM|CRIMINAL)", "", "", "", "", "")` and each
+#' element will be applied with [dplyr::filter()] to a level of
+#' the tree
+#' @export
+browse_cjsg <- function(table, patterns) {
+
+  patterns <- purrr::modify(patterns, function(pat) {
+    pat %>%
+      stringr::str_c(collapse = "|") %>%
+      stringr::str_c("(?:", ., ")") %>%
+      stringr::str_replace("\\(\\?\\:\\)", "")
+  })
+
+  # Transform NAs into matches
+  str_detect <- function(string, pattern) {
+    stringr::str_detect(string, pattern) %>%
+      magrittr::inset(is.na(.) && pattern == "", TRUE)
+  }
+
+  # Apply filters
+  table %>%
+    dplyr::filter(
+      str_detect(titulo0, patterns[[1]]),
+      str_detect(titulo1, patterns[[2]]),
+      str_detect(titulo2, patterns[[3]]),
+      str_detect(titulo3, patterns[[4]]),
+      str_detect(titulo4, patterns[[5]]),
+      str_detect(titulo_leaf, patterns[[6]]))
 }
