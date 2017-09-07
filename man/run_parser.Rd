@@ -4,12 +4,14 @@
 \alias{run_parser}
 \title{Runs a parser}
 \usage{
-run_parser(files, parser, cores = 1)
+run_parser(files, parser, path, cores = 1)
 }
 \arguments{
 \item{files}{A character vector with the paths to one ore more files}
 
 \item{parser}{A parser returned by \code{\link[=make_parser]{make_parser()}}}
+
+\item{path}{The path to a directory where to save RDSs}
 
 \item{cores}{The number of cores to be used when parsing}
 }

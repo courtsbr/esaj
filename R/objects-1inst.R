@@ -41,7 +41,7 @@ tree_to_tibble <- function(tree, n = 0) {
 #' @return `data.frame` with titles and ID of the leaves and nodes of the table tree
 #'
 #' @export
-cjpg_tables <- function(tipo = c('classe', 'assunto', 'varas'), tj = "tjsp") {
+cjpg_table <- function(tipo = c('classe', 'assunto', 'varas'), tj = "tjsp") {
   stopifnot(tj == "tjsp")
   r <- get_obj(tipo)
   tree <- r %>%

@@ -57,6 +57,21 @@ conv_month <- function(date) {
   stringr::str_replace(date, "[a-z]+", month)
 }
 
+# Convert a date to pt_BR format
+date_pt <- function(date) {
+
+  # Check if string is empty
+  if (stringr::str_length(date) == 0) { return(date) }
+
+  # Apply conversion
+  date <- lubridate::as_date(date)
+  stringr::str_c(
+    stringr::str_pad(lubridate::day(date), 2, "left", "0"),
+    stringr::str_pad(lubridate::month(date), 2, "left", "0"),
+    lubridate::year(date),
+    sep = "/")
+}
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",
