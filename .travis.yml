@@ -5,6 +5,11 @@ addons:
     packages:
       - libv8-dev
       - valgrind
+      - libtesseract-dev
+      - libleptonica-dev
+      - tesseract-ocr-eng
+      - libpoppler-cpp-dev
+      - libmagick++-dev
 
 language: R
 sudo: false
