@@ -16,7 +16,7 @@ parse_parts <- function(parser) {
   # Function for getting parts
   get_parts <- function(html) {
     html %>%
-      rvest::html_nodes(xpath = "//*[@id='tablePartesPrincipais']") %>%
+      xml2::xml_find_all("//*[@id='tablePartesPrincipais']") %>%
       rvest::html_table(fill = TRUE) %>%
       purrr::pluck(1) %>%
       dplyr::as_tibble() %>%
@@ -48,7 +48,7 @@ parse_data <- function(parser) {
   # Function for getting data
   get_data <- function(html) {
     html %>%
-      rvest::html_nodes(xpath = "//*[@class='secaoFormBody']") %>%
+      xml2::xml_find_all("//*[@class='secaoFormBody']") %>%
       rvest::html_table(fill = TRUE) %>%
       purrr::pluck(2) %>%
       dplyr::as_tibble() %>%
@@ -79,7 +79,7 @@ parse_movs <- function(parser) {
   # Function for getting movements
   get_movs <- function(html) {
     html %>%
-      rvest::html_nodes(xpath = "//*[@id='tabelaTodasMovimentacoes']") %>%
+      xml2::xml_find_all("//*[@id='tabelaTodasMovimentacoes']") %>%
       rvest::html_table(fill = TRUE) %>%
       purrr::pluck(1) %>%
       dplyr::as_tibble() %>%

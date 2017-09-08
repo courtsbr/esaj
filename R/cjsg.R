@@ -57,6 +57,31 @@ download_cjsg <- function(query, file, classes = "", subjects = "",
     httr::write_disk(file, TRUE))
 }
 
+#' Check certain characteristics regarding a CJSG download
+#' @param ... Arguments passed on to [download_cjsg()] (except `file`)
+#' @seealso [download_cjsg()], [cjsg_table()]
+#' @export
+peek_cjsg <- function(...) {
+
+  # Calculate how many pages are there
+  pages <- download_cjsg(..., file = tempfile()) %>%
+    xml2::read_html() %>%
+    xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
+    rvest::html_text() %>%
+    str_replace_all("[\\t\\n]", "") %>%
+    stringr::str_extract_all(" [0-9]+") %>%
+    purrr::pluck(1) %>%
+    stringr::str_trim() %>%
+    as.numeric() %>%
+    magrittr::divide_by(.[1]) %>%
+    purrr::pluck(2) %>%
+    ceiling()
+
+  # Print message
+  message("There are ", pages, " pages to download")
+  return(pages)
+}
+
 #' N??mero de p??ginas
 #'
 #' Calcula o n??mero de p??ginas retornadas por uma consulta de julgados de segundo grau.
