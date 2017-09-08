@@ -11,13 +11,14 @@
 #' @param registration_end Date then registration ended
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
+#' @param cores The number of cores to be used when downloading
 #' @param tj TJ form which to get data (only works with TJSP for now)
 #' @seealso [cjsg_table()]
 #' @export
 download_cjsg <- function(query, path, classes = "", subjects = "",
                           courts = "", trial_start = "", trial_end = "",
                           registration_start = "", registration_end = "",
-                          min_page = 1, max_page = 1, tj = "tjsp") {
+                          min_page = 1, max_page = 1, cores = 1, tj = "tjsp") {
 
   # Stop
   stopifnot(tj == "tjsp")
@@ -79,10 +80,14 @@ download_cjsg <- function(query, path, classes = "", subjects = "",
       "https://esaj.tjsp.jus.br/cjsg/trocaDePagina.do",
       query = query_get, httr::config(ssl_verifypeer = FALSE),
       httr::write_disk(file, TRUE))
+
+    return(TRUE)
   }
 
   # Download all pages
-  purrr::walk(min_page:max_page, download_pages, path)
+  parallel::mcmapply(
+    download_pages, min_page:max_page, list(path = path),
+    SIMPLIFY = FALSE, mc.cores = cores)
   return(list.files(path, full.names = TRUE))
 }
 
