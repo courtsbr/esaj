@@ -4,14 +4,14 @@
 \alias{download_cjsg}
 \title{Dowload CJSG search results}
 \usage{
-download_cjsg(query, file, classes = "", subjects = "", courts = "",
+download_cjsg(query, path, classes = "", subjects = "", courts = "",
   trial_start = "", trial_end = "", registration_start = "",
-  registration_end = "", tj = "tjsp")
+  registration_end = "", min_page = 1, max_page = 1, tj = "tjsp")
 }
 \arguments{
 \item{query}{Character vector wtih search query}
 
-\item{file}{Path to file where to save search restults}
+\item{path}{Path to directory where to save HTMLs}
 
 \item{classes}{Character vector with lawsuit class IDs}
 
@@ -26,6 +26,10 @@ download_cjsg(query, file, classes = "", subjects = "", courts = "",
 \item{registration_start}{Date when registration started}
 
 \item{registration_end}{Date then registration ended}
+
+\item{min_page}{First page of results to download}
+
+\item{max_page}{Last page of results to download}
 
 \item{tj}{TJ form which to get data (only works with TJSP for now)}
 }

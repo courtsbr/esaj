@@ -72,6 +72,22 @@ date_pt <- function(date) {
     sep = "/")
 }
 
+# Return time in a human readable way
+how_long <- function(x) {
+
+  if (x < 60) {
+    round(x, 1) %>% stringr::str_c(" seconds")
+  } else if (x < 3600) {
+    round(x/60, 1) %>% stringr::str_c(" minutes")
+  } else if (x < 86400) {
+    round(x/3600 , 1) %>% stringr::str_c(" hours")
+  } else if (x < 604800) {
+    round(x/86400, 1) %>% stringr::str_c(" days")
+  } else {
+    round(x/604800, 1) %>% stringr::str_c(" weeks")
+  }
+}
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",
