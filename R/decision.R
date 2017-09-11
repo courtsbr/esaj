@@ -13,12 +13,12 @@ download_decision <- function(id, path, tj = "tjsp") {
   dir.create(path, FALSE, TRUE)
 
   # Download decisions
-  dwld <- purrr::possibly(download_decision_tjsp, "")
+  dwld <- purrr::possibly(download_decision_, "")
   p <- progress::progress_bar$new(total = length(id))
   purrr::map_chr(id, ~{ dwld(.x, path); p$tick() })
 }
 
-download_decision_tjsp <- function(id, path, ntry = 10, verbose = FALSE) {
+download_decision_ <- function(id, path, ntry = 10, verbose = FALSE) {
 
   # Download page with captcha
   captcha <- httr::GET(
