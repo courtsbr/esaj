@@ -36,7 +36,11 @@ cjsg_table <- function(type, tj = "tjsp") {
     dplyr::select(
       dplyr::ends_with('0'), dplyr::ends_with('1'),
       dplyr::ends_with('2'), dplyr::ends_with('3'),
-      dplyr::ends_with('4'), dplyr::ends_with('leaf'))
+      dplyr::ends_with('4'), dplyr::ends_with('leaf')) %>%
+    purrr::set_names(
+      c("name0", "id0", "name1", "id1",
+      "name2", "id2", "name3", "id3",
+      "name4", "id4", "name5", "id5"))
 }
 
 #' Download table with court information for [cjsg_table()]
@@ -73,7 +77,8 @@ courts_table <- function() {
     rlang::as_list() %>%
     purrr::modify(create_row) %>%
     dplyr::bind_rows() %>%
-    dplyr::select(pai, secao, cod)
+    dplyr::select(pai, secao, cod) %>%
+    purrr::set_names(c("branch", "court", "id"))
 }
 
 #' Browse table returned by [cjsg_table()]
@@ -108,10 +113,10 @@ browse_cjsg <- function(table, patterns) {
   # Apply filters
   table %>%
     dplyr::filter(
-      str_detect(titulo0, patterns[[1]]),
-      str_detect(titulo1, patterns[[2]]),
-      str_detect(titulo2, patterns[[3]]),
-      str_detect(titulo3, patterns[[4]]),
-      str_detect(titulo4, patterns[[5]]),
-      str_detect(titulo_leaf, patterns[[6]]))
+      str_detect(name0, patterns[[1]]),
+      str_detect(name1, patterns[[2]]),
+      str_detect(name2, patterns[[3]]),
+      str_detect(name3, patterns[[4]]),
+      str_detect(name4, patterns[[5]]),
+      str_detect(name5, patterns[[6]]))
 }
