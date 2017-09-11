@@ -6,7 +6,8 @@
 \usage{
 download_cjsg(query, path, classes = "", subjects = "", courts = "",
   trial_start = "", trial_end = "", registration_start = "",
-  registration_end = "", min_page = 1, max_page = 1, tj = "tjsp")
+  registration_end = "", min_page = 1, max_page = 1, cores = 1,
+  tj = "tjsp")
 }
 \arguments{
 \item{query}{Character vector wtih search query}
@@ -30,6 +31,8 @@ download_cjsg(query, path, classes = "", subjects = "", courts = "",
 \item{min_page}{First page of results to download}
 
 \item{max_page}{Last page of results to download}
+
+\item{cores}{The number of cores to be used when downloading}
 
 \item{tj}{TJ form which to get data (only works with TJSP for now)}
 }

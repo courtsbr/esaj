@@ -93,6 +93,6 @@ globalVariables(c(
   "color", "date_link", "desc", "forma", "g", "head", "id",
   "info", "key", "link", "n", "n_processo", "nome", "r", "result",
   "rm_accent", "setNames", "value", "y", "cd_acordao", "cod", "cod0",
-  "id_processo", "item", "pai", "secao", "titulo0", "titulo_leaf",
-  "txt_ementa", "val", "role", "name", "part", "titulo0", "titulo1",
-  "titulo2", "titulo3", "titulo4"))
+  "id_processo", "item", "pai", "secao", "txt_ementa", "val", "role",
+  "name", "part", "name0", "name1", "name2", "name3", "name4", "name5",
+  "titulo0", "titulo_leaf"))

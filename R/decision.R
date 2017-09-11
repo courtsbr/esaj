@@ -1,45 +1,65 @@
-download_decision_tjsp <- function(cod_decision, path,
-                                   ntry = 10, verbose = FALSE) {
-  link <- 'https://esaj.tjsp.jus.br/cjsg/getArquivo.do'
-  query <- list(cdAcordao = cod_decision, cdForo = 0)
-  configs <- httr::config(ssl_verifypeer = FALSE)
-  r0 <- httr::GET(link, query = query, config = configs)
-  pdf_file <- sprintf('%s/%s.pdf', path, cod_decision)
-  tentativas <- 0
-  mime <- "application/pdf;charset=UTF-8"
-  while (r0$headers[['content-type']] != mime && tentativas < ntry) {
-    if (verbose) cat('quebrando captcha...\n')
-    # Hasn't downloaded, there's a captcha
-    time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
-    u_captcha <- 'https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do'
-    arq_captcha <- download_rgb_captcha(u_captcha, time_stamp)
-    query$conversationId <- ''
-    query$cdForo <- '0'
-    query$uuidCaptcha <- captcha_uuid(arq_captcha)
-    query$vlCaptcha <- break_rgb_captcha(arq_captcha)
-    query$novoVlCaptcha <- ''
-    r0 <- httr::GET(link, query = query, config = configs)
-    tentativas <- tentativas + 1
-  }
-  writeBin(r0$content, pdf_file)
-  invisible(pdf_file)
+
+#' Download decision PDFs
+#' @param id A character vector with decision IDs
+#' @param path Path to directory where to save PDFs
+#' @param tj TJ to download decisions (only works with TJSP for now)
+#' @export
+download_decision <- function(id, path, tj = "tjsp") {
+
+  # Stop if TJ isn't TJSP
+  stopifnot(tj == "tjsp")
+
+  # Create directory if necessary
+  dir.create(path, FALSE, TRUE)
+
+  # Download decisions
+  dwld <- purrr::possibly(download_decision_tjsp, "")
+  p <- progress::progress_bar$new(total = length(id))
+  purrr::map_chr(id, ~{ dwld(.x, path); p$tick() })
 }
 
-#' @title Download decisions
-#'
-#' @description Download decisions from TJSP
-#'
-#' @param cod_decision Column cd_acordao of d_cjsg
-#' @param tj TJ to download decisions (only works with TJSP for now)
-#' @param path Path to the directory where the lawsuit should be downloaded
-#'
-#' @export
-download_decisions <- function(cod_decision, tj = "tjsp", path = '.') {
-  stopifnot(tj == "tjsp")
-  safe_download <- purrr::possibly(download_decision_tjsp, '')
-  p <- progress::progress_bar$new(total = length(cod_decision))
-  purrr::walk(cod_decision, ~{
-    safe_download(.x, path = path)
-    p$tick()
-  })
+download_decision_tjsp <- function(id, path, ntry = 10, verbose = FALSE) {
+
+  # Download page with captcha
+  captcha <- httr::GET(
+    "https://esaj.tjsp.jus.br/cjsg/getArquivo.do",
+    query = list(cdAcordao = id, cdForo = 0),
+    httr::config(ssl_verifypeer = FALSE))
+
+  # File where to save PDF
+  file <- stringr::str_c(normalizePath(path), "/", id, ".pdf")
+
+  # Try to download PDF at most ntry times
+  for (i in 1:ntry) {
+
+    # Message
+    if (verbose) { message("Breaking captcha...") }
+
+    # Download captcha itself
+    time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
+    u_captcha <- "https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do"
+    f_captcha <- download_rgb_captcha(u_captcha, time_stamp)
+
+    # Query for GET request
+    query_get <- list(
+      conversationId = "",
+      cdAcordao = id,
+      cdForo = 0,
+      uuidCaptcha = captcha_uuid(f_captcha),
+      vlCaptcha = break_rgb_captcha(f_captcha),
+      novoVlCaptcha = "")
+
+    # Try to open PDF
+    pdf <- httr::GET(
+      "https://esaj.tjsp.jus.br/cjsg/getArquivo.do",
+      query = query_get, httr::config(ssl_verifypeer = FALSE))
+
+    # Captcha was broken
+    mime <- "application/pdf;charset=UTF-8"
+    if (pdf$headers[["content-type"]] == mime) {
+      writeBin(pdf$content, file); return(file)
+    }
+  }
+
+  return("")
 }
