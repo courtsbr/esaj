@@ -25,7 +25,6 @@ Imports:
   xml2,
   rlang,
   purrr,
-  XML,
   abjutils,
   captchaSajAudio,
   progress,

@@ -18,6 +18,26 @@ NULL
 #' @importFrom magrittr %<>%
 NULL
 
+#' Quasiquotation of an expression
+#'
+#' See \code{\link[rlang]{!!}} for more details.
+#'
+#' @name !!
+#' @rdname quasiquotation
+#' @keywords internal
+#' @importFrom rlang !!
+NULL
+
+#' Definition operator
+#'
+#' See \code{\link[rlang]{:=}} for more details.
+#'
+#' @name :=
+#' @rdname op-definition
+#' @keywords internal
+#' @importFrom rlang :=
+NULL
+
 "%||%" <- function(x, y) {
   if (rlang::is_null(x)) y else x
 }

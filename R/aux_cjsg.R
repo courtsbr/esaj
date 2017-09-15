@@ -20,27 +20,20 @@ cjsg_table <- function(type, tj = "tjsp") {
 
   # Fetch table with information
   stringr::str_c(
-      "https://esaj.tjsp.jus.br/cjsg/", type,
-      "TreeSelect.do?campoId=", type) %>%
+    "https://esaj.tjsp.jus.br/cjsg/", type,
+    "TreeSelect.do?campoId=", type) %>%
     httr::GET(httr::config(ssl_verifypeer = FALSE)) %>%
     httr::content('text') %>%
-    XML::htmlParse(encoding = 'UTF-8') %>%
-    XML::getNodeSet('//div[@class="treeView"]') %>%
-    purrr::modify(XML::xmlToList) %>%
+    xml2::read_html() %>%
+    xml2::xml_find_all("//div[@class='treeView']") %>%
+    purrr::modify(xml2::as_list) %>%
     dplyr::first() %>% dplyr::nth(2) %>%
     purrr::keep(~is.list(.x)) %>%
     tree_to_tibble() %>%
-    dplyr::mutate(
-      titulo0 = ifelse(is.na(titulo0), titulo_leaf, titulo0),
-      cod0 = ifelse(is.na(cod0), titulo_leaf, cod0)) %>%
     dplyr::select(
       dplyr::ends_with('0'), dplyr::ends_with('1'),
       dplyr::ends_with('2'), dplyr::ends_with('3'),
-      dplyr::ends_with('4'), dplyr::ends_with('leaf')) %>%
-    purrr::set_names(
-      c("name0", "id0", "name1", "id1",
-      "name2", "id2", "name3", "id3",
-      "name4", "id4", "name5", "id5"))
+      dplyr::ends_with('4'), dplyr::ends_with('5'))
 }
 
 #' Download table with court information for [cjsg_table()]

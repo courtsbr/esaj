@@ -3,33 +3,43 @@ get_obj <- function(tipo) {
   r <- httr::GET(sprintf(u_base, tipo[1], tipo[1]), httr::config(ssl_verifypeer = FALSE))
 }
 
+# Transform an XML tree into a tibble
 tree_to_tibble <- function(tree, n = 0) {
-  tree <- tree[names(tree) == 'li']
-  f1 <- dplyr::failwith('', function(.x) {
-    .x[[2]][['text']]
-  }, quiet = TRUE)
-  f2 <- dplyr::failwith('', function(.x) {
-    .x[[2]][['.attrs']][['value']]
-  }, quiet = TRUE)
-  titulos <- purrr::map_chr(tree, f1)
-  titulos <- titulos[titulos != '']
-  cods <- purrr::map_chr(tree, f2)
-  cods <- cods[cods != '']
-  ns <- purrr::map_int(tree, ~length(.x))[seq_along(cods)]
-  purrr::map(seq_along(ns), function(i) {
-    if (ns[i] == 4) {
-      dplyr::data_frame(titulo_leaf = titulos[i], cod_leaf = cods[i])
-    } else {
-      x <- tree_to_tibble(tree[[i]][[4]], n + 1) %>%
-        dplyr::bind_rows()
-      x[[paste0('titulo', n)]] <- titulos[i]
-      x[[paste0('cod', n)]] <- cods[i]
-      x
-    }
-  }) %>%
-    dplyr::bind_rows()
-}
 
+  # Extract category names
+  names <- tree %>%
+    purrr::map(purrr::pluck, 2, 1) %>%
+    purrr::compact() %>%
+    magrittr::extract(. != "") %>%
+    purrr::flatten_chr()
+
+  # Extract category codes
+  ids <- tree %>%
+    purrr::map(purrr::pluck, 2) %>%
+    purrr::map(attr, "value") %>%
+    purrr::compact() %>%
+    magrittr::extract(. != "") %>%
+    purrr::flatten_chr()
+
+  # Iterate over every branch of tree
+  purrr::imap_dfr(lengths(tree, FALSE), function(len, i) {
+
+    # If element is a leaf node, return it's contents
+    # Otherwise recur on it's elements
+    if (len == 3) {
+      dplyr::tibble(name5 = names[i], id5 = ids[i])
+    }
+    else {
+      tree %>%
+      purrr::pluck(i, 4) %>%
+      magrittr::extract(names(.) == 'li') %>%
+      tree_to_tibble(n + 1) %>%
+      dplyr::mutate(
+        !!stringr::str_c("name", n) := names[i],
+        !!stringr::str_c("id", n) := ids[i])
+    }
+  })
+}
 
 #' @title Downloads table of CJPG items
 #'
