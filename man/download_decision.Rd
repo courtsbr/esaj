@@ -4,10 +4,10 @@
 \alias{download_decision}
 \title{Download decision PDFs}
 \usage{
-download_decision(id, path, tj = "tjsp")
+download_decision(decision, path, tj = "tjsp")
 }
 \arguments{
-\item{id}{A character vector with decision IDs}
+\item{decision}{A character vector with decision IDs}
 
 \item{path}{Path to directory where to save PDFs}
 
