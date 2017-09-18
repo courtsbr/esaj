@@ -23,7 +23,7 @@
 #'   \item TJSP (Sao Paulo)
 #' }
 #'
-#' @param id A lawsuit's unique identifier
+#' @param id A character vector of one or more lawsuit IDs
 #' @param path Path to the directory where the lawsuit should be downloaded
 #'
 #' @return A character vector with the path to the downloaded lawsuit
@@ -44,7 +44,14 @@ download_lawsuit <- function(id, path = ".") {
 
   # Strip ID down
   id <- stringr::str_replace_all(id, "[^0-9]", "")
-  if (stringr::str_length(id) != 20) { stop("Invalid ID") }
+  if (any(stringr::str_length(id) != 20)) { stop("Invalid ID") }
+
+  # Iterate over IDs
+  purrr::map_chr(id, download_lawsuit_, path)
+}
+
+# Download one lawsuit
+download_lawsuit_ <- function(id, path) {
 
   # Choose appropriate download function
   if (get_n(id) %in% c("05")) { download <- download_bw_lawsuit }
