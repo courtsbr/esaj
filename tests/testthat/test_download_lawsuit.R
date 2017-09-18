@@ -1,5 +1,5 @@
 library(esaj)
-context("download")
+context("download_lawsuit")
 
 test_that("download_lawsuit() is working", {
 
@@ -18,8 +18,8 @@ test_that("download_lawsuit() is working", {
   sp <- download_lawsuit("0123479-07.2012.8.26.0100", path) # São Paulo
 
   # Expectations
-  expect_true(stringr::str_detect(am, ".html$"))
-  expect_true(stringr::str_detect(sc, ".html$"))
-  expect_true(stringr::str_detect(ba, ".html$"))
-  expect_true(stringr::str_detect(sp, ".html$"))
+  expect_gt(file.info(am)$size, 10000)
+  expect_gt(file.info(sc)$size, 10000)
+  expect_gt(file.info(ba)$size, 10000)
+  expect_gt(file.info(sp)$size, 10000)
 })
