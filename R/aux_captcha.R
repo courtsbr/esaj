@@ -27,17 +27,18 @@ captcha_uuid <- purrr::possibly(captcha_uuid, "xxxx")
 
 # Create query to download lawsuit
 lawsuit_query <- function(id) {
-  list("conversationId" = "",
-       "dadosConsulta.localPesquisa.cdLocal" = "-1",
-       "cbPesquisa" = "NUMPROC",
-       "dadosConsulta.tipoNuProcesso" = "UNIFICADO",
-       "numeroDigitoAnoUnificado" = stringr::str_sub(id, 1, 13),
-       "foroNumeroUnificado" = stringr::str_sub(id, -4, -1),
-       "dadosConsulta.valorConsultaNuUnificado" = id,
-       "dadosConsulta.valorConsulta" = "",
-       "uuidCaptcha" = "",
-       "vlCaptcha" = "",
-       "novoVlCaptcha" = "")
+  list(
+    "conversationId" = "",
+     "dadosConsulta.localPesquisa.cdLocal" = "-1",
+     "cbPesquisa" = "NUMPROC",
+     "dadosConsulta.tipoNuProcesso" = "UNIFICADO",
+     "numeroDigitoAnoUnificado" = stringr::str_sub(id, 1, 13),
+     "foroNumeroUnificado" = stringr::str_sub(id, -4, -1),
+     "dadosConsulta.valorConsultaNuUnificado" = id,
+     "dadosConsulta.valorConsulta" = "",
+     "uuidCaptcha" = "",
+     "vlCaptcha" = "",
+     "novoVlCaptcha" = "")
 }
 
 # Break RGB captcha

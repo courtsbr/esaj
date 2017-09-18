@@ -56,16 +56,14 @@ cjpg_table <- function(tipo = c('classe', 'assunto', 'varas'), tj = "tjsp") {
   r <- get_obj(tipo)
   tree <- r %>%
     httr::content('text') %>%
-    XML::htmlParse(encoding = 'UTF-8') %>%
-    XML::getNodeSet('//div[@class="treeView"]') %>%
-    lapply(function(x) XML::xmlToList(x)) %>%
-    dplyr::first() %>%
-    dplyr::nth(2) %>%
-    purrr::keep(~is.list(.x))
-  tree_to_tibble(tree) %>%
-    dplyr::select(dplyr::ends_with('leaf'),
-                  dplyr::ends_with('0'),
-                  dplyr::everything()) %>%
-    dplyr::mutate(titulo0 = ifelse(is.na(titulo0), titulo_leaf, titulo0),
-                  cod0 = ifelse(is.na(cod0), titulo_leaf, cod0))
+    xml2::read_html() %>%
+    xml2::xml_find_all("//div[@class='treeView']") %>%
+    purrr::modify(xml2::as_list) %>%
+    dplyr::first() %>% dplyr::nth(2) %>%
+    purrr::keep(~is.list(.x)) %>%
+    tree_to_tibble() %>%
+    dplyr::select(
+      dplyr::ends_with('0'), dplyr::ends_with('1'),
+      dplyr::ends_with('2'), dplyr::ends_with('3'),
+      dplyr::ends_with('4'), dplyr::ends_with('5'))
 }

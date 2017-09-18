@@ -161,7 +161,7 @@ print.parser <- function(x, ...) {
 # @export
 cpo_sg <- function(processos, path = "data-raw/cpo-sg", tj = 'TJSP') {
   if(tj == 'TJSC') {
-    d <- pesquisar_processos_2inst(processos, path)
+    d <- download_2deg_lawsuit(processos, path)
     return(d)
   }
   # f <- dplyr::fail\with(dplyr::data_frame(result = "erro"), cpo_pg_um)
@@ -177,7 +177,7 @@ cpo_sg <- function(processos, path = "data-raw/cpo-sg", tj = 'TJSP') {
         return(dplyr::data_frame(result = "arquivo existe"))
       }
       # Sys.sleep(1)
-      u <- build_url_cpo_sg(p, tj)
+      u <- lawsuit_query(p)
       if (!file.exists(arq)) {
         r <- httr::GET(u, httr::config(ssl_verifypeer = FALSE),
                        httr::write_disk(arq))
