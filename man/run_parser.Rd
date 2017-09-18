@@ -4,7 +4,7 @@
 \alias{run_parser}
 \title{Runs a parser}
 \usage{
-run_parser(files, parser, path, cores = 1)
+run_parser(files, parser, path = ".", cores = 1)
 }
 \arguments{
 \item{files}{A character vector with the paths to one ore more files}

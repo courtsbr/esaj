@@ -28,4 +28,7 @@ test_that("download_lawsuit() is working", {
     c("0123479-07.2012.8.26.0100",
     "0552486-62.2015.8.05.0001"), path)
   expect_true(all(file.info(more)$size > 100000))
+
+  # Check if we get the right error
+  expect_error(download_lawsuit(".", path), "Invalid ID")
 })

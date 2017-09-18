@@ -4,7 +4,7 @@
 #' @param path Path to directory where to save PDFs
 #' @param tj TJ to download decisions (only works with TJSP for now)
 #' @export
-download_decision <- function(decision, path, tj = "tjsp") {
+download_decision <- function(decision, path = ".", tj = "tjsp") {
 
   # Stop if TJ isn't TJSP
   stopifnot(tj == "tjsp")

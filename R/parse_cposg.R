@@ -102,7 +102,7 @@ parse_movs <- function(parser) {
 #' @param path The path to a directory where to save RDSs
 #' @param cores The number of cores to be used when parsing
 #' @export
-run_parser <- function(files, parser, path, cores = 1) {
+run_parser <- function(files, parser, path = ".", cores = 1) {
 
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")

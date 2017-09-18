@@ -4,7 +4,7 @@
 \alias{download_cjsg}
 \title{Dowload CJSG search results}
 \usage{
-download_cjsg(query = "", path, classes = "", subjects = "",
+download_cjsg(query = "", path = ".", classes = "", subjects = "",
   courts = "", trial_start = "", trial_end = "",
   registration_start = "", registration_end = "", min_page = 1,
   max_page = 1, cores = 1, tj = "tjsp")
