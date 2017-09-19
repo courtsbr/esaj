@@ -107,11 +107,48 @@ how_long <- function(x) {
   }
 }
 
+# Transform an XML tree into a tibble
+tree_to_tibble <- function(tree, n = 0) {
+
+  # Extract category names
+  names <- tree %>%
+    purrr::map(purrr::pluck, 2, 1) %>%
+    purrr::compact() %>%
+    magrittr::extract(. != "") %>%
+    purrr::flatten_chr()
+
+  # Extract category codes
+  ids <- tree %>%
+    purrr::map(purrr::pluck, 2) %>%
+    purrr::map(attr, "value") %>%
+    purrr::compact() %>%
+    magrittr::extract(. != "") %>%
+    purrr::flatten_chr()
+
+  # Iterate over every branch of tree
+  purrr::imap_dfr(lengths(tree, FALSE), function(len, i) {
+
+    # If element is a leaf node, return it's contents
+    # Otherwise recur on it's elements
+    if (len == 3) {
+      dplyr::tibble(name5 = names[i], id5 = ids[i])
+    }
+    else {
+      tree %>%
+      purrr::pluck(i, 4) %>%
+      magrittr::extract(names(.) == 'li') %>%
+      tree_to_tibble(n + 1) %>%
+      dplyr::mutate(
+        !!stringr::str_c("name", n) := names[i],
+        !!stringr::str_c("id", n) := ids[i])
+    }
+  })
+}
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",
   "info", "key", "link", "n", "n_processo", "nome", "r", "result",
-  "rm_accent", "setNames", "value", "y", "cd_acordao", "cod", "cod0",
-  "id_processo", "item", "pai", "secao", "txt_ementa", "val", "role",
-  "name", "part", "name0", "name1", "name2", "name3", "name4", "name5",
-  "titulo0", "titulo_leaf"))
+  "rm_accent", "setNames", "value", "y", "cd_acordao", "id0", "id5",
+  "id_processo", "item", "branch", "court", "txt_ementa", "val", "role",
+  "name", "part", "name0", "name1", "name2", "name3", "name4", "name5"))
