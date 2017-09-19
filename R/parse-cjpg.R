@@ -49,7 +49,7 @@ parse_cjpg_arq <- function(arq) {
 
 #' @title CJPG parser
 #'
-#' @description Parser for files downloaded by [cjpg()].
+#' @description Parser for files downloaded by [download_cjpg()].
 #'
 #' @param arqs Character vector with the paths of the files to be parsed
 #'

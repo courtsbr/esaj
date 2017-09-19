@@ -20,7 +20,7 @@ test_that("Function for parsing CPOSG is working", {
 
   # Check info's shape
   expect_equal(nrow(info), 2)
-  expect_equal(dim(info$movs[[1]]), c(20, 2))
+  expect_equal(dim(info$movs[[1]]), c(21, 2))
   expect_equal(dim(info$data[[1]]), c(11, 2))
   expect_equal(dim(info$parts[[1]]), c(5, 4))
 
