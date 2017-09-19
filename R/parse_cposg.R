@@ -97,12 +97,12 @@ parse_movs <- function(parser) {
 }
 
 #' Runs a parser
-#' @param files A character vector with the paths to one ore more files
+#' @param file A character vector with the paths to one ore more files
 #' @param parser A parser returned by [make_parser()]
 #' @param path The path to a directory where to save RDSs
 #' @param cores The number of cores to be used when parsing
 #' @export
-run_parser <- function(files, parser, path = ".", cores = 1) {
+run_parser <- function(file, parser, path = ".", cores = 1) {
 
   # Check if parser is a parser
   stopifnot(class(parser) == "parser")
@@ -137,7 +137,7 @@ run_parser <- function(files, parser, path = ".", cores = 1) {
   # Apply getters to all files
   parser_path <- list(parser = parser, path = path)
   parallel::mcmapply(
-    apply_getters, files, list(parser_path = parser_path),
+    apply_getters, file, list(parser_path = parser_path),
     SIMPLIFY = FALSE, mc.cores = cores) %>%
     dplyr::bind_rows()
 }
