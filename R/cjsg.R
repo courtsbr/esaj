@@ -5,10 +5,10 @@
 #' @param classes Character vector with lawsuit class IDs
 #' @param subjects Character vector with lawsuit subject IDs
 #' @param courts Character vector with lawsuit court IDs
-#' @param trial_start Date when the trial started
-#' @param trial_end Date when the trial ended
-#' @param registration_start Date when registration started
-#' @param registration_end Date then registration ended
+#' @param trial_start Lower bound for trial date
+#' @param trial_end Upper bound for trial date
+#' @param registration_start Lower bound for registration date
+#' @param registration_end Upper bound for registration date
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
 #' @param cores The number of cores to be used when downloading
@@ -88,7 +88,7 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
   files <- parallel::mcmapply(
     download_pages, min_page:max_page, list(path = path),
     SIMPLIFY = FALSE, mc.cores = cores)
-  return(purrr::flatten_chr(files))
+  return(c(file, purrr::flatten_chr(files)))
 }
 
 #' Check certain characteristics regarding a CJSG download
