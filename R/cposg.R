@@ -24,6 +24,7 @@
 download_2deg_lawsuit <- function(id, path = ".") {
 
   # Normalize path
+  dir.create(path, FALSE, TRUE)
   path <- normalizePath(path) %>%
     stringr::str_c("/")
 
