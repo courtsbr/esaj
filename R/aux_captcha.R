@@ -41,6 +41,20 @@ lawsuit_query <- function(id) {
      "novoVlCaptcha" = "")
 }
 
+# Create query to download 2nd degree lawsuit
+lawsuit_2deg_query <- function(id) {
+  list(
+    conversationId = "",
+    paginaConsulta = 1,
+    "localPesquisa.cdLocal" = -1,
+    cbPesquisa = "NUMPROC",
+    tipoNuProcesso = "UNIFICADO",
+    numeroDigitoAnoUnificado = stringr::str_sub(id, 1, 11),
+    foroNumeroUnificado = stringr::str_sub(id, -4, -1),
+    dePesquisaNuUnificado = id,
+    dePesquisaNuAntigo = "")
+}
+
 # Break RGB captcha
 break_rgb_captcha <- function(file) {
 

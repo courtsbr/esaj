@@ -1,41 +1,50 @@
-dados_cposg <- function(p) {
-  list('conversationId' = '',
-       'paginaConsulta' = '1',
-       'localPesquisa.cdLocal' = '-1',
-       'cbPesquisa' = 'NUMPROC',
-       'tipoNuProcesso' = 'UNIFICADO',
-       'numeroDigitoAnoUnificado' = stringr::str_sub(p, 1, 11),
-       'foroNumeroUnificado' = stringr::str_sub(p, -4, -1),
-       'dePesquisaNuUnificado' = p,
-       'dePesquisaNuAntigo' = '')
-}
 
-cposg_um <- function(p, path, ow) {
-  arq <- sprintf('%s/%s.html', path, p)
-  if (!file.exists(arq) || ow) {
-    httr::GET('https://esaj.tjsp.jus.br/cposg/search.do',
-              query = dados_cposg(p),
-              config = httr::config(ssl_verifypeer = FALSE),
-              httr::write_disk(arq, overwrite = ow))
-    tibble::tibble(result = 'OK')
-  } else {
-    tibble::tibble(result = 'j\u00E1 existe')
-  }
-}
-
-#' @title Download 2nd degree lawsuits
+#' Download second degree lawsuits filed in Brazilian Tribinais de Justica
+#' (Justice Courts)
 #'
-#' @description  Download second degree lawsuits from TJSP.
+#' @section Implemented TJs:
+#' Unfortunatelly [download_lawsuit()] doesn't yet work with all 27 TJs in
+#' Brazil. Here are the ones already implemented:
+#' \itemize{
+#'   \item TJSP (Sao Paulo)
+#' }
 #'
-#' @param processos Lawsuit ID (only numbers)
-#' @param tj TJ of the lawsuits (only works with TJSP for now)
-#' @param path Path to the directory where the lawsuit should be downloaded
-#' @param overwrite Whether to write over already existing HTMLs
+#' @param id A character vector of one or more lawsuit IDs (only works with
+#' TJSP for now)
+#' @param path Path to the directory where the lawsuit should be saved
+#'
+#' @return A character vector with the path to the downloaded lawsuit
+#'
+#' @examples
+#' \dontrun{
+#' download_2deg_lawsuit("1001869-51.2017.8.26.0562")
+#' }
 #'
 #' @export
- download_2deg_lawsuit <- function(processos, tj = "tjsp", path = 'data-raw/cposg', overwrite = FALSE) {
-  stopifnot(tj == "tjsp")
-  suppressWarnings(dir.create(path, recursive = TRUE))
-  processos <- gsub('[^0-9]', '', processos)
-  abjutils::dvec(cposg_um, processos, path = path, ow = overwrite)
+download_2deg_lawsuit <- function(id, path = ".") {
+
+  # Normalize path
+  path <- normalizePath(path) %>%
+    stringr::str_c("/")
+
+  # Strip ID down
+  id <- stringr::str_replace_all(id, "[^0-9]", "")
+  if (any(stringr::str_length(id) != 20)) { stop("Invalid ID") }
+
+  # Iterate over IDs
+  purrr::map_chr(id, download_2deg_lawsuit_, path)
+}
+
+# Download one lawsuit
+download_2deg_lawsuit_ <- function(id, path) {
+
+  # Choose appropriate download function
+  if (get_n(id) %in% c("26")) { download <- download_noc_lawsuit }
+  else { stop("ID must refer to a TJSP lawsuit") }
+
+  # Get URLs for the download
+  data <- get_lwst_data(id, deg = 2)
+
+  # Download lawsuit
+  download(id, path, data$u_captcha, data$u_search, lawsuit_2deg_query(id))
 }

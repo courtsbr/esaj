@@ -10,7 +10,7 @@ download_lawsuit(id, path = ".")
 \arguments{
 \item{id}{A character vector of one or more lawsuit IDs}
 
-\item{path}{Path to the directory where the lawsuit should be downloaded}
+\item{path}{Path to the directory where the lawsuit should be saved}
 }
 \value{
 A character vector with the path to the downloaded lawsuit

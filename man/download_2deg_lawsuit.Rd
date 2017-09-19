@@ -2,20 +2,32 @@
 % Please edit documentation in R/cposg.R
 \name{download_2deg_lawsuit}
 \alias{download_2deg_lawsuit}
-\title{Download 2nd degree lawsuits}
+\title{Download second degree lawsuits filed in Brazilian Tribinais de
+Justica (Justice Courts)}
 \usage{
-download_2deg_lawsuit(processos, tj = "tjsp", path = "data-raw/cposg",
-  overwrite = FALSE)
+download_2deg_lawsuit(id, path = ".")
 }
 \arguments{
-\item{processos}{Lawsuit ID (only numbers)}
+\item{id}{A character vector of one or more lawsuit IDs (only works with
+TJSP for now)}
 
-\item{tj}{TJ of the lawsuits (only works with TJSP for now)}
-
-\item{path}{Path to the directory where the lawsuit should be downloaded}
-
-\item{overwrite}{Whether to write over already existing HTMLs}
+\item{path}{Path to the directory where the lawsuit should be saved}
 }
-\description{
-Download second degree lawsuits from TJSP.
+\value{
+A character vector with the path to the downloaded lawsuit
+}
+\section{Implemented TJs}{
+
+Unfortunatelly \code{\link[=download_lawsuit]{download_lawsuit()}} doesn't yet work with all 27 TJs in
+Brazil. Here are the ones already implemented:
+\itemize{
+\item TJSP (Sao Paulo)
+}
+}
+
+\examples{
+\dontrun{
+download_2deg_lawsuit("1001869-51.2017.8.26.0562")
+}
+
 }

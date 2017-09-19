@@ -1,3 +1,4 @@
+
 #' @title Download lawsuits filed in Brazilian Tribinais de Justica
 #' (Justice Courts)
 #'
@@ -24,7 +25,7 @@
 #' }
 #'
 #' @param id A character vector of one or more lawsuit IDs
-#' @param path Path to the directory where the lawsuit should be downloaded
+#' @param path Path to the directory where the lawsuit should be saved
 #'
 #' @return A character vector with the path to the downloaded lawsuit
 #'
@@ -62,76 +63,5 @@ download_lawsuit_ <- function(id, path) {
   data <- get_lwst_data(id)
 
   # Download lawsuit
-  download(id, path, data$u_captcha, data$u_search)
-}
-
-# Download lawsuit from a TJ that uses RGB captchas
-download_rgb_lawsuit <- function(id, path, u_captcha, u_search) {
-
-  # Try at most 10 times
-  for (i in 1:10) {
-
-    # Download captcha
-    time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
-    f_captcha <- download_rgb_captcha(u_captcha, time_stamp)
-
-    # Create GET query
-    query <- lawsuit_query(id)
-    query$uuidCaptcha <- captcha_uuid(f_captcha)
-    query$vlCaptcha <- break_rgb_captcha(f_captcha)
-
-    # Download lawsuit
-    f_lwst <- stringr::str_c(path, id, ".html")
-    f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
-
-    # Free temporary file
-    file.remove(f_captcha)
-
-    # Breaking condition
-    if (!has_captcha(f_search)) { return(f_lwst) }
-    else { file.remove(f_lwst) }
-  }
-}
-
-# Download a lawsuit from a TJ that uses B&W captchas
-download_bw_lawsuit <- function(id, path, u_captcha, u_search) {
-
-  # Aux function for breaking captcha
-  break_bw_captcha <- purrr::possibly(captchasaj::decodificar, "xxxxx")
-
-  # Try at most 10 times
-  for (i in 1:10) {
-
-    # Download captcha
-    f_captcha <- tempfile()
-    writeBin(httr::content(httr::GET(u_captcha), "raw"), f_captcha)
-
-    # Create GET query
-    query <- lawsuit_query(id)
-    query$vlCaptcha <- break_bw_captcha(f_captcha, captchasaj::modelo$modelo)
-
-    # Download lawsuit
-    f_lwst <- stringr::str_c(path, id, ".html")
-    f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
-
-    # Free temporary file
-    file.remove(f_captcha)
-
-    # Breaking condition
-    if (!has_captcha(f_search)) { return(f_lwst) }
-    else { file.remove(f_lwst) }
-  }
-}
-
-# Download a lawsuit from a TJ that uses no captcha system at all
-download_noc_lawsuit <- function(id, path, u_captcha, u_search) {
-
-  # Create GET query
-  query <- lawsuit_query(id)
-
-  # Download lawsuit
-  f_lwst <- stringr::str_c(path, id, ".html")
-  f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
-
-  return(f_lwst)
+  download(id, path, data$u_captcha, data$u_search, lawsuit_query(id))
 }
