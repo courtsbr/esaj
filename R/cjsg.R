@@ -15,7 +15,7 @@
 #' @param tj TJ form which to get data (only works with TJSP for now)
 #' @seealso [cjsg_table()]
 #' @export
-download_cjsg <- function(query = "", path = ".", classes = "", subjects = "",
+download_cjsg <- function(query, path = ".", classes = "", subjects = "",
                           courts = "", trial_start = "", trial_end = "",
                           registration_start = "", registration_end = "",
                           min_page = 1, max_page = 1, cores = 1, tj = "tjsp") {
@@ -81,14 +81,14 @@ download_cjsg <- function(query = "", path = ".", classes = "", subjects = "",
       query = query_get, httr::config(ssl_verifypeer = FALSE),
       httr::write_disk(file, TRUE))
 
-    return(TRUE)
+    return(normalizePath(file))
   }
 
   # Download all pages
-  parallel::mcmapply(
+  files <- parallel::mcmapply(
     download_pages, min_page:max_page, list(path = path),
     SIMPLIFY = FALSE, mc.cores = cores)
-  return(list.files(path, full.names = TRUE))
+  return(purrr::flatten_chr(files))
 }
 
 #' Check certain characteristics regarding a CJSG download
