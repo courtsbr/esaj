@@ -2,8 +2,8 @@
 % Please edit documentation in R/cposg.R
 \name{download_2deg_lawsuit}
 \alias{download_2deg_lawsuit}
-\title{Download second degree lawsuits filed in Brazilian Tribinais de
-Justica (Justice Courts)}
+\title{Download second degree lawsuits filed in Brazilian Tribinais de Justica
+(Justice Courts)}
 \usage{
 download_2deg_lawsuit(id, path = ".")
 }
@@ -15,6 +15,10 @@ TJSP for now)}
 }
 \value{
 A character vector with the path to the downloaded lawsuit
+}
+\description{
+Download second degree lawsuits filed in Brazilian Tribinais de Justica
+(Justice Courts)
 }
 \section{Implemented TJs}{
 
