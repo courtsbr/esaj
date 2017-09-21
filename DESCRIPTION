@@ -1,11 +1,15 @@
 Package: esaj
 Title: A scraper for all e-SAJ systems
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Authors@R: c(
+  person("Caio", "Lente", , "ctlente@gmail.com", role = c("aut", "cre")),
+  person("Fernando", "Corr\u00EAa", role = c("aut")),
+  person("Julio", "Trecenti", , "j@jtrecenti.com", c("aut")),
+  person("ABJ", role = c("cph", "fnd")))
 Description: A simple interface that allows you to download first and second
   degree lawsuits from Brazil's multiple e-SAJ portals.
 Depends: R (>= 3.2.3)
-License: file LICENSE
+License: GPLv2 + file LICENSE
 Imports:
   magrittr,
   V8,
