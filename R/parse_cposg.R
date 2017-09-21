@@ -114,7 +114,6 @@ parse_decisions <- function(parser){
     #Beginning of the table
     first_table <- tables %>%
       rvest::html_text() %>%
-      #stringr::str_which("Situação do julgamento") %>%
       stringr::str_which("Situa\u00e7\u00e3o do julgamento") %>%
       max()
 

@@ -1,0 +1,56 @@
+url: http://courtsbr.github.io/esaj
+
+template:
+  package: tidytemplate
+
+home:
+  strip_header: true
+
+  links:
+  - text: Browse source code
+    href: https://github.com/courtsbr/esaj
+  - text: Report a bug
+    href: https://github.com/courtsbr/esaj/issues
+  - text: Learn more about ABJ
+    href: http://abjur.org.br
+
+reference:
+- title: CPOPG and CPOSG
+  contents:
+  - download_lawsuit
+  - download_2deg_lawsuit
+- title: CJPG and CJSG
+  contents:
+  - download_cjpg
+  - peek_cjpg
+  - download_cjsg
+  - peek_cjsg
+- title: Tables
+  contents:
+  - cjpg_table
+  - cjsg_table
+  - browse_table
+- title: Decisions
+  contents:
+  - download_decision
+- title: Parsers
+  contents:
+  - parse_cjpg
+  - parse_cjsg
+  - make_parser
+  - parse_data
+  - parse_decisions
+  - parse_movs
+  - parse_parts
+  - run_parser
+
+navbar:
+  type: default
+  left:
+  - text: Intro
+    href: index.html
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/courtsbr/esaj
