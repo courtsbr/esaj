@@ -137,6 +137,8 @@ parse_decisions <- function(parser){
       purrr::set_names("date", "decision")
   }
 
+  # Add get_decisions to getters
+  purrr::list_merge(parser, name = "movs", getter = get_decisions)
 }
 
 #' Runs a parser
