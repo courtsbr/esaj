@@ -119,7 +119,7 @@ parse_decisions <- function(parser){
       max()
 
     #Check if first_table is Inf
-    stopifnot(!is.infinite(first_table))
+    if(is.infinite(first_table)){return(dplyr::data_frame(date = NA, decision = NA))}
 
     #End of the table
     last_table <- length(tables)
@@ -138,7 +138,7 @@ parse_decisions <- function(parser){
   }
 
   # Add get_decisions to getters
-  purrr::list_merge(parser, name = "movs", getter = get_decisions)
+  purrr::list_merge(parser, name = "decisions", getter = get_decisions)
 }
 
 #' Runs a parser
