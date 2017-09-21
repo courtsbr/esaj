@@ -96,6 +96,49 @@ parse_movs <- function(parser) {
   purrr::list_merge(parser, name = "movs", getter = get_movs)
 }
 
+#' Parses decisions
+#' @param parser A parser returned by [make_parser()]
+#' @export
+parse_decisions <- function(parser){
+
+  # Check class
+  stopifnot(class(parser) == "parser")
+
+  # Function for getting decisions
+  get_decisions <- function(html) {
+
+    #Gets all eligible tables
+    tables <- html %>%
+      xml2::xml_find_all("//table[@style='margin-left:15px; margin-top:1px;']")
+
+    #Beginning of the table
+    first_table <- tables %>%
+      rvest::html_text() %>%
+      #stringr::str_which("Situação do julgamento") %>%
+      stringr::str_which("Situa\u00e7\u00e3o do julgamento") %>%
+      max()
+
+    #Check if first_table is Inf
+    stopifnot(!is.infinite(first_table))
+
+    #End of the table
+    last_table <- length(tables)
+
+    tables[first_table:last_table] %>%
+      rvest::html_table(fill = TRUE) %>%
+      dplyr::bind_rows() %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        X1 = lubridate::dmy(X1),
+        X2 = stringr::str_replace_all(X2, "[:space:]+"," "),
+        X3 = stringr::str_replace_all(X3, "[:space:]+", " ")) %>%
+      dplyr::select(-X2) %>%
+      dplyr::filter(!is.na(X1)) %>%
+      purrr::set_names("date", "decision")
+  }
+
+}
+
 #' Runs a parser
 #' @param file A character vector with the paths to one ore more files
 #' @param parser A parser returned by [make_parser()]
