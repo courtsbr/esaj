@@ -9,7 +9,7 @@ Authors@R: c(
 Description: A simple interface that allows you to download first and second
   degree lawsuits from Brazil's multiple e-SAJ portals.
 Depends: R (>= 3.2.3)
-License: GPLv2 + file LICENSE
+License: GPL-2
 Imports:
   magrittr,
   V8,

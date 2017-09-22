@@ -15,8 +15,10 @@
 #' @param classes Character vector with class IDs (see [cjsg_table()])
 #' @param subjects Character vector with subject IDs (see [cjsg_table()])
 #' @param courts Character vector with court IDs (see [cjsg_table()])
-#' @param date_start Lower bound for date
-#' @param date_end Upper bound for date
+#' @param trial_start Lower bound for trial date
+#' @param trial_end Upper bound for trial date
+#' @param registration_start Lower bound for registration date
+#' @param registration_end Upper bound for registration date
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
 #' @param cores The number of cores to be used when downloading

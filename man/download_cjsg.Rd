@@ -21,6 +21,14 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
 
 \item{courts}{Character vector with court IDs (see \code{\link[=cjsg_table]{cjsg_table()}})}
 
+\item{trial_start}{Lower bound for trial date}
+
+\item{trial_end}{Upper bound for trial date}
+
+\item{registration_start}{Lower bound for registration date}
+
+\item{registration_end}{Upper bound for registration date}
+
 \item{min_page}{First page of results to download}
 
 \item{max_page}{Last page of results to download}
@@ -28,10 +36,6 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
 \item{cores}{The number of cores to be used when downloading}
 
 \item{tj}{TJ from which to get data (only works with TJSP for now)}
-
-\item{date_start}{Lower bound for date}
-
-\item{date_end}{Upper bound for date}
 }
 \value{
 A character vector with the paths to the downloaded files

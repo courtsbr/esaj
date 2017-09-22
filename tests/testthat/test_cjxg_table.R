@@ -15,8 +15,8 @@ test_that("CJXG tables are working", {
   subjects_s <- cjsg_table("subjects")
 
   # Check dimensions of tables
-  expect_equal(dim(classes_p), c(753, 12))
-  expect_equal(dim(subjects_p), c(6512, 12))
+  expect_equal(dim(classes_p), c(760, 12))
+  expect_equal(dim(subjects_p), c(6518, 12))
   expect_equal(dim(classes_s), c(121, 12))
   expect_equal(dim(subjects_s), c(3088, 12))
   expect_equal(dim(cjpg_table("courts")), c(2061, 3))
