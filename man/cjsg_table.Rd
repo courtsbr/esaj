@@ -2,16 +2,24 @@
 % Please edit documentation in R/cjsg_table.R
 \name{cjsg_table}
 \alias{cjsg_table}
-\title{Downloads information about some CJSG structures}
+\title{Download information about some of CJSG's structures}
 \usage{
 cjsg_table(type, tj = "tjsp")
 }
 \arguments{
 \item{type}{Either \code{"classes"} or \code{"subjects"} or \code{"courts"}}
 
-\item{tj}{TJ form which to get data (only works with TJSP for now)}
+\item{tj}{TJ from which to get data (only works with TJSP for now)}
+}
+\value{
+A tibble with either 12 columns (if \code{type} is \code{"classes"}
+or \code{"subjects"}) or 3 columns (if \code{type} is \code{"courts"})
 }
 \description{
-Downloads a table with information about lawsuit
-classes, subjects or courts to help with \code{\link[=download_cjsg]{download_cjsg()}}
+Downloads a table with information about lawsuit's
+classes, subjects or courts to help with \code{\link[=download_cjsg]{download_cjsg()}}. You
+can also browse some of these tables with \code{\link[=browse_table]{browse_table()}}.
+}
+\seealso{
+\code{\link[=download_cjpg]{download_cjpg()}}, \code{\link[=browse_table]{browse_table()}}
 }

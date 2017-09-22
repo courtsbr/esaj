@@ -1,9 +1,16 @@
 
-#' @title Downloads information about some CJSG structures
-#' @description Downloads a table with information about lawsuit
-#' classes, subjects or courts to help with [download_cjsg()]
+#' @title Download information about some of CJSG's structures
+#'
+#' @description Downloads a table with information about lawsuit's
+#' classes, subjects or courts to help with [download_cjsg()]. You
+#' can also browse some of these tables with [browse_table()].
+#'
 #' @param type Either `"classes"` or `"subjects"` or `"courts"`
-#' @param tj TJ form which to get data (only works with TJSP for now)
+#' @param tj TJ from which to get data (only works with TJSP for now)
+#' @return A tibble with either 12 columns (if `type` is `"classes"`
+#' or `"subjects"`) or 3 columns (if `type` is `"courts"`)
+#'
+#' @seealso [download_cjpg()], [browse_table()]
 #' @export
 cjsg_table <- function(type, tj = "tjsp") {
 

@@ -77,7 +77,10 @@
     </div>
 
     
-    <p>Browse table returned by <code><a href='cjpg_table.html'>cjpg_table()</a></code> or <code><a href='cjsg_table.html'>cjsg_table()</a></code></p>
+    <p>This function uses a list of regex to filter CJPG
+and CJSG tables (only if they are of type <code>"classes"</code> or
+<code>"subjects"</code>) more easily than with <code><a href='http://dplyr.tidyverse.org/reference/select.html'>dplyr::select()</a></code>. For
+details on how the matching occurs, see <strong>Matching</strong>.</p>
     
 
     <pre class="usage"><span class='fu'>browse_table</span>(<span class='no'>table</span>, <span class='no'>patterns</span>)</pre>
@@ -94,19 +97,26 @@
       <th>patterns</th>
       <td><p>A list containing (at most) 6 character vectors
 of one or more regular expressions (applied from left to right
-on root to leaves); e.g.
-<code>list(c("ADM", "CRIMINAL"), "", "", "", "", "")</code></p></td>
+on <code>name0</code> to <code>name5</code>), e.g.,
+<code>list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")</code></p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Regex of the same level will be ORed and of different
-levels will be ANDed, e.g.,
-<code>list(c("ADM", "CRIMINAL"), "", "", "", "", "")</code> becomes
-<code>list("(?:ADM|CRIMINAL)", "", "", "", "", "")</code> and each
-element will be applied with <code><a href='http://dplyr.tidyverse.org/reference/filter.html'>dplyr::filter()</a></code> to a level of
-the tree</p>
+    <p>The original table filtered according to <code>patterns</code></p>
+    
+    <h2 class="hasAnchor" id="matching"><a class="anchor" href="#matching"></a>Matching</h2>
+
+    <p>For the matching to work properly, <code>patterns</code>
+should be a list of at most 6 character vectors, each one
+containing either one or a vector of regular expressions to
+be applied from left to right on columns <code>name0</code> to <code>name5</code>
+(note that vectors are ORed and different elements are ANDed).
+Example: If <code>patterns</code> looks something like
+<code>list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")</code>,
+then we'll get back the rows where <code>name0</code> contains "ADM"
+<strong>or</strong> "CRIMINAL" <strong>and</strong> where <code>name5</code> contains "Recurso".</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -119,7 +129,9 @@ the tree</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#matching">Matching</a></li>
 
       <li><a href="#see-also">See also</a></li>
           </ul>

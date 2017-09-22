@@ -10,7 +10,7 @@
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
 #' @param cores The number of cores to be used when downloading
-#' @param tj TJ form which to get data (only works with TJSP for now)
+#' @param tj TJ from which to get data (only works with TJSP for now)
 #' @seealso [cjpg_table()]
 #' @export
 download_cjpg <- function(query, path = ".", classes = "", subjects = "",

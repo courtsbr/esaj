@@ -1,9 +1,16 @@
 
-#' @title Downloads information about some CJPG structures
-#' @description Downloads a table with information about lawsuit
-#' classes, subjects or courts to help with [download_cjpg()]
+#' @title Download information about some of CJPG's structures
+#'
+#' @description Downloads a table with information about lawsuit's
+#' classes, subjects or courts to help with [download_cjpg()]. You
+#' can also browse some of these tables with [browse_table()].
+#'
 #' @param type Either `"classes"` or `"subjects"` or `"courts"`
-#' @param tj TJ form which to get data (only works with TJSP for now)
+#' @param tj TJ from which to get data (only works with TJSP for now)
+#' @return A tibble with either 12 columns (if `type` is `"classes"`
+#' or `"subjects"`) or 3 columns (if `type` is `"courts"`)
+#'
+#' @seealso [download_cjpg()], [browse_table()]
 #' @export
 cjpg_table <- function(type, tj = "tjsp") {
 
@@ -76,19 +83,31 @@ cjpg_courts <- function() {
     dplyr::select(branch, court, id)
 }
 
-#' Browse table returned by [cjpg_table()] or [cjsg_table()]
+#' @title Browse table returned by [cjpg_table()] or [cjsg_table()]
+#'
+#' @description This function uses a list of regex to filter CJPG
+#' and CJSG tables (only if they are of type `"classes"` or
+#' `"subjects"`) more easily than with `dplyr::select()`. For
+#' details on how the matching occurs, see **Matching**.
+#'
+#' @section Matching: For the matching to work properly, `patterns`
+#' should be a list of at most 6 character vectors, each one
+#' containing either one or a vector of regular expressions to
+#' be applied from left to right on columns `name0` to `name5`
+#' (note that vectors are ORed and different elements are ANDed).
+#' Example: If `patterns` looks something like
+#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")`,
+#' then we'll get back the rows where `name0` contains "ADM"
+#' **or** "CRIMINAL" **and** where `name5` contains "Recurso".
+#'
 #' @param table Table returned by [cjpg_table()] or [cjsg_table()]
 #' (only valid for `"classes"` or `"subjects"` types)
 #' @param patterns A list containing (at most) 6 character vectors
 #' of one or more regular expressions (applied from left to right
-#' on root to leaves); e.g.
-#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "")`
-#' @details Regex of the same level will be ORed and of different
-#' levels will be ANDed, e.g.,
-#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "")` becomes
-#' `list("(?:ADM|CRIMINAL)", "", "", "", "", "")` and each
-#' element will be applied with [dplyr::filter()] to a level of
-#' the tree
+#' on `name0` to `name5`), e.g.,
+#' `list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")`
+#' @return The original table filtered according to `patterns`
+#'
 #' @seealso [cjpg_table()], [cjsg_table()]
 #' @export
 browse_table <- function(table, patterns) {

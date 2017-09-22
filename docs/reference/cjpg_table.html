@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Downloads information about some CJPG structures — cjpg_table • esaj</title>
+<title>Download information about some of CJPG's structures — cjpg_table • esaj</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -73,12 +73,13 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Downloads information about some CJPG structures</h1>
+    <h1>Download information about some of CJPG's structures</h1>
     </div>
 
     
-    <p>Downloads a table with information about lawsuit
-classes, subjects or courts to help with <code><a href='download_cjpg.html'>download_cjpg()</a></code></p>
+    <p>Downloads a table with information about lawsuit's
+classes, subjects or courts to help with <code><a href='download_cjpg.html'>download_cjpg()</a></code>. You
+can also browse some of these tables with <code><a href='browse_table.html'>browse_table()</a></code>.</p>
     
 
     <pre class="usage"><span class='fu'>cjpg_table</span>(<span class='no'>type</span>, <span class='kw'>tj</span> <span class='kw'>=</span> <span class='st'>"tjsp"</span>)</pre>
@@ -92,9 +93,18 @@ classes, subjects or courts to help with <code><a href='download_cjpg.html'>down
     </tr>
     <tr>
       <th>tj</th>
-      <td><p>TJ form which to get data (only works with TJSP for now)</p></td>
+      <td><p>TJ from which to get data (only works with TJSP for now)</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble with either 12 columns (if <code>type</code> is <code>"classes"</code>
+or <code>"subjects"</code>) or 3 columns (if <code>type</code> is <code>"courts"</code>)</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code><a href='download_cjpg.html'>download_cjpg()</a></code>, <code><a href='browse_table.html'>browse_table()</a></code></p>
     
 
   </div>
@@ -102,7 +112,11 @@ classes, subjects or courts to help with <code><a href='download_cjpg.html'>down
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

@@ -12,20 +12,30 @@ browse_table(table, patterns)
 
 \item{patterns}{A list containing (at most) 6 character vectors
 of one or more regular expressions (applied from left to right
-on root to leaves); e.g.
-\code{list(c("ADM", "CRIMINAL"), "", "", "", "", "")}}
+on \code{name0} to \code{name5}), e.g.,
+\code{list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")}}
+}
+\value{
+The original table filtered according to \code{patterns}
 }
 \description{
-Browse table returned by \code{\link[=cjpg_table]{cjpg_table()}} or \code{\link[=cjsg_table]{cjsg_table()}}
+This function uses a list of regex to filter CJPG
+and CJSG tables (only if they are of type \code{"classes"} or
+\code{"subjects"}) more easily than with \code{dplyr::select()}. For
+details on how the matching occurs, see \strong{Matching}.
 }
-\details{
-Regex of the same level will be ORed and of different
-levels will be ANDed, e.g.,
-\code{list(c("ADM", "CRIMINAL"), "", "", "", "", "")} becomes
-\code{list("(?:ADM|CRIMINAL)", "", "", "", "", "")} and each
-element will be applied with \code{\link[dplyr:filter]{dplyr::filter()}} to a level of
-the tree
+\section{Matching}{
+ For the matching to work properly, \code{patterns}
+should be a list of at most 6 character vectors, each one
+containing either one or a vector of regular expressions to
+be applied from left to right on columns \code{name0} to \code{name5}
+(note that vectors are ORed and different elements are ANDed).
+Example: If \code{patterns} looks something like
+\code{list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso")},
+then we'll get back the rows where \code{name0} contains "ADM"
+\strong{or} "CRIMINAL" \strong{and} where \code{name5} contains "Recurso".
 }
+
 \seealso{
 \code{\link[=cjpg_table]{cjpg_table()}}, \code{\link[=cjsg_table]{cjsg_table()}}
 }

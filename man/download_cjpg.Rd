@@ -29,7 +29,7 @@ download_cjpg(query, path = ".", classes = "", subjects = "",
 
 \item{cores}{The number of cores to be used when downloading}
 
-\item{tj}{TJ form which to get data (only works with TJSP for now)}
+\item{tj}{TJ from which to get data (only works with TJSP for now)}
 }
 \description{
 Dowload CJPG search results
