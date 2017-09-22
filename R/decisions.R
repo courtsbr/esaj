@@ -1,8 +1,15 @@
 
-#' Download decision PDFs
+#' @title Download PDFs corresponding to judicial decisions
+#'
+#' @description Given the unique identifier of a judicial decision
+#' (an 8 digit number), this function downloads the corresponding
+#' PDF.
+#'
 #' @param decision A character vector with decision IDs
-#' @param path Path to directory where to save PDFs
-#' @param tj TJ to download decisions (only works with TJSP for now)
+#' @param path Path to directory where to save PDF
+#' @param tj TJ from which to get data (only works with TJSP for now)
+#' @return A character vector with the path to the downloaded file
+#'
 #' @export
 download_decision <- function(decision, path = ".", tj = "tjsp") {
 

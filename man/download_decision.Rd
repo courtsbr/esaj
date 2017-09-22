@@ -2,17 +2,22 @@
 % Please edit documentation in R/decisions.R
 \name{download_decision}
 \alias{download_decision}
-\title{Download decision PDFs}
+\title{Download PDFs corresponding to judicial decisions}
 \usage{
 download_decision(decision, path = ".", tj = "tjsp")
 }
 \arguments{
 \item{decision}{A character vector with decision IDs}
 
-\item{path}{Path to directory where to save PDFs}
+\item{path}{Path to directory where to save PDF}
 
-\item{tj}{TJ to download decisions (only works with TJSP for now)}
+\item{tj}{TJ from which to get data (only works with TJSP for now)}
+}
+\value{
+A character vector with the path to the downloaded file
 }
 \description{
-Download decision PDFs
+Given the unique identifier of a judicial decision
+(an 8 digit number), this function downloads the corresponding
+PDF.
 }
