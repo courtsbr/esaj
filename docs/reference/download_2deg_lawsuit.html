@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download second degree lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts) — download_2deg_lawsuit • esaj</title>
+<title>Download second degree lawsuits filed in Brazilian Justice Courts — download_2deg_lawsuit • esaj</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,13 +73,13 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Download second degree lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts)</h1>
+    <h1>Download second degree lawsuits filed in Brazilian Justice Courts</h1>
     </div>
 
     
-    <p>Download second degree lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts)</p>
+    <p>This function downloads lawsuits as PDFs. Given a lawsuit ID, and
+the path to a directory it will collect the lawsuit, and save it to
+the provided directory.</p>
     
 
     <pre class="usage"><span class='fu'>download_2deg_lawsuit</span>(<span class='no'>id</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
@@ -103,20 +102,24 @@ TJSP for now)</p></td>
 
     <p>A character vector with the path to the downloaded lawsuit</p>
     
+    <h2 class="hasAnchor" id="about-lawsuits"><a class="anchor" href="#about-lawsuits"></a>About lawsuits</h2>
+
+    
+    <p>The lawsuits contemplated by this funtion have to be filed in a
+Brazilian Tribunal de Justica (Justice Court). <code>download_2deg_lawsuit()</code>
+finds the lawsuit in its state's online Sistema de Automacao de Justica
+(Justice Automation System), solves the captcha withholding the
+information, and collects the PDF.</p>
+    
     <h2 class="hasAnchor" id="implemented-tjs"><a class="anchor" href="#implemented-tjs"></a>Implemented TJs</h2>
 
     
-    <p>Unfortunatelly <code><a href='download_lawsuit.html'>download_lawsuit()</a></code> doesn't yet work with all 27 TJs in
-Brazil. Here are the ones already implemented:</p><ul>
+    <p>Unfortunatelly <code>download_2deg_lawsuit()</code> doesn't yet work with all 27
+TJs in Brazil. Here are the ones already implemented:</p><ul>
 <li><p>TJSP (Sao Paulo)</p></li>
 </ul>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>download_2deg_lawsuit</span>(<span class='st'>"1001869-51.2017.8.26.0562"</span>)
-<span class='co'># }</span><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -125,10 +128,10 @@ Brazil. Here are the ones already implemented:</p><ul>
       
       <li><a href="#value">Value</a></li>
 
+      <li><a href="#about-lawsuits">About lawsuits</a></li>
+
       <li><a href="#implemented-tjs">Implemented TJs</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

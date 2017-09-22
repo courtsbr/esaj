@@ -1,6 +1,5 @@
 
-#' @title Download lawsuits filed in Brazilian Tribinais de Justica
-#' (Justice Courts)
+#' @title Download first degree lawsuits filed in Brazilian Justice Courts
 #'
 #' @description
 #' This function downloads lawsuits as PDFs. Given a lawsuit ID, and
@@ -26,15 +25,7 @@
 #'
 #' @param id A character vector of one or more lawsuit IDs
 #' @param path Path to the directory where the lawsuit should be saved
-#'
 #' @return A character vector with the path to the downloaded lawsuit
-#'
-#' @examples
-#' \dontrun{
-#' download_lawsuit("02575182220138040001")
-#' download_lawsuit("0303349-44.2014.8.24.0020")
-#' download_lawsuit("0552486-62.2015.8.05.0001")
-#' }
 #'
 #' @export
 download_lawsuit <- function(id, path = ".") {

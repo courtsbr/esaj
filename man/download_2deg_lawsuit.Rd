@@ -2,8 +2,7 @@
 % Please edit documentation in R/cposg.R
 \name{download_2deg_lawsuit}
 \alias{download_2deg_lawsuit}
-\title{Download second degree lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts)}
+\title{Download second degree lawsuits filed in Brazilian Justice Courts}
 \usage{
 download_2deg_lawsuit(id, path = ".")
 }
@@ -17,21 +16,25 @@ TJSP for now)}
 A character vector with the path to the downloaded lawsuit
 }
 \description{
-Download second degree lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts)
+This function downloads lawsuits as PDFs. Given a lawsuit ID, and
+the path to a directory it will collect the lawsuit, and save it to
+the provided directory.
 }
+\section{About lawsuits}{
+
+The lawsuits contemplated by this funtion have to be filed in a
+Brazilian Tribunal de Justica (Justice Court). \code{\link[=download_2deg_lawsuit]{download_2deg_lawsuit()}}
+finds the lawsuit in its state's online Sistema de Automacao de Justica
+(Justice Automation System), solves the captcha withholding the
+information, and collects the PDF.
+}
+
 \section{Implemented TJs}{
 
-Unfortunatelly \code{\link[=download_lawsuit]{download_lawsuit()}} doesn't yet work with all 27 TJs in
-Brazil. Here are the ones already implemented:
+Unfortunatelly \code{\link[=download_2deg_lawsuit]{download_2deg_lawsuit()}} doesn't yet work with all 27
+TJs in Brazil. Here are the ones already implemented:
 \itemize{
 \item TJSP (Sao Paulo)
 }
 }
 
-\examples{
-\dontrun{
-download_2deg_lawsuit("1001869-51.2017.8.26.0562")
-}
-
-}

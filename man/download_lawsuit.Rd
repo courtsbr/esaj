@@ -2,8 +2,7 @@
 % Please edit documentation in R/cpopg.R
 \name{download_lawsuit}
 \alias{download_lawsuit}
-\title{Download lawsuits filed in Brazilian Tribinais de Justica
-(Justice Courts)}
+\title{Download first degree lawsuits filed in Brazilian Justice Courts}
 \usage{
 download_lawsuit(id, path = ".")
 }
@@ -41,11 +40,3 @@ Brazil. Here are the ones already implemented:
 }
 }
 
-\examples{
-\dontrun{
-download_lawsuit("02575182220138040001")
-download_lawsuit("0303349-44.2014.8.24.0020")
-download_lawsuit("0552486-62.2015.8.05.0001")
-}
-
-}

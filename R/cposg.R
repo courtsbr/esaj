@@ -1,10 +1,21 @@
 
-#' Download second degree lawsuits filed in Brazilian Tribinais de Justica
-#' (Justice Courts)
+#' @title Download second degree lawsuits filed in Brazilian Justice Courts
+#'
+#' @description
+#' This function downloads lawsuits as PDFs. Given a lawsuit ID, and
+#' the path to a directory it will collect the lawsuit, and save it to
+#' the provided directory.
+#'
+#' @section About lawsuits:
+#' The lawsuits contemplated by this funtion have to be filed in a
+#' Brazilian Tribunal de Justica (Justice Court). [download_2deg_lawsuit()]
+#' finds the lawsuit in its state's online Sistema de Automacao de Justica
+#' (Justice Automation System), solves the captcha withholding the
+#' information, and collects the PDF.
 #'
 #' @section Implemented TJs:
-#' Unfortunatelly [download_lawsuit()] doesn't yet work with all 27 TJs in
-#' Brazil. Here are the ones already implemented:
+#' Unfortunatelly [download_2deg_lawsuit()] doesn't yet work with all 27
+#' TJs in Brazil. Here are the ones already implemented:
 #' \itemize{
 #'   \item TJSP (Sao Paulo)
 #' }
@@ -12,13 +23,7 @@
 #' @param id A character vector of one or more lawsuit IDs (only works with
 #' TJSP for now)
 #' @param path Path to the directory where the lawsuit should be saved
-#'
 #' @return A character vector with the path to the downloaded lawsuit
-#'
-#' @examples
-#' \dontrun{
-#' download_2deg_lawsuit("1001869-51.2017.8.26.0562")
-#' }
 #'
 #' @export
 download_2deg_lawsuit <- function(id, path = ".") {
