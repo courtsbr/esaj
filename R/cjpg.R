@@ -1,17 +1,29 @@
 
-#' Dowload CJPG search results
-#' @param query Character vector wtih search query
+#' @title Download results of a query on first degree lawsuits filed
+#' in Brazilian Justice Courts
+#'
+#' @description Downloads an HTML with the results obtained from
+#' querying a dataset of all first degree lawsuits and then one
+#' HTML for each page of results (at most `max_page` pages). `query`
+#' should be the string to look for in the lawsuits and `clases`,
+#' `courts`, etc. should be the filtering parameters (make sure
+#' to use [cjpg_table()] to get lists of all valid codes for these
+#' arguments).
+#'
+#' @param query Character vector with search query
 #' @param path Path to directory where to save HTMLs
-#' @param classes Character vector with lawsuit class IDs
-#' @param subjects Character vector with lawsuit subject IDs
-#' @param courts Character vector with lawsuit court IDs
+#' @param classes Character vector with class IDs (see [cjpg_table()])
+#' @param subjects Character vector with subject IDs (see [cjpg_table()])
+#' @param courts Character vector with court IDs (see [cjpg_table()])
 #' @param date_start Lower bound for date
 #' @param date_end Upper bound for date
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
 #' @param cores The number of cores to be used when downloading
 #' @param tj TJ from which to get data (only works with TJSP for now)
-#' @seealso [cjpg_table()]
+#' @return A character vector with the paths to the downloaded files
+#'
+#' @seealso [cjpg_table()], [browse_table()]
 #' @export
 download_cjpg <- function(query, path = ".", classes = "", subjects = "",
                           courts = "", date_start = "", date_end = "",
@@ -77,7 +89,7 @@ download_cjpg <- function(query, path = ".", classes = "", subjects = "",
   return(c(file, purrr::flatten_chr(files)))
 }
 
-#' Check certain characteristics regarding a CJPG download
+#' Check how long a call to [download_cjpg()] will probably take
 #' @param ... Arguments passed on to [download_cjpg()] (
 #' `path` will be ignored)
 #' @seealso [download_cjpg()], [cjpg_table()]

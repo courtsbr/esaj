@@ -2,7 +2,8 @@
 % Please edit documentation in R/cjsg.R
 \name{download_cjsg}
 \alias{download_cjsg}
-\title{Dowload CJSG search results}
+\title{Download results of a query on second degree lawsuits filed
+in Brazilian Justice Courts}
 \usage{
 download_cjsg(query, path = ".", classes = "", subjects = "",
   courts = "", trial_start = "", trial_end = "",
@@ -10,23 +11,15 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
   max_page = 1, cores = 1, tj = "tjsp")
 }
 \arguments{
-\item{query}{Character vector wtih search query}
+\item{query}{Character vector with search query}
 
 \item{path}{Path to directory where to save HTMLs}
 
-\item{classes}{Character vector with lawsuit class IDs}
+\item{classes}{Character vector with class IDs (see \code{\link[=cjsg_table]{cjsg_table()}})}
 
-\item{subjects}{Character vector with lawsuit subject IDs}
+\item{subjects}{Character vector with subject IDs (see \code{\link[=cjsg_table]{cjsg_table()}})}
 
-\item{courts}{Character vector with lawsuit court IDs}
-
-\item{trial_start}{Lower bound for trial date}
-
-\item{trial_end}{Upper bound for trial date}
-
-\item{registration_start}{Lower bound for registration date}
-
-\item{registration_end}{Upper bound for registration date}
+\item{courts}{Character vector with court IDs (see \code{\link[=cjsg_table]{cjsg_table()}})}
 
 \item{min_page}{First page of results to download}
 
@@ -35,10 +28,23 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
 \item{cores}{The number of cores to be used when downloading}
 
 \item{tj}{TJ from which to get data (only works with TJSP for now)}
+
+\item{date_start}{Lower bound for date}
+
+\item{date_end}{Upper bound for date}
+}
+\value{
+A character vector with the paths to the downloaded files
 }
 \description{
-Dowload CJSG search results
+Downloads an HTML with the results obtained from
+querying a dataset of all second degree lawsuits and then one
+HTML for each page of results (at most \code{max_page} pages). \code{query}
+should be the string to look for in the lawsuits and \code{clases},
+\code{courts}, etc. should be the filtering parameters (make sure
+to use \code{\link[=cjsg_table]{cjsg_table()}} to get lists of all valid codes for these
+arguments).
 }
 \seealso{
-\code{\link[=cjsg_table]{cjsg_table()}}
+\code{\link[=cjsg_table]{cjsg_table()}}, \code{\link[=browse_table]{browse_table()}}
 }

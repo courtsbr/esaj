@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dowload CJSG search results — download_cjsg • esaj</title>
+<title>Download results of a query on second degree lawsuits filed
+in Brazilian Justice Courts — download_cjsg • esaj</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -73,11 +74,18 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Dowload CJSG search results</h1>
+    <h1>Download results of a query on second degree lawsuits filed
+in Brazilian Justice Courts</h1>
     </div>
 
     
-    <p>Dowload CJSG search results</p>
+    <p>Downloads an HTML with the results obtained from
+querying a dataset of all second degree lawsuits and then one
+HTML for each page of results (at most <code>max_page</code> pages). <code>query</code>
+should be the string to look for in the lawsuits and <code>clases</code>,
+<code>courts</code>, etc. should be the filtering parameters (make sure
+to use <code><a href='cjsg_table.html'>cjsg_table()</a></code> to get lists of all valid codes for these
+arguments).</p>
     
 
     <pre class="usage"><span class='fu'>download_cjsg</span>(<span class='no'>query</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>classes</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>subjects</span> <span class='kw'>=</span> <span class='st'>""</span>,
@@ -90,7 +98,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>query</th>
-      <td><p>Character vector wtih search query</p></td>
+      <td><p>Character vector with search query</p></td>
     </tr>
     <tr>
       <th>path</th>
@@ -98,31 +106,15 @@
     </tr>
     <tr>
       <th>classes</th>
-      <td><p>Character vector with lawsuit class IDs</p></td>
+      <td><p>Character vector with class IDs (see <code><a href='cjsg_table.html'>cjsg_table()</a></code>)</p></td>
     </tr>
     <tr>
       <th>subjects</th>
-      <td><p>Character vector with lawsuit subject IDs</p></td>
+      <td><p>Character vector with subject IDs (see <code><a href='cjsg_table.html'>cjsg_table()</a></code>)</p></td>
     </tr>
     <tr>
       <th>courts</th>
-      <td><p>Character vector with lawsuit court IDs</p></td>
-    </tr>
-    <tr>
-      <th>trial_start</th>
-      <td><p>Lower bound for trial date</p></td>
-    </tr>
-    <tr>
-      <th>trial_end</th>
-      <td><p>Upper bound for trial date</p></td>
-    </tr>
-    <tr>
-      <th>registration_start</th>
-      <td><p>Lower bound for registration date</p></td>
-    </tr>
-    <tr>
-      <th>registration_end</th>
-      <td><p>Upper bound for registration date</p></td>
+      <td><p>Character vector with court IDs (see <code><a href='cjsg_table.html'>cjsg_table()</a></code>)</p></td>
     </tr>
     <tr>
       <th>min_page</th>
@@ -140,11 +132,23 @@
       <th>tj</th>
       <td><p>TJ from which to get data (only works with TJSP for now)</p></td>
     </tr>
+    <tr>
+      <th>date_start</th>
+      <td><p>Lower bound for date</p></td>
+    </tr>
+    <tr>
+      <th>date_end</th>
+      <td><p>Upper bound for date</p></td>
+    </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A character vector with the paths to the downloaded files</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='cjsg_table.html'>cjsg_table()</a></code></p>
+    <p><code><a href='cjsg_table.html'>cjsg_table()</a></code>, <code><a href='browse_table.html'>browse_table()</a></code></p>
     
 
   </div>
@@ -153,6 +157,8 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#see-also">See also</a></li>
           </ul>
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cjpg.R
 \name{peek_cjpg}
 \alias{peek_cjpg}
-\title{Check certain characteristics regarding a CJPG download}
+\title{Check how long a call to \code{\link[=download_cjpg]{download_cjpg()}} will probably take}
 \usage{
 peek_cjpg(...)
 }
@@ -11,7 +11,7 @@ peek_cjpg(...)
 \code{path} will be ignored)}
 }
 \description{
-Check certain characteristics regarding a CJPG download
+Check how long a call to \code{\link[=download_cjpg]{download_cjpg()}} will probably take
 }
 \seealso{
 \code{\link[=download_cjpg]{download_cjpg()}}, \code{\link[=cjpg_table]{cjpg_table()}}

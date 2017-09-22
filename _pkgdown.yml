@@ -22,8 +22,8 @@ reference:
 - title: CJPG and CJSG
   contents:
   - download_cjpg
-  - peek_cjpg
   - download_cjsg
+  - peek_cjpg
   - peek_cjsg
 - title: Tables
   contents:

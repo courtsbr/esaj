@@ -1,19 +1,29 @@
 
-#' Dowload CJSG search results
-#' @param query Character vector wtih search query
+#' @title Download results of a query on second degree lawsuits filed
+#' in Brazilian Justice Courts
+#'
+#' @description Downloads an HTML with the results obtained from
+#' querying a dataset of all second degree lawsuits and then one
+#' HTML for each page of results (at most `max_page` pages). `query`
+#' should be the string to look for in the lawsuits and `clases`,
+#' `courts`, etc. should be the filtering parameters (make sure
+#' to use [cjsg_table()] to get lists of all valid codes for these
+#' arguments).
+#'
+#' @param query Character vector with search query
 #' @param path Path to directory where to save HTMLs
-#' @param classes Character vector with lawsuit class IDs
-#' @param subjects Character vector with lawsuit subject IDs
-#' @param courts Character vector with lawsuit court IDs
-#' @param trial_start Lower bound for trial date
-#' @param trial_end Upper bound for trial date
-#' @param registration_start Lower bound for registration date
-#' @param registration_end Upper bound for registration date
+#' @param classes Character vector with class IDs (see [cjsg_table()])
+#' @param subjects Character vector with subject IDs (see [cjsg_table()])
+#' @param courts Character vector with court IDs (see [cjsg_table()])
+#' @param date_start Lower bound for date
+#' @param date_end Upper bound for date
 #' @param min_page First page of results to download
 #' @param max_page Last page of results to download
 #' @param cores The number of cores to be used when downloading
 #' @param tj TJ from which to get data (only works with TJSP for now)
-#' @seealso [cjsg_table()]
+#' @return A character vector with the paths to the downloaded files
+#'
+#' @seealso [cjsg_table()], [browse_table()]
 #' @export
 download_cjsg <- function(query, path = ".", classes = "", subjects = "",
                           courts = "", trial_start = "", trial_end = "",
@@ -91,10 +101,10 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
   return(c(file, purrr::flatten_chr(files)))
 }
 
-#' Check certain characteristics regarding a CJSG download
+#' Check how long a call to [download_cjsg()] will probably take
 #' @param ... Arguments passed on to [download_cjsg()] (
 #' `path` will be ignored)
-#' @seealso [download_cjsg()], [cjsg_table()]
+#' @seealso [download_cjpg()], [cjpg_table()]
 #' @export
 peek_cjsg <- function(...) {
 

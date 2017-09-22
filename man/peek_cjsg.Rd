@@ -2,7 +2,7 @@
 % Please edit documentation in R/cjsg.R
 \name{peek_cjsg}
 \alias{peek_cjsg}
-\title{Check certain characteristics regarding a CJSG download}
+\title{Check how long a call to \code{\link[=download_cjsg]{download_cjsg()}} will probably take}
 \usage{
 peek_cjsg(...)
 }
@@ -11,8 +11,8 @@ peek_cjsg(...)
 \code{path} will be ignored)}
 }
 \description{
-Check certain characteristics regarding a CJSG download
+Check how long a call to \code{\link[=download_cjsg]{download_cjsg()}} will probably take
 }
 \seealso{
-\code{\link[=download_cjsg]{download_cjsg()}}, \code{\link[=cjsg_table]{cjsg_table()}}
+\code{\link[=download_cjpg]{download_cjpg()}}, \code{\link[=cjpg_table]{cjpg_table()}}
 }
