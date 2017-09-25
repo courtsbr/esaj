@@ -26,7 +26,7 @@ captcha_uuid <- function(file) {
 captcha_uuid <- purrr::possibly(captcha_uuid, "xxxx")
 
 # Create query to download lawsuit
-lawsuit_query <- function(id) {
+cpopg_query <- function(id) {
   list(
     "conversationId" = "",
      "dadosConsulta.localPesquisa.cdLocal" = "-1",
@@ -42,7 +42,7 @@ lawsuit_query <- function(id) {
 }
 
 # Create query to download 2nd degree lawsuit
-lawsuit_2deg_query <- function(id) {
+cposg_query <- function(id) {
   list(
     conversationId = "",
     paginaConsulta = 1,

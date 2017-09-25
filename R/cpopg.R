@@ -8,13 +8,13 @@
 #'
 #' @section About lawsuits:
 #' The lawsuits contemplated by this funtion have to be filed in a
-#' Brazilian Tribunal de Justica (Justice Court). [download_lawsuit()]
+#' Brazilian Tribunal de Justica (Justice Court). [download_cpopg()]
 #' finds the lawsuit in its state's online Sistema de Automacao de Justica
 #' (Justice Automation System), solves the captcha withholding the
 #' information, and collects the PDF.
 #'
 #' @section Implemented TJs:
-#' Unfortunatelly [download_lawsuit()] doesn't yet work with all 27 TJs in
+#' Unfortunatelly [download_cpopg()] doesn't yet work with all 27 TJs in
 #' Brazil. Here are the ones already implemented:
 #' \itemize{
 #'   \item TJAM (Amazonas)
@@ -28,7 +28,7 @@
 #' @return A character vector with the path to the downloaded lawsuit
 #'
 #' @export
-download_lawsuit <- function(id, path = ".") {
+download_cpopg <- function(id, path = ".") {
 
   # Normalize path
   dir.create(path, FALSE, TRUE)
@@ -40,11 +40,11 @@ download_lawsuit <- function(id, path = ".") {
   if (any(stringr::str_length(id) != 20)) { stop("Invalid ID") }
 
   # Iterate over IDs
-  purrr::map_chr(id, download_lawsuit_, path)
+  purrr::map_chr(id, download_cpopg_, path)
 }
 
 # Download one lawsuit
-download_lawsuit_ <- function(id, path) {
+download_cpopg_ <- function(id, path) {
 
   # Choose appropriate download function
   if (get_n(id) %in% c("05")) { download <- download_bw_lawsuit }
@@ -55,5 +55,5 @@ download_lawsuit_ <- function(id, path) {
   data <- get_lwst_data(id)
 
   # Download lawsuit
-  download(id, path, data$u_captcha, data$u_search, lawsuit_query(id))
+  download(id, path, data$u_captcha, data$u_search, cpopg_query(id))
 }

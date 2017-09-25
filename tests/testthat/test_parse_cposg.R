@@ -10,7 +10,7 @@ test_that("Function for parsing CPOSG is working", {
 
   # Download 2nd degree lawsuits
   path <- tempdir()
-  more <- download_2deg_lawsuit(
+  more <- download_cposg(
     c("1001869-51.2017.8.26.0562",
       "1001214-07.2016.8.26.0565"), path)
 

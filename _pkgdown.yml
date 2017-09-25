@@ -17,8 +17,8 @@ home:
 reference:
 - title: CPOPG and CPOSG
   contents:
-  - download_lawsuit
-  - download_2deg_lawsuit
+  - download_cpopg
+  - download_cposg
 - title: CJPG and CJSG
   contents:
   - download_cjpg
