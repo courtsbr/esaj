@@ -91,9 +91,56 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search, query) {
 # Download a lawsuit from a TJ that uses no captcha system at all
 download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
 
-  # Download lawsuit
+  # Download page
   f_lwst <- stringr::str_c(path, id, ".html")
-  f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
+  f_search <- httr::GET(u_search, query = query)
+
+  # Get new links in page
+  links <- f_search %>%
+    httr::content() %>%
+    xml2::xml_find_all("//*[@class='nuProcesso']") %>%
+    rvest::html_nodes("a") %>%
+    rvest::html_attr("href")
+
+  # If links exist, fetch them, otherwise just download the page
+  if (length(links) != 0) {
+
+    # Get descriptions of new files
+    descs <- f_search %>%
+      httr::content() %>%
+      xml2::xml_find_all("//*[@id='listagemDeProcessos']") %>%
+      rvest::html_text() %>%
+      str_replace_all("[\\n\\t]", "") %>%
+      stringr::str_split(" {40}") %>%
+      purrr::pluck(1) %>%
+      magrittr::extract(2:3) %>%
+      str_replace_all("  ", " ") %>%
+      stringr::str_trim()
+
+    # Extract subjects and dates from descriptions
+    subjects <- descs %>%
+      rm_diacritics() %>%
+      stringr::str_to_lower() %>%
+      stringr::str_extract("[a-z ]+./") %>%
+      stringr::str_extract("[a-z ]+") %>%
+      stringr::str_trim() %>%
+      str_replace_all(" ", "_")
+    dates <- descs %>%
+      stringr::str_extract("[0-9]{2}/[0-9]{2}/[0-9]{4}") %>%
+      lubridate::dmy() %>%
+      str_replace_all("-", "_")
+
+    # Map downloads
+    links <- stringr::str_c(
+      str_replace_all(u_captcha, "/cposg/[a-zA-Z\\.]+$", ""), links)
+    f_lwst <- stringr::str_c(path, id, "_", subjects, "_", dates, ".html")
+    purrr::map2(links, f_lwst, ~httr::GET(.x, httr::write_disk(.y, TRUE)))
+  }
+  else {
+
+    # Download page
+    f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
+  }
 
   return(f_lwst)
 }

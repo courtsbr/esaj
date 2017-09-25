@@ -145,6 +145,13 @@ tree_to_tibble <- function(tree, n = 0) {
   })
 }
 
+# Remove diacritics
+rm_diacritics <- function(string) {
+  string %>%
+    abjutils::rm_accent() %>%
+    str_replace_all("[\\~\\^\\'\\`]", "")
+}
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",

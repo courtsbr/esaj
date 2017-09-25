@@ -38,7 +38,8 @@ download_2deg_lawsuit <- function(id, path = ".") {
   if (any(stringr::str_length(id) != 20)) { stop("Invalid ID") }
 
   # Iterate over IDs
-  purrr::map_chr(id, download_2deg_lawsuit_, path)
+  purrr::map(id, download_2deg_lawsuit_, path) %>%
+    purrr::flatten_chr()
 }
 
 # Download one lawsuit
