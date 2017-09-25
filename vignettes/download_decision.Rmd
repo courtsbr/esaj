@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 
 Of all functions in the `esaj` package, `download_decision()` is probably the
 simplest. Unlike lawsuit and query functions, there is only one decision
-function and absolutelly no helper functions are necessary.
+function and absolutelly no helper functions are necessary; it simply downloads
+the PDF belonging to a decision.
 
 It takes two arguments: a decision unique number (ID) and the path to a
 directory. It's important to note that the second argument isn't the path

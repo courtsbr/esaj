@@ -5,4 +5,5 @@
 ^appveyor\.yml$
 ^docs$
 ^_pkgdown\.yml$
-^LICENSE
+^LICENSE$
+^README\.Rmd$

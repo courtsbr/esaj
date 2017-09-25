@@ -1,77 +1,84 @@
-# esaj
+
+esaj
+====
 
 [![Made In Brazil](https://img.shields.io/badge/made%20in-brazil-green.svg)](http://www.abj.org.br) [![Travis-CI Build Status](https://travis-ci.org/courtsbr/esaj.svg?branch=master)](https://travis-ci.org/courtsbr/esaj) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&svg=true)](https://ci.appveyor.com/project/courtsbr/esaj)
 
-## Overview
+Overview
+--------
 
-The `esaj` R package in a simple interface that allows you to download first
-and second degree lawsuits from Brazil's multiple e-SAJ (Electronic Justice
-Automation System) portals. Before `esaj` if you wanted to gather information
-about lawsuits being processed by Brazil's state-level Judiciary, you would
-have to go to each state's e-SAJ portal, manually input each lawsuit's ID,
-and only then download the PDF with the information you wanted; now you can
-simply run `download_esaj()`, and spend your valuable time analysing the data.
+The `esaj` R package is a simple interface that allows you to download multiple kinds of files from Brazil's e-SAJ (Electronic Justice Automation System) portals. With this package you can save and parse lawsuits, queries, and decisions with very simple, tidyverse compliant functions.
 
-## Installation
+Installation
+------------
 
 To install `esaj`, run the code below:
 
-```r
+``` r
 # install.packages("devtools")
 devtools::install_github("courtsbr/esaj")
 ```
 
-## Usage
+Usage
+-----
 
-`esaj` has only one exported function: `download_esaj()`. Its arguments are a
-lawsuit ID a,nd the path to the directory where the lawsuit should be downloaded.
+### Lawsuits
 
-```r
-library(esaj)
+Before `esaj` if you wanted to gather information about lawsuits being processed by Brazil's state-level Judiciary, you would have to go to each state's e-SAJ portal, manually input each lawsuit's ID, break a capthca, and only then download an HTML with the information you wanted; now you can simply run `download_cpopg()` or `download_cposg()`, and spend your valuable time analysing the data.
 
-# Download a lawsuit from Amazonas
-download_lawsuit("02575182220138040001")
-#> [1] "./02575182220138040001.html"
+``` r
+# Download first degree lawsuits from multiple states
+ids <- c(
+  "0123479-07.2012.8.26.0100",
+  "0552486-62.2015.8.05.0001",
+  "0303349-44.2014.8.24.0020")
+esaj::download_cpopg(ids, "~/Desktop/")
+#> [1] "/Users/ctlente/Desktop/01234790720128260100.html"
+#> [2] "/Users/ctlente/Desktop/05524866220158050001.html"
+#> [3] "/Users/ctlente/Desktop/03033494420148240020.html"
 
-# Download a lawsuit from Santa Catarina
-download_lawsuit("0303349-44.2014.8.24.0020", "./test")
-#> [1] "./test/03033494420148240020.html"
+# Download second degree lawsuits from São Paulo
+ids <- c(
+  "1001869-51.2017.8.26.0562",
+  "1001214-07.2016.8.26.0565")
+esaj::download_cposg(ids, "~/Desktop/")
+#> [1] "/Users/ctlente/Desktop/10018695120178260562.html"
+#> [2] "/Users/ctlente/Desktop/10012140720168260565.html"
 ```
 
-Note that `download_esaj()` figures out the state where the lawsuit was filed
-from the ID alone, so you don't even have to worry about finding out where
-the lawsuit is from. Another important point is that the donwloaded files
-have a set name that you cannot change; you can only alter the directory
-where they will be saved (the default is the current working directory).
+For more information on how to use these functions and which TJs are implemented, please see [Downloading Lawsuits](http://courtsbr.github.io/esaj/articles/download_lawsuit.html).
 
-## Implemented TJs
+### Queries
 
-Unfortunatelly `download_lawsuit()` doesn't yet work with all 27 TJs
-(Justice Courts) in Brazil. Here is a list of the ones implemented:
-- [ ] Acre (AC)
-- [ ] Alagoas (AL)
-- [ ] Amapá (AP)
-- [X] Amazonas (AM)
-- [X] Bahia (BA)
-- [ ] Ceará (CE)
-- [ ] Distrito Federal (DF)
-- [ ] Espírito Santo (ES)
-- [ ] Goiás (GO)
-- [ ] Maranhão (MA)
-- [ ] Mato Grosso (MT)
-- [ ] Mato Grosso do Sul (MS)
-- [ ] Minas Gerais (MG)
-- [ ] Pará (PA) 
-- [ ] Paraíba (PB)
-- [ ] Paraná (PR)
-- [ ] Pernambuco (PE)
-- [ ] Piauí (PI)
-- [ ] Rio de Janeiro (RJ)
-- [ ] Rio Grande do Norte (RN)
-- [ ] Rio Grande do Sul (RS)
-- [ ] Rondônia (RO)
-- [ ] Roraima (RR)
-- [X] Santa Catarina (SC)
-- [X] São Paulo (SP)
-- [ ] Sergipe (SE)
-- [ ] Tocantins (TO)
+Besides downloading lawsuits (see the **Downloading Lawsuits** article), `esaj` also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.
+
+``` r
+# Download results of a simple first degree query
+esaj::download_cjpg("recurso", "~/Desktop/")
+#> [1] "/Users/ctlente/Desktop/search.html"
+#> [2] "/Users/ctlente/Desktop/page1.html"
+
+# Download results of a slightly more complex second degree query
+esaj::download_cjsg("recurso", "~/Desktop/", classes = c("1231", "1232"))
+#> [1] "/Users/ctlente/Desktop/search.html"
+#> [2] "/Users/ctlente/Desktop/page1.html"
+```
+
+For more information on how to use these functions and all their auxiliary methods (like `peek_cj*g()` and `cj*g_table()`), please see [Downloading Queries](http://courtsbr.github.io/esaj/articles/download_query.html).
+
+### Decisions
+
+Of all functions in the `esaj` package, `download_decision()` is probably the simplest: it downloads the PDF belonging to a decision and that's it.
+
+``` r
+# Download one decision
+esaj::download_decision("10000034", "~/Desktop/")
+#> [1] "/Users/ctlente/Desktop/10000034.pdf"
+
+# Download more than one decision
+esaj::download_decision(c("10800758", "10000034"), "~/Desktop/")
+#> [1] "/Users/ctlente/Desktop/10800758.pdf"
+#> [2] "/Users/ctlente/Desktop/10000034.pdf"
+```
+
+For more information on how to use this function, please see [Downloading Decisions](http://courtsbr.github.io/esaj/articles/download_decision.html).
