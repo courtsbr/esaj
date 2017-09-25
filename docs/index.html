@@ -15,7 +15,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -71,18 +71,19 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    <div id="esaj" class="section level1">
+  <div class="col-md-9">
+    
+
+    
+    
+<div class="contents">
+<div id="esaj" class="section level1">
 
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <code>esaj</code> R package in a simple interface that allows you to download first and second degree lawsuits from Brazil’s multiple e-SAJ (Electronic Justice Automation System) portals. Before <code>esaj</code> if you wanted to gather information about lawsuits being processed by Brazil’s state-level Judiciary, you would have to go to each state’s e-SAJ portal, manually input each lawsuit’s ID, and only then download the PDF with the information you wanted; now you can simply run <code>download_esaj()</code>, and spend your valuable time analysing the data.</p>
-</div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<p>The <code>esaj</code> R package is a simple interface that allows you to download multiple kinds of files from Brazil’s e-SAJ (Electronic Justice Automation System) portals. With this package you can save and parse lawsuits, queries, and decisions with very simple, tidyverse compliant functions.</p>
 <p>To install <code>esaj</code>, run the code below:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"courtsbr/esaj"</span>)</code></pre></div>
@@ -90,57 +91,66 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
-<p><code>esaj</code> has only one exported function: <code>download_esaj()</code>. Its arguments are a lawsuit ID a,nd the path to the directory where the lawsuit should be downloaded.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(esaj)
+<div id="lawsuits" class="section level3">
+<h3 class="hasAnchor">
+<a href="#lawsuits" class="anchor"></a>Lawsuits</h3>
+<p>Before <code>esaj</code> if you wanted to gather information about lawsuits being processed by Brazil’s state-level Judiciary, you would have to go to each state’s e-SAJ portal, manually input each lawsuit’s ID, break a capthca, and only then download an HTML with the information you wanted; now you can simply run <code><a href="reference/download_cpopg.html">download_cpopg()</a></code> or <code><a href="reference/download_cposg.html">download_cposg()</a></code>, and spend your valuable time analysing the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Download first degree lawsuits from multiple states</span>
+ids &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">"0123479-07.2012.8.26.0100"</span>,
+  <span class="st">"0552486-62.2015.8.05.0001"</span>,
+  <span class="st">"0303349-44.2014.8.24.0020"</span>)
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cpopg">download_cpopg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/01234790720128260100.html"</span>
+<span class="co">#&gt; [2] "/Users/ctlente/Desktop/05524866220158050001.html"</span>
+<span class="co">#&gt; [3] "/Users/ctlente/Desktop/03033494420148240020.html"</span>
 
-<span class="co"># Download a lawsuit from Amazonas</span>
-<span class="kw">download_lawsuit</span>(<span class="st">"02575182220138040001"</span>)
-<span class="co">#&gt; [1] "./02575182220138040001.html"</span>
-
-<span class="co"># Download a lawsuit from Santa Catarina</span>
-<span class="kw">download_lawsuit</span>(<span class="st">"0303349-44.2014.8.24.0020"</span>, <span class="st">"./test"</span>)
-<span class="co">#&gt; [1] "./test/03033494420148240020.html"</span></code></pre></div>
-<p>Note that <code>download_esaj()</code> figures out the state where the lawsuit was filed from the ID alone, so you don’t even have to worry about finding out where the lawsuit is from. Another important point is that the donwloaded files have a set name that you cannot change; you can only alter the directory where they will be saved (the default is the current working directory).</p>
+<span class="co"># Download second degree lawsuits from São Paulo</span>
+ids &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">"1001869-51.2017.8.26.0562"</span>,
+  <span class="st">"1001214-07.2016.8.26.0565"</span>)
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cposg">download_cposg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10018695120178260562.html"</span>
+<span class="co">#&gt; [2] "/Users/ctlente/Desktop/10012140720168260565.html"</span></code></pre></div>
+<p>For more information on how to use these functions and which TJs are implemented, please see <a href="http://courtsbr.github.io/esaj/articles/download_lawsuit.html">Downloading Lawsuits</a>.</p>
 </div>
-<div id="implemented-tjs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#implemented-tjs" class="anchor"></a>Implemented TJs</h2>
-<p>Unfortunatelly <code>download_lawsuit()</code> doesn’t yet work with all 27 TJs (Justice Courts) in Brazil. Here is a list of the ones implemented:</p>
-<ul>
-<li>[ ] Acre (AC)</li>
-<li>[ ] Alagoas (AL)</li>
-<li>[ ] Amapá (AP)</li>
-<li>[X] Amazonas (AM)</li>
-<li>[X] Bahia (BA)</li>
-<li>[ ] Ceará (CE)</li>
-<li>[ ] Distrito Federal (DF)</li>
-<li>[ ] Espírito Santo (ES)</li>
-<li>[ ] Goiás (GO)</li>
-<li>[ ] Maranhão (MA)</li>
-<li>[ ] Mato Grosso (MT)</li>
-<li>[ ] Mato Grosso do Sul (MS)</li>
-<li>[ ] Minas Gerais (MG)</li>
-<li>[ ] Pará (PA)</li>
-<li>[ ] Paraíba (PB)</li>
-<li>[ ] Paraná (PR)</li>
-<li>[ ] Pernambuco (PE)</li>
-<li>[ ] Piauí (PI)</li>
-<li>[ ] Rio de Janeiro (RJ)</li>
-<li>[ ] Rio Grande do Norte (RN)</li>
-<li>[ ] Rio Grande do Sul (RS)</li>
-<li>[ ] Rondônia (RO)</li>
-<li>[ ] Roraima (RR)</li>
-<li>[X] Santa Catarina (SC)</li>
-<li>[X] São Paulo (SP)</li>
-<li>[ ] Sergipe (SE)</li>
-<li>[ ] Tocantins (TO)</li>
-</ul>
+<div id="queries" class="section level3">
+<h3 class="hasAnchor">
+<a href="#queries" class="anchor"></a>Queries</h3>
+<p>Besides downloading lawsuits (see the <strong>Downloading Lawsuits</strong> article), <code>esaj</code> also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Download results of a simple first degree query</span>
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cjpg">download_cjpg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>)
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page1.html"</span>
+
+<span class="co"># Download results of a slightly more complex second degree query</span>
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cjsg">download_cjsg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>, <span class="dt">classes =</span> <span class="kw">c</span>(<span class="st">"1231"</span>, <span class="st">"1232"</span>))
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page1.html"</span></code></pre></div>
+<p>For more information on how to use these functions and all their auxiliary methods (like <code>peek_cj*g()</code> and <code>cj*g_table()</code>), please see <a href="http://courtsbr.github.io/esaj/articles/download_query.html">Downloading Queries</a>.</p>
+</div>
+<div id="decisions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#decisions" class="anchor"></a>Decisions</h3>
+<p>Of all functions in the <code>esaj</code> package, <code><a href="reference/download_decision.html">download_decision()</a></code> is probably the simplest: it downloads the PDF belonging to a decision and that’s it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Download one decision</span>
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_decision">download_decision</a></span>(<span class="st">"10000034"</span>, <span class="st">"~/Desktop/"</span>)
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10000034.pdf"</span>
+
+<span class="co"># Download more than one decision</span>
+esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_decision">download_decision</a></span>(<span class="kw">c</span>(<span class="st">"10800758"</span>, <span class="st">"10000034"</span>), <span class="st">"~/Desktop/"</span>)
+<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10800758.pdf"</span>
+<span class="co">#&gt; [2] ""</span></code></pre></div>
+<p>For more information on how to use this function, please see <a href="http://courtsbr.github.io/esaj/articles/download_decision.html">Downloading Decisions</a>.</p>
+</div>
+</div>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
-    <h2>Links</h2>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/courtsbr/esaj">https://​github.com/​courtsbr/​esaj</a>
 </li>
@@ -165,6 +175,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <li><a href="https://ci.appveyor.com/project/courtsbr/esaj"><img src="https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
 </ul>
 </div>
+
 </div>
 
 

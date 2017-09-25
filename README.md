@@ -1,6 +1,6 @@
 
-esaj
-====
+esaj <img src="man/figures/logo.png" align="right" />
+=====================================================
 
 [![Made In Brazil](https://img.shields.io/badge/made%20in-brazil-green.svg)](http://www.abj.org.br) [![Travis-CI Build Status](https://travis-ci.org/courtsbr/esaj.svg?branch=master)](https://travis-ci.org/courtsbr/esaj) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/courtsbr/esaj?branch=master&svg=true)](https://ci.appveyor.com/project/courtsbr/esaj)
 
@@ -8,9 +8,6 @@ Overview
 --------
 
 The `esaj` R package is a simple interface that allows you to download multiple kinds of files from Brazil's e-SAJ (Electronic Justice Automation System) portals. With this package you can save and parse lawsuits, queries, and decisions with very simple, tidyverse compliant functions.
-
-Installation
-------------
 
 To install `esaj`, run the code below:
 
