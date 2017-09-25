@@ -57,6 +57,8 @@ navbar:
       href: articles/download_lawsuit.html
     - text: Downloading Queries
       href: articles/download_query.html
+    - text: Downloading Decisions
+      href: articles/download_decision.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/courtsbr/esaj

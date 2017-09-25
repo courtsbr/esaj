@@ -2,6 +2,7 @@ urls:
   reference: http://courtsbr.github.io/esaj/reference
   article: http://courtsbr.github.io/esaj/articles
 articles:
+  download_decision: download_decision.html
   download_lawsuit: download_lawsuit.html
   download_query: download_query.html
 

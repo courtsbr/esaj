@@ -50,6 +50,9 @@
     <li>
       <a href="../articles/download_query.html">Downloading Queries</a>
     </li>
+    <li>
+      <a href="../articles/download_decision.html">Downloading Decisions</a>
+    </li>
   </ul>
 </li>
         <li>
@@ -77,7 +80,7 @@
     
     
 <div class="contents">
-<p>Besides downloading lawsuits (see the <strong>Downloading lawsuits</strong> article), <code>esaj</code> also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.</p>
+<p>Besides downloading lawsuits (see the <strong>Downloading Lawsuits</strong> article), <code>esaj</code> also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.</p>
 <p>To accomplish this task two functions were made available: <code><a href="../reference/download_cjpg.html">download_cjpg()</a></code> (for queries on first degree lawsuits) and <code><a href="../reference/download_cjsg.html">download_cjsg()</a></code> (for queries on second degree lawsuits). There are also two auxiliary functions that can help the user to evaluate how long this kind of download might take: <code><a href="../reference/peek_cjpg.html">peek_cjpg()</a></code> and <code><a href="../reference/peek_cjsg.html">peek_cjsg()</a></code>. Finally, there are 3 functions to explore which arguments to use when calling the functions above: <code><a href="../reference/cjpg_table.html">cjpg_table()</a></code>, <code><a href="../reference/cjsg_table.html">cjsg_table()</a></code>, and <code><a href="../reference/browse_table.html">browse_table()</a></code>.</p>
 <p>As of the day of this writing, all aforementioned functions only work with São Paulo’s Justice Court (TJSP).</p>
 <div id="basic-usage" class="section level2">
@@ -116,16 +119,16 @@ path &lt;-<span class="st"> "~/Desktop/"</span>
 <p>The output of the calls above are omitted because they are exactly the same. Despite only <code>classes</code> appearing as a character vector, <code>subjects</code> and <code>courts</code> also support this kind of input.</p>
 <p>An argument not mentioned above is <code>cores</code>. This is a very useful tool for parallelizing the execution of <code>download_cj*g()</code> and the value passed on to it corresponds to the number of processing cores used when downloading the files.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_cjpg.html">download_cjpg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>, <span class="dt">max_page =</span> <span class="dv">10</span>, <span class="dt">cores =</span> <span class="dv">4</span>)</code></pre></div>
-<div id="peeking" class="section level3">
-<h3 class="hasAnchor">
-<a href="#peeking" class="anchor"></a>Peeking</h3>
+</div>
+<div id="peeking" class="section level2">
+<h2 class="hasAnchor">
+<a href="#peeking" class="anchor"></a>Peeking</h2>
 <p>As you might have guessed, the functions above can take a non-trivial amount of time to finish executing (specially when there are many pages to download). To help the user estimate how much time calls to <code>download_cj*g()</code> would take, <code>peek_cj*g()</code> were made available.</p>
 <p>These functions take the same arguments as <code>download_cj*g()</code> (ignoring <code>path</code> and <code>cores</code>) and calculate approximatelly how much time it would take to download all pages of results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/peek_cjsg.html">peek_cjsg</a></span>(query, path, <span class="dt">classes =</span> <span class="kw">c</span>(<span class="st">"1231"</span>, <span class="st">"1232"</span>))
 <span class="co">#&gt; There are 49 pages to download</span>
 <span class="co">#&gt; This should take around 25 seconds</span></code></pre></div>
 <p><code>path</code> is ignored because the files won’t actually be downloaded. <code>cores</code> is ignored because it’s very hard to guess how much time is saved by parallelizing the process, so the estimate only takes one thread into account.</p>
-</div>
 </div>
 <div id="tables" class="section level2">
 <h2 class="hasAnchor">
@@ -175,6 +178,7 @@ path &lt;-<span class="st"> "~/Desktop/"</span>
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#basic-usage">Basic usage</a></li>
+      <li><a href="#peeking">Peeking</a></li>
       <li><a href="#tables">Tables</a></li>
       </ul>
 </div>

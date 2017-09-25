@@ -1,0 +1,55 @@
+---
+title: "Downloading Decisions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(esaj)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+Of all functions in the `esaj` package, `download_decision()` is probably the
+simplest. Unlike lawsuit and query functions, there is only one decision
+function and absolutelly no helper functions are necessary.
+
+It takes two arguments: a decision unique number (ID) and the path to a
+directory. It's important to note that the second argument isn't the path
+to a file like `readr::write_*()` functions expect, it's the path to a
+folder (which can, but not necessarily has to, exist).
+
+As of this writing, `download_decision()` only works for São Paulo's Justice
+Court (TJSP).
+
+## Basic usage
+
+To download a decision, simply call `download_decision()` with a decision ID
+and a path. The function will return the path to the downloaded PDF.
+
+```{r}
+download_decision("10000034", "~/Desktop/")
+```
+
+This function is vectorized, meaning that we can pass it a character vector of
+IDs to download more than one decision.
+
+```{r}
+download_decision(c("10800758", "10000034"), "~/Desktop/")
+```
+
+As expected, it returns the paths to both downloaded PDFs.
+
+It's important to remember that `download_decision()` is breaking captchas in
+order to do its job (courtesey of the `decryptr` package). The function tries
+at most 10 times to break each captcha, so it's possible that it fails every
+time and isn't able to download the decision.
+
+If you find it super necessary to download every single decision, we recommend
+using `esaj:::download_decision_()`. With this non-exported function one can
+force a larger number of attempts or even get a more verbose output from the
+execution.
