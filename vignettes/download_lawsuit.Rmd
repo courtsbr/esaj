@@ -1,0 +1,108 @@
+---
+title: "Downloading Lawsuits"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(esaj)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+The `esaj` package has two very useful functions for downloading lawsuits
+filed in Brazilian Justice Courts (*Tribunais de Justiça*). The only
+arguments you have to provide to them are the lawsuit's unique number
+and the directory where to save the downloaded file.
+
+These two functions are called `download_cpopg()` and `download_cposg()`.
+The first one works for first degree lawsuits, while the second one works
+for second degree lawsuits; despite this superficial difference, both
+download lawsuits as HTMLs and return the paths to the downloaded files
+in the exact same way.
+
+It's important to note that you shouldn't provide a filename to the `path`
+argument. You can pass more than one lawsuit ID to these functions, meaning
+that `path` has to contain the directory where all the files should be
+downloaded to.
+
+## Basic usage
+
+To download a first degree lawsuits, simply provide the lawsuit's unique number
+(ID) and the path to the directory where the file should be saved. The ID doesn't
+necessarily have to have all divisor marks, but I'll leave them here for clarity
+purposes anyway.
+
+```{r, cache = TRUE}
+download_cpopg("0123479-07.2012.8.26.0100", "~/Desktop/")
+```
+
+If you want to download more than one lawsuit, provide all IDs in a character
+vector and the function will take care of the rest. All lawsuits will be
+independently downloaded to the provided directory as if the fuction had been
+called once for each ID.
+
+```{r, message = FALSE, cache = TRUE}
+ids <- c(
+  "0123479-07.2012.8.26.0100",
+  "0552486-62.2015.8.05.0001",
+  "0303349-44.2014.8.24.0020")
+download_cpopg(ids, "~/Desktop/")
+```
+
+Note that these lawsuits all belong to different TJs. `download_cpopg()` is
+able to identify the Justice Court where the lawsuit was filed and
+automatically look for it in the correct website (for a list of all valid TJs
+see the  **Implemented TJs** section below).
+
+`esaj` is able to download lawsuits from many TJs because it is capable of
+breaking multiple types of captchas (courtesey of the `decryptr` package).
+The functions used for this task are not exported, but you can check them
+out with `esaj:::download_noc_lawsuit()`, `esaj:::download_bw_lawsuit()`,
+and `esaj:::download_rgb_lawsuit()`.
+
+`download_cposg()` works in the exact same way as `download_cpopg()`, but,
+as of the day of this writing, it is only able to download lawsuits filed in
+São Paulo (TJSP).
+
+```{r, cache = TRUE}
+ids <- c(
+  "1001869-51.2017.8.26.0562",
+  "1001214-07.2016.8.26.0565")
+download_cposg(ids, "~/Desktop/")
+```
+
+The only case where `download_cposg()` differs in behaviour from
+`download_cpopg()` is when the lawsuit turns out to be a list of "closed"
+lawsuits. If this ever happens, `download_cposg()` adds some information
+to the filenames.
+
+```{r, cache = TRUE}
+download_cposg("00000144420138260352", "~/Desktop/")
+```
+
+## Implemented TJs
+
+Unfortunately we haven't yet implemented downloaders for all Justice Courts.
+These are the ones implemented at the moment:
+
+```{r, echo = FALSE, cache = TRUE}
+tjs <- dplyr::tibble(
+  Court = c(
+    "Acre (AC)", "Alagoas (AL)", "Amapá (AP)", "Amazonas (AM)", "Bahia (BA)",
+    "Ceará (CE)", "Distrito Federal (DF)", "Espírito Santo (ES)", "Goiás (GO)",
+    "Maranhão (MA)", "Mato Grosso (MT)", "Mato Grosso do Sul (MS)",
+    "Minas Gerais (MG)", "Pará (PA) ", "Paraíba (PB)", "Paraná (PR)",
+    "Pernambuco (PE)", "Piauí (PI)", "Rio de Janeiro (RJ)",
+    "Rio Grande do Norte (RN)", "Rio Grande do Sul (RS)", "Rondônia (RO)",
+    "Roraima (RR)", "Santa Catarina (SC)", "São Paulo (SP)", "Sergipe (SE)",
+    "Tocantins (TO)"),
+  `download_cpopg()` = c(
+    rep(FALSE, 3), rep(TRUE, 2), rep(FALSE, 18), rep(TRUE, 2), rep(FALSE, 2)),
+  `download_cposg()` = c(rep(FALSE, 24), TRUE, rep(FALSE, 2)))
+knitr::kable(tjs)
+```

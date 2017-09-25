@@ -51,6 +51,10 @@ navbar:
     href: index.html
   - text: Reference
     href: reference/index.html
+  - text: Articles
+    menu:
+    - text: Downloading lawsuits
+      href: articles/download_lawsuit.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/courtsbr/esaj
