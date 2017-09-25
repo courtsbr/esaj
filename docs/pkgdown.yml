@@ -3,4 +3,5 @@ urls:
   article: http://courtsbr.github.io/esaj/articles
 articles:
   download_lawsuit: download_lawsuit.html
+  download_query: download_query.html
 

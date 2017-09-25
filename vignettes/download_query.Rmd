@@ -1,0 +1,150 @@
+---
+title: "Downloading Queries"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(esaj)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+Besides downloading lawsuits (see the **Downloading Lawsuits** article), `esaj`
+also allows the user to download the results of a query on lawsuits. This kind
+of query is very useful for finding out what lawsuits contain certain words,
+were filed in a given period, were filed in a given court, etc.
+
+To accomplish this task two functions were made available: `download_cjpg()`
+(for queries on first degree lawsuits) and `download_cjsg()` (for queries
+on second degree lawsuits). There are also two auxiliary functions that can
+help the user to evaluate how long this kind of download might take:
+`peek_cjpg()` and `peek_cjsg()`. Finally, there are 3 functions to explore
+which arguments to use when calling the functions above: `cjpg_table()`,
+`cjsg_table()`, and `browse_table()`.
+
+As of the day of this writing, all aforementioned functions only work with São
+Paulo's Justice Court (TJSP).
+
+## Basic usage
+
+To run a query on first degree lawsuits and download the results, simply write
+the query as a string and supply the path to the directory where to download all
+resulting files. The example below finds all lawsuits containing the word
+"recurso".
+
+```{r}
+download_cjpg("recurso", "~/Desktop/")
+```
+
+As you can see, `download_cj*g()` return the paths to the downloaded files.
+The first file always refers to the search page, containing the filled fields
+and the first results of the query; the subsequent files contain pages of
+results (as many pages as requested by the user).
+
+By default `download_cj*g()` download only one page of results, but we can
+also specify page indexes to start and stop downloading.
+
+```{r}
+download_cjpg("recurso", "~/Desktop/", min_page = 3, max_page = 6)
+```
+
+To help you filter the results even more, many other arguments are also made
+available. `download_cjpg()` and `download_cjsg()` have slightly different
+ones, so make sure to run `?download_cjpg` or `?download_cjsg` to learn more
+about them.
+
+```{r, results = FALSE}
+# Repeted arguments
+query <- "recurso"
+path <- "~/Desktop/"
+
+# First degree query
+download_cjpg(query, path, classes = c("8727", "8742"))
+download_cjpg(query, path, subjects = "3372")
+download_cjpg(query, path, courts = "2-1")
+download_cjpg(query, path, date_start = "2016-01-01", date_end = "2016-12-31")
+
+# Second degree query
+download_cjsg(query, path, classes = c("1231", "1232"))
+download_cjsg(query, path, subjects = "0")
+download_cjsg(query, path, courts = "0-56")
+download_cjsg(query, path, trial_start = "2009-01-01", trial_end = "2009-12-31")
+download_cjsg(query, path, registration_start = "1998-01-01",
+              registration_end = "1998-12-31")
+```
+
+The output of the calls above are omitted because they are exactly the same.
+Despite only `classes` appearing as a character vector, `subjects` and `courts`
+also support this kind of input.
+
+An argument not mentioned above is `cores`. This is a very useful tool for
+parallelizing the execution of `download_cj*g()` and the value passed on to
+it corresponds to the number of processing cores used when downloading the files.
+
+```{r, eval = FALSE}
+download_cjpg("recurso", "~/Desktop/", max_page = 10, cores = 4)
+```
+
+## Peeking
+
+As you might have guessed, the functions above can take a non-trivial amount of
+time to finish executing (specially when there are many pages to download). To
+help the user estimate how much time calls to `download_cj*g()` would take,
+`peek_cj*g()` were made available.
+
+These functions take the same arguments as `download_cj*g()` (ignoring `path`
+and `cores`) and calculate approximatelly how much time it would take to
+download all pages of results.
+
+```{r}
+peek_cjsg(query, path, classes = c("1231", "1232"))
+```
+
+`path` is ignored because the files won't actually be downloaded. `cores` is
+ignored because it's very hard to guess how much time is saved by parallelizing
+the process, so the estimate only takes one thread into account.
+
+## Tables
+
+Since `download_cj*g()` have very complex arguments, there are 3 other functions
+that help the user know which values should be passed on to `classes`,
+`subjects`, and `courts`.
+
+`cj*g_table()` take only one argument, `type`, which should be one of
+`"classes"`, `"subjects"`, and `"courts"`. They will return tibbles with
+all possible values for the corresponding arguments in `download_cj*g()`.
+
+```{r}
+dplyr::glimpse(cjpg_table("classes"))
+```
+
+Note how the table above has multiple levels, marked 0 through 5. This is
+because the class structure is a tree, so higher levels represent classes
+closer to the leaves. In the example above, the valid values for the `classes`
+argument in `download_cjpg()` are every single number in the `id*` columns.
+
+`cj*g_table("subjects")` have very similar structures to
+`cj*g_table("classes")`. `cj*g_table("courts")` have only one level.
+
+To browse `classes` and `subjects` tables, one can also use the `browse_table()`
+function. This method uses a list of regex to filter the tibbles returned by
+`cj*g_table("classes")` and `cj*g_table("subjects")` more easily than
+`dplyr::select()`.
+
+```{r}
+table <- cjpg_table("classes")
+browse_table(table, list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso"))
+```
+
+For the matching to work properly, `patterns` should be a list of at most 6
+character vectors, each one containing either one or a vector of regular
+expressions to be applied from left to right on columns `name0` to `name5`.
+
+Note that vectors are ORed and different elements are ANDed. In the example
+above, we got back the rows where `name0` contains "ADM" **or** "CRIMINAL"
+**and** where `name5` contains "Recurso".

@@ -37,7 +37,7 @@ To download a first degree lawsuits, simply provide the lawsuit's unique number
 necessarily have to have all divisor marks, but I'll leave them here for clarity
 purposes anyway.
 
-```{r, cache = TRUE}
+```{r}
 download_cpopg("0123479-07.2012.8.26.0100", "~/Desktop/")
 ```
 
@@ -46,7 +46,7 @@ vector and the function will take care of the rest. All lawsuits will be
 independently downloaded to the provided directory as if the fuction had been
 called once for each ID.
 
-```{r, message = FALSE, cache = TRUE}
+```{r, message = FALSE}
 ids <- c(
   "0123479-07.2012.8.26.0100",
   "0552486-62.2015.8.05.0001",
@@ -69,7 +69,7 @@ and `esaj:::download_rgb_lawsuit()`.
 as of the day of this writing, it is only able to download lawsuits filed in
 São Paulo (TJSP).
 
-```{r, cache = TRUE}
+```{r}
 ids <- c(
   "1001869-51.2017.8.26.0562",
   "1001214-07.2016.8.26.0565")
@@ -81,7 +81,7 @@ The only case where `download_cposg()` differs in behaviour from
 lawsuits. If this ever happens, `download_cposg()` adds some information
 to the filenames.
 
-```{r, cache = TRUE}
+```{r}
 download_cposg("00000144420138260352", "~/Desktop/")
 ```
 
@@ -90,7 +90,7 @@ download_cposg("00000144420138260352", "~/Desktop/")
 Unfortunately we haven't yet implemented downloaders for all Justice Courts.
 These are the ones implemented at the moment:
 
-```{r, echo = FALSE, cache = TRUE}
+```{r, echo = FALSE}
 tjs <- dplyr::tibble(
   Court = c(
     "Acre (AC)", "Alagoas (AL)", "Amapá (AP)", "Amazonas (AM)", "Bahia (BA)",
