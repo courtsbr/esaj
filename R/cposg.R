@@ -2,7 +2,7 @@
 #' @title Download second degree lawsuits filed in Brazilian Justice Courts
 #'
 #' @description
-#' This function downloads lawsuits as PDFs. Given a lawsuit ID, and
+#' This function downloads lawsuits as HTMLs. Given a lawsuit ID, and
 #' the path to a directory it will collect the lawsuit, and save it to
 #' the provided directory.
 #'
@@ -11,7 +11,7 @@
 #' Brazilian Tribunal de Justica (Justice Court). [download_cposg()]
 #' finds the lawsuit in its state's online Sistema de Automacao de Justica
 #' (Justice Automation System), solves the captcha withholding the
-#' information, and collects the PDF.
+#' information, and collects the HTML.
 #'
 #' @section Implemented TJs:
 #' Unfortunatelly [download_cposg()] doesn't yet work with all 27

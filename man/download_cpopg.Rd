@@ -15,7 +15,7 @@ download_cpopg(id, path = ".")
 A character vector with the path to the downloaded lawsuit
 }
 \description{
-This function downloads lawsuits as PDFs. Given a lawsuit ID, and
+This function downloads lawsuits as HTMLs. Given a lawsuit ID, and
 the path to a directory it will collect the lawsuit, and save it to
 the provided directory.
 }
@@ -25,7 +25,7 @@ The lawsuits contemplated by this funtion have to be filed in a
 Brazilian Tribunal de Justica (Justice Court). \code{\link[=download_cpopg]{download_cpopg()}}
 finds the lawsuit in its state's online Sistema de Automacao de Justica
 (Justice Automation System), solves the captcha withholding the
-information, and collects the PDF.
+information, and collects the HTML.
 }
 
 \section{Implemented TJs}{
