@@ -55,7 +55,7 @@ conv_month <- function(date) {
 
   # Convert date to more sensible format
   date <- stringr::str_replace_all(date, " de ", "-")
-  month <- stringr::str_extract(date, "[a-z]+")
+  month <- stringr::str_extract(date, "[:alpha:]+")
 
   # Get month number
   month <- switch (month,
@@ -73,7 +73,7 @@ conv_month <- function(date) {
     "dezembro" = "12")
 
   # Replace name with number
-  stringr::str_replace(date, "[a-z]+", month)
+  stringr::str_replace(date, "[:alpha:]+", month)
 }
 
 # Convert a date to pt_BR format
