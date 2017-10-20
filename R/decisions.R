@@ -21,7 +21,15 @@ download_decision <- function(decision, path = ".", tj = "tjsp") {
 
   # Download decisions
   dwld <- purrr::possibly(download_decision_, "")
-  purrr::map_chr(decision, dwld, path)
+  pb <- progress::progress_bar$new(
+    "Downloading [:bar] :percent eta: :eta", length(decision))
+  downloaded <- c()
+  for (i in seq_along(decision)) {
+    downloaded <- append(downloaded, dwld(decision[i], path))
+    pb$tick()
+  }
+
+  return(downloaded)
 }
 
 download_decision_ <- function(decision, path, ntry = 10, verbose = FALSE) {

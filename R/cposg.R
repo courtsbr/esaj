@@ -39,8 +39,15 @@ download_cposg <- function(id, path = ".") {
 
   # Iterate over IDs
   download_cposg_ <- purrr::possibly(download_cposg_, "")
-  purrr::map(id, download_cposg_, path) %>%
-    purrr::flatten_chr()
+  pb <- progress::progress_bar$new(
+    "Downloading [:bar] :percent eta: :eta", length(id))
+  downloaded <- c()
+  for (i in seq_along(id)) {
+    downloaded <- append(downloaded, download_cposg_(id[i], path))
+    pb$tick()
+  }
+
+  return(downloaded)
 }
 
 # Download one lawsuit
