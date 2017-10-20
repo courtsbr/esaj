@@ -32,8 +32,9 @@ download_decision_ <- function(decision, path, ntry = 10, verbose = FALSE) {
     query = list(cdAcordao = decision, cdForo = 0),
     httr::config(ssl_verifypeer = FALSE))
 
-  # File where to save PDF
+  # File where to save PDF (and return early if it exists)
   file <- stringr::str_c(normalizePath(path), "/", decision, ".pdf")
+  if (file.exists(file)) { return(file) }
 
   # Try to download PDF at most ntry times
   for (i in 1:ntry) {
