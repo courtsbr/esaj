@@ -38,6 +38,7 @@ download_cposg <- function(id, path = ".") {
   if (any(stringr::str_length(id) != 20)) { stop("Invalid ID") }
 
   # Iterate over IDs
+  download_cposg_ <- purrr::possibly(download_cposg_, "")
   purrr::map(id, download_cposg_, path) %>%
     purrr::flatten_chr()
 }
@@ -51,6 +52,11 @@ download_cposg_ <- function(id, path) {
 
   # Get URLs for the download
   data <- get_lwst_data(id, deg = 2)
+
+  # If file exists, return it without downloading
+  if (file.exists(stringr::str_c(path, id, ".html"))) {
+    return(stringr::str_c(path, id, ".html"))
+  }
 
   # Download lawsuit
   download(id, path, data$u_captcha, data$u_search, cposg_query(id))
