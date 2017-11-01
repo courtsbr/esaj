@@ -158,4 +158,7 @@ globalVariables(c(
   "info", "key", "link", "n", "n_processo", "nome", "r", "result",
   "rm_accent", "setNames", "value", "y", "cd_acordao", "id0", "id5",
   "id_processo", "item", "branch", "court", "txt_ementa", "val", "role",
-  "name", "part", "name0", "name1", "name2", "name3", "name4", "name5"))
+  "name", "part", "name0", "name1", "name2", "name3", "name4", "name5",
+  "class_subject", "comarca", "data_julgamento", "data_registro",
+  "ementa", "id_decision", "id_lawsuit", "id_page", "orgao_julgador",
+  "relatora", "txt_summary"))
