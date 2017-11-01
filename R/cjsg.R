@@ -82,7 +82,8 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
     body = query_post, httr::config(ssl_verifypeer = FALSE),
     httr::write_disk(file, TRUE))
 
-  if (is.na(max_page) || is.infinite(max_page)) npags <- cjsg_npags(file)
+  if (is.na(max_page) || is.infinite(max_page))
+    npags <- cjsg_npags(dirname(file))
   stopifnot(min_page <= max_page)
 
   # Function do download a page into a directory
@@ -116,7 +117,7 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
 
 cjsg_npags <- function(path) {
   # Get number of pages
-  pages <- path %>%
+  path %>%
     list.files("search", full.names = TRUE) %>%
     xml2::read_html() %>%
     xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
