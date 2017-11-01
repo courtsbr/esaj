@@ -22,6 +22,7 @@ NULL
 #'
 #' See \code{\link[rlang]{!!}} for more details.
 #'
+#' @name !!
 #' @rdname quasiquotation
 #' @keywords internal
 #' @importFrom rlang !!
