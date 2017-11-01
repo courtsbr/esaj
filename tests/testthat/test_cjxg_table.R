@@ -11,16 +11,20 @@ test_that("CJXG tables are working", {
   # Get the tables for classes and subjects
   classes_p <- cjpg_table("classes")
   subjects_p <- cjpg_table("subjects")
+  courts_p <- cjpg_table("courts")
+
   classes_s <- cjsg_table("classes")
   subjects_s <- cjsg_table("subjects")
+  courts_s <- cjsg_table("courts")
 
   # Check dimensions of tables
-  expect_equal(dim(classes_p), c(760, 12))
+  expect_equal(dim(classes_p), c(757, 12))
   expect_equal(dim(subjects_p), c(6518, 12))
-  expect_equal(dim(classes_s), c(121, 12))
+  expect_equal(dim(courts_p), c(2061, 3))
+
+  expect_equal(dim(classes_s), c(122, 12))
   expect_equal(dim(subjects_s), c(3088, 12))
-  expect_equal(dim(cjpg_table("courts")), c(2061, 3))
-  expect_equal(dim(cjsg_table("courts")), c(1208, 3))
+  expect_equal(dim(courts_s), c(1208, 3))
 
   # Check browsing works
   expect_equal(dim(browse_table(classes_s, list(c("ADM", "CRIMINAL"), "", "", "", "", "Recurso"))), c(4, 12))
