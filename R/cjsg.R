@@ -1,14 +1,13 @@
 
-#' @title Download results of a query on second degree lawsuits filed
-#' in Brazilian Justice Courts
+#' @title Download results of a query on second degree lawsuits filed in
+#'   Brazilian Justice Courts
 #'
-#' @description Downloads an HTML with the results obtained from
-#' querying a dataset of all second degree lawsuits and then one
-#' HTML for each page of results (at most `max_page` pages). `query`
-#' should be the string to look for in the lawsuits and `clases`,
-#' `courts`, etc. should be the filtering parameters (make sure
-#' to use [cjsg_table()] to get lists of all valid codes for these
-#' arguments).
+#' @description Downloads an HTML with the results obtained from querying a
+#'   dataset of all second degree lawsuits and then one HTML for each page of
+#'   results (at most `max_page` pages). `query` should be the string to look
+#'   for in the lawsuits and `clases`, `courts`, etc. should be the filtering
+#'   parameters (make sure to use [cjsg_table()] to get lists of all valid codes
+#'   for these arguments).
 #'
 #' @param query Character vector with search query
 #' @param path Path to directory where to save HTMLs
@@ -20,8 +19,14 @@
 #' @param registration_start Lower bound for registration date
 #' @param registration_end Upper bound for registration date
 #' @param min_page First page of results to download
-#' @param max_page Last page of results to download
-#' @param cores The number of cores to be used when downloading
+#' @param max_page Last page of results to download. If is \code{NA} or
+#'   \code{Inf}, we use \code{\link{peek_cjsg}}.
+#' @param cores The number of cores to be used when downloading. If you use more
+#'   than one core and is dowloading more than 15 pages, you will probably have
+#'   your IP blocked.
+#' @param wait Seconds to wait between downloads. Does not work properly if
+#'   \code{cores} is greater than one, so you will probably have your IP blocked
+#'   anyway.
 #' @param tj TJ from which to get data (only works with TJSP for now)
 #' @return A character vector with the paths to the downloaded files
 #'
@@ -30,11 +35,11 @@
 download_cjsg <- function(query, path = ".", classes = "", subjects = "",
                           courts = "", trial_start = "", trial_end = "",
                           registration_start = "", registration_end = "",
-                          min_page = 1, max_page = 1, cores = 1, tj = "tjsp") {
+                          min_page = 1, max_page = 1, cores = 1,
+                          wait = .5, tj = "tjsp") {
 
   # Stop
   stopifnot(tj == "tjsp")
-  stopifnot(min_page <= max_page)
 
   # Convert parameters to expected format
   strings <- list(classes, subjects, courts) %>%
@@ -77,9 +82,13 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
     body = query_post, httr::config(ssl_verifypeer = FALSE),
     httr::write_disk(file, TRUE))
 
-  # Function do download a page into a directory
-  download_pages <- function(page, path) {
+  if (is.na(max_page) || is.infinite(max_page)) npags <- cjsg_npags(file)
+  stopifnot(min_page <= max_page)
 
+  # Function do download a page into a directory
+  download_pages <- function(page, path, wait) {
+
+    Sys.sleep(wait)
     # Query for GET request
     query_get <- list(
       "tipoDeDecisao" = "A",
@@ -88,19 +97,37 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
 
     # Download page
     file <- stringr::str_c(path, "/page", page, ".html")
-    httr::GET(
-      "https://esaj.tjsp.jus.br/cjsg/trocaDePagina.do",
-      query = query_get, httr::config(ssl_verifypeer = FALSE),
-      httr::write_disk(file, TRUE))
-
+    if (!file.exists(file)) {
+      httr::GET(
+        "https://esaj.tjsp.jus.br/cjsg/trocaDePagina.do",
+        query = query_get, httr::config(ssl_verifypeer = FALSE),
+        httr::write_disk(file, TRUE))
+    }
     return(normalizePath(file))
   }
 
   # Download all pages
   files <- parallel::mcmapply(
-    download_pages, min_page:max_page, list(path = path),
+    download_pages, min_page:max_page,
+    path = path, wait = wait,
     SIMPLIFY = FALSE, mc.cores = cores)
   return(c(file, purrr::flatten_chr(files)))
+}
+
+cjsg_npags <- function(path) {
+  # Get number of pages
+  pages <- path %>%
+    list.files("search", full.names = TRUE) %>%
+    xml2::read_html() %>%
+    xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
+    rvest::html_text() %>%
+    stringr::str_extract_all(" [0-9]+") %>%
+    purrr::pluck(1) %>%
+    stringr::str_trim() %>%
+    as.numeric() %>%
+    magrittr::divide_by(.[1]) %>%
+    purrr::pluck(2) %>%
+    ceiling()
 }
 
 #' Check how long a call to [download_cjsg()] will probably take
@@ -118,23 +145,11 @@ peek_cjsg <- function(...) {
   max_p <- dots$max_page %||% -1
   dots$min_page <- 1
   dots$max_page <- 1
+  dots$wait <- 0
 
   # Call download_cjsg
   do.call(download_cjsg, dots)
-
-  # Get number of pages
-  pages <- path %>%
-    list.files("search", full.names = TRUE) %>%
-    xml2::read_html() %>%
-    xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
-    rvest::html_text() %>%
-    stringr::str_extract_all(" [0-9]+") %>%
-    purrr::pluck(1) %>%
-    stringr::str_trim() %>%
-    as.numeric() %>%
-    magrittr::divide_by(.[1]) %>%
-    purrr::pluck(2) %>%
-    ceiling()
+  pages <- cjsg_npags(path)
 
   # Print message
   min_p <- ifelse(min_p == -1, 1, min_p)
