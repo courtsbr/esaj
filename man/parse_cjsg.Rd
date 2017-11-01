@@ -4,27 +4,28 @@
 \alias{parse_cjsg}
 \title{CJSG parser}
 \usage{
-parse_cjsg(arqs)
+parse_cjsg(files, cores = 1)
 }
 \arguments{
-\item{arqs}{Character vector with the paths of the files to be parsed}
+\item{files}{Character vector with the paths of the files to be parsed}
+
+\item{cores}{Number of cores to be used. Defaults to 1 to show progress bar.}
 }
 \value{
 A tibble with the columns
 \itemize{
-\item \code{arq} Name of the file
-\item \code{id} ID found in the page read
-\item \code{cd_acordao} Unique ID of the ruling
-\item \code{n_processo} Number of the lawsuit (doesn't have to be unique)
-\item \code{comarca} Name of the district
-\item \code{data_julgamento} Date of the judgement (\%d/\%m/\%Y)
-\item \code{data_registro} Date of registration in the system (\%d/\%m/\%Y)
-\item \code{ementa} Summary of the ruling
-\item \code{orgao_julgador} Body responsible for the appeal
-\item \code{outros_numeros} Old/additional IDs
-\item \code{relatora} Name of the rapporteur
-\item \code{classe_assunto} Class/subject, separated by slashes
-\item \code{txt_ementa} Text of the summary with no formatting
+\item \code{file} Name of the file
+\item \code{id_page} ID found in the page
+\item \code{id_decision} Unique ID of the ruling
+\item \code{id_lawsuit} Number of the lawsuit (doesn't have to be unique)
+\item \code{district} Name of the district
+\item \code{dt_decision} Date of the judgement (\%d/\%m/\%Y)
+\item \code{dt_registration} Date of registration in the system (\%d/\%m/\%Y)
+\item \code{summary} Summary of the ruling
+\item \code{court} Body responsible for the appeal
+\item \code{rapporteur} Name of the rapporteur
+\item \code{class_subject} Class/subject, separated by slashes
+\item \code{txt_summary} Text of the summary with no formatting
 }
 }
 \description{

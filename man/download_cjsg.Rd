@@ -2,13 +2,13 @@
 % Please edit documentation in R/cjsg.R
 \name{download_cjsg}
 \alias{download_cjsg}
-\title{Download results of a query on second degree lawsuits filed
-in Brazilian Justice Courts}
+\title{Download results of a query on second degree lawsuits filed in
+Brazilian Justice Courts}
 \usage{
 download_cjsg(query, path = ".", classes = "", subjects = "",
   courts = "", trial_start = "", trial_end = "",
   registration_start = "", registration_end = "", min_page = 1,
-  max_page = 1, cores = 1, tj = "tjsp")
+  max_page = 1, cores = 1, wait = 0.5, tj = "tjsp")
 }
 \arguments{
 \item{query}{Character vector with search query}
@@ -31,9 +31,16 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
 
 \item{min_page}{First page of results to download}
 
-\item{max_page}{Last page of results to download}
+\item{max_page}{Last page of results to download. If is \code{NA} or
+\code{Inf}, we use \code{\link{peek_cjsg}}.}
 
-\item{cores}{The number of cores to be used when downloading}
+\item{cores}{The number of cores to be used when downloading. If you use more
+than one core and is dowloading more than 15 pages, you will probably have
+your IP blocked.}
+
+\item{wait}{Seconds to wait between downloads. Does not work properly if
+\code{cores} is greater than one, so you will probably have your IP blocked
+anyway.}
 
 \item{tj}{TJ from which to get data (only works with TJSP for now)}
 }
@@ -41,13 +48,12 @@ download_cjsg(query, path = ".", classes = "", subjects = "",
 A character vector with the paths to the downloaded files
 }
 \description{
-Downloads an HTML with the results obtained from
-querying a dataset of all second degree lawsuits and then one
-HTML for each page of results (at most \code{max_page} pages). \code{query}
-should be the string to look for in the lawsuits and \code{clases},
-\code{courts}, etc. should be the filtering parameters (make sure
-to use \code{\link[=cjsg_table]{cjsg_table()}} to get lists of all valid codes for these
-arguments).
+Downloads an HTML with the results obtained from querying a
+dataset of all second degree lawsuits and then one HTML for each page of
+results (at most \code{max_page} pages). \code{query} should be the string to look
+for in the lawsuits and \code{clases}, \code{courts}, etc. should be the filtering
+parameters (make sure to use \code{\link[=cjsg_table]{cjsg_table()}} to get lists of all valid codes
+for these arguments).
 }
 \seealso{
 \code{\link[=cjsg_table]{cjsg_table()}}, \code{\link[=browse_table]{browse_table()}}
