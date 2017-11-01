@@ -82,8 +82,11 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
     body = query_post, httr::config(ssl_verifypeer = FALSE),
     httr::write_disk(file, TRUE))
 
-  if (is.na(max_page) || is.infinite(max_page))
-    npags <- cjsg_npags(dirname(file))
+  if (is.na(max_page) || is.infinite(max_page)) {
+    max_page <- cjsg_npags(dirname(file))
+    cjsg_print_npags(max_page, min_page)
+  }
+
   stopifnot(min_page <= max_page)
 
   # Function do download a page into a directory
@@ -131,6 +134,16 @@ cjsg_npags <- function(path) {
     ceiling()
 }
 
+cjsg_print_npags <- function(pages, min_pag) {
+  # Print message
+  min_p <- ifelse(min_pag == -1, 1, min_pag)
+  message(
+    "There are ", (pages - min_pag + 1), " pages to download\n",
+    "This should take around ",
+    how_long((pages - min_p + 1) * 0.5105))
+  invisible(pages)
+}
+
 #' Check how long a call to [download_cjsg()] will probably take
 #' @param ... Arguments passed on to [download_cjsg()] (
 #' `path` will be ignored)
@@ -151,13 +164,5 @@ peek_cjsg <- function(...) {
   # Call download_cjsg
   do.call(download_cjsg, dots)
   pages <- cjsg_npags(path)
-
-  # Print message
-  min_p <- ifelse(min_p == -1, 1, min_p)
-  max_p <- ifelse(max_p == -1, pages, max_p)
-  message(
-    "There are ", (max_p - min_p + 1), " pages to download\n",
-    "This should take around ",
-    how_long((max_p - min_p + 1) * 0.5105))
-  invisible(pages)
+  cjsg_print_npags(pages, min_p)
 }
