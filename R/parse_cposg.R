@@ -140,6 +140,11 @@ parse_decisions <- function(parser){
   purrr::list_merge(parser, name = "decisions", getter = get_decisions)
 }
 
+hidden_lawsuit <- function(html) {
+  # checks if lawsuit has secret of justice
+  !is.na(rvest::html_node(html, "#popupSenhaProcesso"))
+}
+
 #' Runs a parser
 #' @param file A character vector with the paths to one ore more files
 #' @param parser A parser returned by [make_parser()]
@@ -160,15 +165,27 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
 
     # Apply all getters
     html <- xml2::read_html(file)
-    out <- parser$getter %>%
-      purrr::invoke_map(list(list(html = html))) %>%
-      purrr::set_names(parser$name) %>%
-      purrr::modify(list) %>%
-      dplyr::as_tibble() %>%
-      dplyr::mutate(
-        file = file,
-        id = tools::file_path_sans_ext(basename(file))) %>%
-      dplyr::select(id, file, dplyr::everything())
+
+    if (hidden_lawsuit(html)) {
+      empty_cols <- parser_path$parser$name %>%
+        purrr::map(~list(tibble::tibble())) %>%
+        purrr::set_names(parser_path$parser$name) %>%
+        tibble::as_tibble()
+      out <- tibble::tibble(id = tools::file_path_sans_ext(basename(file)),
+                            file, hidden = TRUE) %>%
+        dplyr::bind_cols(empty_cols)
+    } else {
+      out <- parser$getter %>%
+        purrr::invoke_map(list(list(html = html))) %>%
+        purrr::set_names(parser$name) %>%
+        purrr::modify(list) %>%
+        dplyr::as_tibble() %>%
+        dplyr::mutate(
+          file = file,
+          id = tools::file_path_sans_ext(basename(file)),
+          hidden = FALSE) %>%
+        dplyr::select(id, file, hidden, dplyr::everything())
+    }
 
     # Write and return
     readr::write_rds(out, stringr::str_c(path, "/", out$id, ".rds"))
