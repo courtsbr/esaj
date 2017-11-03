@@ -161,4 +161,4 @@ globalVariables(c(
   "name", "part", "name0", "name1", "name2", "name3", "name4", "name5",
   "class_subject", "comarca", "data_julgamento", "data_registro",
   "ementa", "id_decision", "id_lawsuit", "id_page", "orgao_julgador",
-  "relatora", "txt_summary"))
+  "relatora", "txt_summary", "hidden"))
