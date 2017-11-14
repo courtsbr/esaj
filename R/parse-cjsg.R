@@ -40,6 +40,7 @@ parse_cjsg_one <- function(node) {
                   district = comarca,
                   court = orgao_julgador,
                   dt_decision = data_julgamento,
+                  dt_publication = data_publicacao,
                   dt_registration = data_registro,
                   rapporteur = relatora,
                   summary = ementa,
@@ -71,6 +72,7 @@ parse_cjsg_file <- function(file) {
 #'   \item `id_lawsuit` Number of the lawsuit (doesn't have to be unique)
 #'   \item `district` Name of the district
 #'   \item `dt_decision` Date of the judgement (\%d/\%m/\%Y)
+#'   \item `dt_publication` Date of the publication (\%d/\%m/\%Y)
 #'   \item `dt_registration` Date of registration in the system (\%d/\%m/\%Y)
 #'   \item `summary` Summary of the ruling
 #'   \item `court` Body responsible for the appeal
