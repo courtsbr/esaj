@@ -54,7 +54,7 @@ parse_cjsg_file <- function(file) {
                                          tibble::tibble(result = "error"))
   items <- xml2::read_html(file, encoding = 'UTF-8') %>%
     rvest::html_nodes('.fundocinza1')
-  purrr::map_dfr(items, parse_cjsg_one)
+  purrr::map_dfr(items, safe_parse_cjsg_one)
 }
 
 #' @title CJSG parser
