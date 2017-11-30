@@ -8,8 +8,7 @@ parse_cjsg_one <- function(node) {
   infos <- node %>%
     rvest::html_node('.downloadEmenta') %>% {
       tibble::tibble(id_lawsuit = trim(rvest::html_text(.)),
-                     id_decision = rvest::html_attr(., 'cdacordao'))
-    }
+                     id_decision = rvest::html_attr(., 'cdacordao'))}
   ca <- node %>%
     rvest::html_node('.assuntoClasse') %>%
     rvest::html_text() %>%
@@ -30,9 +29,10 @@ parse_cjsg_one <- function(node) {
                   key = stringr::str_replace_all(key, '_d[eo]_', '_')) %>%
     tidyr::spread(key, val) %>%
     dplyr::bind_cols(infos) %>%
-    dplyr::mutate(id_page = id,
-                  class_subject = ca,
-                  txt_summary = tsf) %>%
+    dplyr::mutate(id_page = id, class_subject = ca, txt_summary = tsf) %>% {
+      if (!tibble::has_name(., "ementa"))
+        dplyr::mutate(., ementa = NA_character_)
+      else .} %>%
     dplyr::select(id_page,
                   id_decision,
                   id_lawsuit,
