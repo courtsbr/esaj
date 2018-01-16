@@ -20,6 +20,7 @@ A tibble with the columns
 \item \code{id_lawsuit} Number of the lawsuit (doesn't have to be unique)
 \item \code{district} Name of the district
 \item \code{dt_decision} Date of the judgement (\%d/\%m/\%Y)
+\item \code{dt_publication} Date of the publication (\%d/\%m/\%Y)
 \item \code{dt_registration} Date of registration in the system (\%d/\%m/\%Y)
 \item \code{summary} Summary of the ruling
 \item \code{court} Body responsible for the appeal

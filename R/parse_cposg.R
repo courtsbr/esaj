@@ -84,7 +84,7 @@ parse_movs <- function(parser) {
       purrr::pluck(1) %>%
       dplyr::as_tibble() %>%
       dplyr::mutate(
-        X1 = lubridate::dmy(X1),
+        X1 = lubridate::dmy(X1, quiet = TRUE),
         X3 = str_replace_all(X3, "[\\t\\n]", ""),
         X3 = str_replace_all(X3, "\\r", " "),
         X3 = str_replace_all(X3, " +", " ")) %>%
@@ -128,7 +128,7 @@ parse_decisions <- function(parser){
       dplyr::bind_rows() %>%
       dplyr::as_tibble() %>%
       dplyr::mutate(
-        X1 = lubridate::dmy(X1),
+        X1 = lubridate::dmy(X1, quiet = TRUE),
         X2 = stringr::str_replace_all(X2, "[:space:]+"," "),
         X3 = stringr::str_replace_all(X3, "[:space:]+", " ")) %>%
       dplyr::select(-X2) %>%
@@ -176,7 +176,7 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
         dplyr::bind_cols(empty_cols)
     } else {
       out <- parser$getter %>%
-        purrr::invoke_map(list(list(html = html))) %>%
+        purrr::invoke_map(list(list("html" = html))) %>%
         purrr::set_names(parser$name) %>%
         purrr::modify(list) %>%
         dplyr::as_tibble() %>%
