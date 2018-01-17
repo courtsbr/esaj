@@ -133,8 +133,3 @@ parse_decisions.cposg <- function(parser){
   # Add get_decisions to getters
   purrr::list_merge(parser, name = "decisions", getter = get_decisions)
 }
-
-hidden_lawsuit <- function(html) {
-  # checks if lawsuit has secret of justice
-  !is.na(rvest::html_node(html, "#popupSenhaProcesso"))
-}

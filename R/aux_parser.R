@@ -15,6 +15,18 @@ parse_movs <- function(parser) {
   UseMethod("parse_movs", parser)
 }
 
+parse_hist <- function(parser) {
+  UseMethod("parse_hist", parser)
+}
+
+parse_hearings <- function(parser) {
+  UseMethod("parse_hearings", parser)
+}
+
+parse_pd <- function(parser) {
+  UseMethod("parse_pd", parser)
+}
+
 # Print parser
 print.parser <- function(x, ...) {
   if (length(x$name) == 0) {

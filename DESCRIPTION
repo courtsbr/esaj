@@ -1,6 +1,6 @@
 Package: esaj
 Title: A scraper for all e-SAJ systems
-Version: 0.0.0.9000
+Version: 0.1.0.9000
 Authors@R: c(
   person("Caio", "Lente", , "ctlente@gmail.com", role = c("aut", "cre")),
   person("Fernando", "Corr\u00EAa", role = c("aut")),
@@ -12,16 +12,12 @@ Depends: R (>= 3.2.3)
 License: GPL-2
 Imports:
   magrittr,
-  V8,
   captchasaj,
-  doParallel,
-  multidplyr,
   dplyr,
   httr,
   janitor,
   jsonlite,
   lubridate,
-  plyr,
   readr,
   rvest,
   stringr,
@@ -30,16 +26,12 @@ Imports:
   rlang,
   purrr,
   abjutils,
-  captchaSajAudio,
   progress,
   tibble,
   magick,
   tesseract
 Remotes:
-  hadley/multidplyr,
-  tidyverse/purrr,
   jtrecenti/captchasaj,
-  decryptr/captchaSajAudio,
   abjur/abjutils
 Suggests:
   knitr,

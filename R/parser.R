@@ -1,6 +1,8 @@
 
+
+
 #' Create a parser skeleton
-#' @param type The type of parser (`"cpopg"`, `"cposg"`, `"cjpg"` or `"cjsg"`)
+#' @param type The type of parser (`"cpopg"` or `"cposg"`)
 #' @export
 make_parser <- function(type = "cposg") {
   list(name = NULL, getter = NULL) %>% rlang::set_attrs("class" = c("parser", type))
@@ -62,4 +64,9 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
     apply_getters, file, list(parser_path = parser_path),
     SIMPLIFY = FALSE, mc.cores = cores) %>%
     dplyr::bind_rows()
+}
+
+# Check if lawsuit has secret of justice
+hidden_lawsuit <- function(html) {
+  !is.na(rvest::html_node(html, "#popupSenhaProcesso"))
 }
