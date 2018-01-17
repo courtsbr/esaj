@@ -202,7 +202,8 @@ parse_pd.cpopg <- function(parser) {
   get_pd <- function(html) {
     html %>%
       rvest::html_node(xpath = "//tbody[@id='dadosDaDelegacia']/..") %>%
-      rvest::html_table(header = TRUE) %>%
+      xml2::xml_parent() %>%
+      purrr::when(length(.) == 0 ~ dplyr::tibble(), ~ rvest::html_table(., header = TRUE)) %>%
       dplyr::filter(Documento != "") %>%
       setNames(arrumar_key(names(.))) %>%
       dplyr::tbl_df()
