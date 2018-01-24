@@ -8,7 +8,7 @@ Brazilian Justice Courts}
 download_cjsg(query, path = ".", classes = "", subjects = "",
   courts = "", trial_start = "", trial_end = "",
   registration_start = "", registration_end = "", min_page = 1,
-  max_page = 1, cores = 1, wait = 0.5, tj = "tjsp")
+  max_page = 1, cores = 1, wait = 0.5, tj = "tjsp", ...)
 }
 \arguments{
 \item{query}{Character vector with search query}
@@ -43,6 +43,8 @@ your IP blocked.}
 anyway.}
 
 \item{tj}{TJ from which to get data (only works with TJSP for now)}
+
+\item{...}{Param \code{rapporteurs} for \code{\link[=download_cjsg_tjmg]{download_cjsg_tjmg()}}}
 }
 \value{
 A character vector with the paths to the downloaded files

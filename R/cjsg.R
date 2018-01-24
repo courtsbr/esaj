@@ -28,6 +28,7 @@
 #'   \code{cores} is greater than one, so you will probably have your IP blocked
 #'   anyway.
 #' @param tj TJ from which to get data (only works with TJSP for now)
+#' @param ... Param `rapporteurs` for [download_cjsg_tjmg()]
 #' @return A character vector with the paths to the downloaded files
 #'
 #' @seealso [cjsg_table()], [browse_table()]
@@ -36,10 +37,14 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
                           courts = "", trial_start = "", trial_end = "",
                           registration_start = "", registration_end = "",
                           min_page = 1, max_page = 1, cores = 1,
-                          wait = .5, tj = "tjsp") {
+                          wait = .5, tj = "tjsp", ...) {
 
-  # Stop
-  stopifnot(tj == "tjsp")
+  if (tj == "tjmg") { return(download_cjsg_tjmg(query, path, classes, subjects,
+                                                courts, trial_start, trial_end,
+                                                registration_start, registration_end,
+                                                min_page, max_page, ...)) }
+
+
 
   # Convert parameters to expected format
   strings <- list(classes, subjects, courts) %>%
@@ -93,6 +98,7 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
   download_pages <- function(page, path, wait) {
 
     Sys.sleep(wait)
+
     # Query for GET request
     query_get <- list(
       "tipoDeDecisao" = "A",
@@ -165,4 +171,119 @@ peek_cjsg <- function(...) {
   do.call(download_cjsg, dots)
   pages <- cjsg_npags(path)
   cjsg_print_npags(pages, min_p)
+}
+
+#' Temporary function for downloading TJMG's CJSG queries
+#'
+#' @param query Character vector with search query
+#' @param path Path to directory where to save HTMLs
+#' @param classes Character vector with class IDs (e.g. `c(175, 43, 259, 263)`)
+#' @param subjects Character vector with subject IDs (e.g. `c(10207, 10008, 10199)`)
+#' @param courts Character vector with court IDs (e.g. `c("1-7", "1-9", "2-3", "1-1")`)
+#' @param rapporteurs Character vector with rapporteur IDs (e.g. `c("2-1528561", "2-2345361")`)
+#' @param trial_start Lower bound for trial date
+#' @param trial_end Upper bound for trial date
+#' @param registration_start Lower bound for registration date
+#' @param registration_end Upper bound for registration date
+#' @param min_page First page of results to download
+#' @param max_page Last page of results to download. If is \code{NA} or
+#'   \code{Inf}, we use \code{\link{peek_cjsg}}.
+#' @return A character vector with the paths to the downloaded files
+#'
+download_cjsg_tjmg <- function(query, path = ".", classes = "", subjects = "",
+                               courts = "", trial_start = "", trial_end = "",
+                               registration_start = "", registration_end = "",
+                               min_page = 1, max_page = 1, rapporteurs = "") {
+
+  # Create directory if necessary
+  dir.create(path, FALSE, TRUE)
+  path <- normalizePath(path)
+
+  # Replicate name of item over vector
+  replicate_over <- function(vec, name) {
+    vec %>% as.character() %>% as.list() %>% purrr::set_names(rep(name, length(.))) }
+  names <- c("listaClasse", "listaAssunto", "listaOrgaoJulgador", "listaRelator")
+
+  # Convert dates to expected format
+  dates <- list(
+    trial_start, trial_end,
+    registration_start, registration_end) %>%
+    purrr::modify(date_pt)
+
+  # Create part of query with lists of filters
+  lists <- list(classes, subjects, courts, rapporteurs) %>%
+    purrr::map2(names, replicate_over) %>%
+    purrr::flatten() %>%
+    purrr::discard(~.x == "")
+
+  # Query for GET request
+  query_get <- c(list(
+    dataPublicacaoInicial = dates[[3]],
+    dataPublicacaoFinal = dates[[4]],
+    dataJulgamentoInicial = dates[[1]],
+    dataJulgamentoFinal = dates[[2]],
+    numeroRegistro = "1",
+    totalLinhas = "1",
+    palavras = query,
+    pesquisarPor = "ementa",
+    pesquisaTesauro = "true",
+    orderByData = "1",
+    linhasPorPagina = "10",
+    pesquisaPalavras = "Pesquisar",
+    classe = "",
+    codigoAssunto = "",
+    codigoOrgaoJulgador = "",
+    codigoCompostoRelator = ""
+  ), lists)
+
+  # Base URL
+  base <- "http://www5.tjmg.jus.br/jurisprudencia/"
+
+  # Run search query on website's home
+  u_search <- stringr::str_c(base, "pesquisaPalavrasEspelhoAcordao.do")
+  r_search <- httr::GET(u_search, query = query_get)
+
+  # Collect captcha
+  v8 <- V8::v8(); captcha <- tempfile(fileext = ".jpeg")
+  u_captcha <- stringr::str_c(base, "captcha.svl?", v8$eval("Math.random()*5"))
+  r_captcha <- httr::GET(u_captcha, httr::write_disk(captcha, overwrite = TRUE))
+
+  # Query for POST request
+  query_post <- list(
+    "callCount" = "1",
+    "page" = "link_busca",
+    "httpSessionId" = r_search$cookies$value[1],
+    "scriptSessionId" = "",
+    "c0-scriptName" = "ValidacaoCaptchaAction",
+    "c0-methodName" = "isCaptchaValid",
+    "c0-id" = "0",
+    "c0-param0" = stringr::str_c("string:", decryptr::decrypt(captcha, "tjmg")),
+    "batchId" = "0")
+  file.remove(captcha)
+
+  # Validate captcha's answer
+  u_validate <- stringr::str_c(base, "dwr/call/plaincall/ValidacaoCaptchaAction.isCaptchaValid.dwr")
+  r_validate <- httr::POST(u_validate, body = query_post, encode = "form")
+
+  # Iterate over pages of results
+  files <- c()
+  for (i in min_page:max_page) {
+
+    # Update page number
+    query_get["paginaNumero"] = i
+
+    # Rerun search, now with captcha broken
+    file <- stringr::str_c(path, "/page", i, ".html")
+    httr::GET(u_search, query = query_get, httr::write_disk(file, overwrite = TRUE))
+
+    # Check whether should keep file
+    paginator <- file %>%
+      xml2::read_html() %>%
+      stringr::str_detect("p?gina [0-9]* de [0-9]*")
+    if (!paginator) { file.remove(file); break() }
+
+    files <- append(files, file)
+  }
+
+  return(files)
 }

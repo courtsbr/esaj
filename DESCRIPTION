@@ -29,7 +29,9 @@ Imports:
   progress,
   tibble,
   magick,
-  tesseract
+  tesseract,
+  v8,
+  decryptr
 Remotes:
   jtrecenti/captchasaj,
   abjur/abjutils
