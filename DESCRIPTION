@@ -34,7 +34,8 @@ Imports:
   decryptr
 Remotes:
   jtrecenti/captchasaj,
-  abjur/abjutils
+  abjur/abjutils,
+  decryptr/decryptr
 Suggests:
   knitr,
   rmarkdown,
