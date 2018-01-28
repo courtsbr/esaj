@@ -30,7 +30,7 @@ Imports:
   tibble,
   magick,
   tesseract,
-  v8,
+  V8,
   decryptr
 Remotes:
   jtrecenti/captchasaj,
