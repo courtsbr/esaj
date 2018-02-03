@@ -53,6 +53,9 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
       trial_start, trial_end,
       registration_start, registration_end) %>%
     purrr::modify(date_pt)
+  if (stringr::str_detect(query, "\"")) {
+    query <- stringr::str_replace_all(query, " ", "+")
+  }
 
   # Query for POST request
   query_post <- list(
@@ -105,15 +108,23 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
       "pagina" = page,
       "conversationId" = "")
 
+    # Protect GET in case there are no pages
+    GET <- purrr::possibly(httr::GET, "")
+
     # Download page
-    file <- stringr::str_c(path, "/page", page, ".html")
+    out <- NULL; file <- stringr::str_c(path, "/page", page, ".html")
     if (!file.exists(file)) {
-      httr::GET(
+      out <- GET(
         "https://esaj.tjsp.jus.br/cjsg/trocaDePagina.do",
         query = query_get, httr::config(ssl_verifypeer = FALSE),
         httr::write_disk(file, TRUE))
     }
-    return(normalizePath(file))
+
+    # Normalize path if necessary
+    if (is.character(out)) { file <- out }
+    else { file <- normalizePath(file) }
+
+    return(file)
   }
 
   # Download all pages
