@@ -162,4 +162,5 @@ globalVariables(c(
   "class_subject", "comarca", "data_julgamento", "data_registro",
   "ementa", "id_decision", "id_lawsuit", "id_page", "orgao_julgador",
   "relatora", "txt_summary", "hidden", "data_publicacao", "Data",
-  "Movimento", "movement", "description"))
+  "Movimento", "movement", "description", "assunto", "classe",
+  "data_de_disponibilizacao", "foro", "magistrado", "vara"))
