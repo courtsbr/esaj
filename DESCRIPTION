@@ -1,6 +1,6 @@
 Package: esaj
 Title: A scraper for all e-SAJ systems
-Version: 0.1.0.9000
+Version: 0.1.1.9000
 Authors@R: c(
   person("Caio", "Lente", , "ctlente@gmail.com", role = c("aut", "cre")),
   person("Fernando", "Corr\u00EAa", role = c("aut")),
@@ -34,7 +34,6 @@ Imports:
   decryptr
 Remotes:
   jtrecenti/captchasaj,
-  abjur/abjutils,
   decryptr/decryptr
 Suggests:
   knitr,
