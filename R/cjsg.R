@@ -112,7 +112,7 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
     GET <- purrr::possibly(httr::GET, "")
 
     # Download page
-    out <- NULL; file <- stringr::str_c(path, "/page", page, ".html")
+    out <- NULL; file <- stringr::str_c(path, "/page_", stringr::str_pad(page, 4, "left", "0"), ".html")
     if (!file.exists(file)) {
       out <- GET(
         "https://esaj.tjsp.jus.br/cjsg/trocaDePagina.do",
@@ -284,7 +284,7 @@ download_cjsg_tjmg <- function(query, path = ".", classes = "", subjects = "",
     query_get["paginaNumero"] = i
 
     # Rerun search, now with captcha broken
-    file <- stringr::str_c(path, "/page", i, ".html")
+    file <- stringr::str_c(path, "/page_", stringr::str_pad(i, 4, "left", "0"), ".html")
     httr::GET(u_search, query = query_get, httr::write_disk(file, overwrite = TRUE))
 
     # Check whether should keep file

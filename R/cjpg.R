@@ -79,7 +79,7 @@ download_cjpg <- function(query, path = ".", classes = "", subjects = "",
     GET <- purrr::possibly(httr::GET, "")
 
     # Download page
-    file <- stringr::str_c(path, "/page", page, ".html")
+    file <- stringr::str_c(path, "/page_", stringr::str_pad(page, 4, "left", "0"), ".html")
     out <- GET(
       "https://esaj.tjsp.jus.br/cjpg/trocarDePagina.do",
       query = query_get, httr::config(ssl_verifypeer = FALSE),
