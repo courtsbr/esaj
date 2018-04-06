@@ -74,6 +74,14 @@ parse_cjsg_lawsuit <- function(node) {
     return(data)
   }
 
+  # Auxiliary function to create a column that doesn't exist
+  fncols <- function(data, cname) {
+    add <-cname[!cname%in%names(data)]
+
+    if(length(add)!=0) data[add] <- NA_character_
+    data
+  }
+
   # Get information from lawsuit
   tmp <- rvest::html_node(node, ".downloadEmenta")
   infos <- tibble::tibble(
@@ -113,6 +121,7 @@ parse_cjsg_lawsuit <- function(node) {
     dplyr::bind_cols(infos) %>%
     fill_in_columns() %>%
     dplyr::mutate(id = id, cs = cs, ts = ts) %>%
+    fncols("data_julgamento") %>%
     dplyr::select(
       id_page = id, id_decision, id_lawsuit, class_subject = cs,
       district = comarca, court = orgao_julgador, date_decision = data_julgamento,
