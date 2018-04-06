@@ -1,6 +1,4 @@
 
-
-
 #' Create a parser skeleton
 #' @param type The type of parser (`"cpopg"` or `"cposg"`)
 #' @export
@@ -70,4 +68,24 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
 # Check if lawsuit has secret of justice
 hidden_lawsuit <- function(html) {
   !is.na(rvest::html_node(html, "#popupSenhaProcesso"))
+}
+
+#' Shortcut for creating and running a complete CPOSG parser
+#' @param file A character vector with the paths to one ore more files
+#' @param path The path to a directory where to save RDSs
+#' @param cores The number of cores to be used when parsing
+#' @export
+parse_cposg_all <- function(file, path = ".", cores = 1) {
+  parser <- parse_decisions(parse_parts(parse_data(parse_movs(make_parser()))))
+  run_parser(file, parser, path, cores)
+}
+
+#' Shortcut for creating and running a complete CPOPG parser
+#' @param file A character vector with the paths to one ore more files
+#' @param path The path to a directory where to save RDSs
+#' @param cores The number of cores to be used when parsing
+#' @export
+parse_cpopg_all <- function(file, path = ".", cores = 1) {
+  parser <- parse_pd(parse_hist(parse_hearings(parse_parts(parse_data(parse_movs(make_parser("cpopg")))))))
+  run_parser(file, parser, path, cores)
 }
