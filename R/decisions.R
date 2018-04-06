@@ -51,7 +51,7 @@ download_decision_ <- function(decision, path, ntry = 10, verbose = FALSE) {
     if (verbose) { message("Breaking captcha...") }
 
     # Download captcha itself
-    time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
+    time_stamp <- stringr::str_replace_all(lubridate::now("Brazil/East"), "[^0-9]", "")
     u_captcha <- "https://esaj.tjsp.jus.br/cjsg/imagemCaptcha.do"
     f_captcha <- download_rgb_captcha(u_captcha, time_stamp)
 

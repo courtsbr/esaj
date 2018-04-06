@@ -34,8 +34,9 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
         purrr::map(~list(tibble::tibble())) %>%
         purrr::set_names(parser_path$parser$name) %>%
         tibble::as_tibble()
-      out <- tibble::tibble(id = tools::file_path_sans_ext(basename(file)),
-                            file, hidden = TRUE) %>%
+      out <- tibble::tibble(
+        id = stringr::str_extract(tools::file_path_sans_ext(basename(file)), "(?<=_).+"),
+        file, hidden = TRUE) %>%
         dplyr::bind_cols(empty_cols)
     } else {
       out <- parser$getter %>%
@@ -45,7 +46,7 @@ run_parser <- function(file, parser, path = ".", cores = 1) {
         dplyr::as_tibble() %>%
         dplyr::mutate(
           file = file,
-          id = tools::file_path_sans_ext(basename(file)),
+          id = stringr::str_extract(tools::file_path_sans_ext(basename(file)), "(?<=_).+"),
           hidden = FALSE) %>%
         dplyr::select(id, file, hidden, dplyr::everything())
     }

@@ -39,7 +39,7 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search, query) {
   for (i in 1:10) {
 
     # Download captcha
-    time_stamp <- stringr::str_replace_all(lubridate::now(), "[^0-9]", "")
+    time_stamp <- stringr::str_replace_all(lubridate::now("Brazil/East"), "[^0-9]", "")
     f_captcha <- download_rgb_captcha(u_captcha, time_stamp)
 
     # Change GET query
@@ -47,7 +47,8 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search, query) {
     query$vlCaptcha <- break_rgb_captcha(f_captcha)
 
     # Download lawsuit
-    f_lwst <- stringr::str_c(path, id, ".html")
+    today <- stringr::str_replace_all(lubridate::today("Brazil/East"), "-", "")
+    f_lwst <- stringr::str_c(path, today, "_", id, ".html")
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file
@@ -76,7 +77,8 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search, query) {
     query$vlCaptcha <- break_bw_captcha(f_captcha, captchasaj::modelo$modelo)
 
     # Download lawsuit
-    f_lwst <- stringr::str_c(path, id, ".html")
+    today <- stringr::str_replace_all(lubridate::today("Brazil/East"), "-", "")
+    f_lwst <- stringr::str_c(path, today, "_", id, ".html")
     f_search <- httr::GET(u_search, query = query, httr::write_disk(f_lwst, TRUE))
 
     # Free temporary file
@@ -92,7 +94,8 @@ download_bw_lawsuit <- function(id, path, u_captcha, u_search, query) {
 download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
 
   # Download page
-  f_lwst <- stringr::str_c(path, id, ".html")
+  today <- stringr::str_replace_all(lubridate::today("Brazil/East"), "-", "")
+  f_lwst <- stringr::str_c(path, today, "_", id, ".html")
   f_search <- httr::GET(u_search, query = query)
 
   # Get new links in page
@@ -133,7 +136,7 @@ download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
     # Map downloads
     links <- stringr::str_c(
       str_replace_all(u_captcha, "/cposg/[a-zA-Z\\.]+$", ""), links)
-    f_lwst <- stringr::str_c(path, id, "_", subjects, "_", dates, ".html")
+    f_lwst <- stringr::str_c(path, today, "_", id, "_", subjects, "_", dates, ".html")
     purrr::map2(links, f_lwst, ~httr::GET(.x, httr::write_disk(.y, TRUE)))
   }
   else {
