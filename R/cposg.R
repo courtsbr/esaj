@@ -28,6 +28,10 @@
 #' @export
 download_cposg <- function(id, path = ".") {
 
+  # id = "0009606-47.2013.8.24.0036"
+  # id = "1019986-36.2015.8.26.0053"
+  # path = "~/Desktop/Processos_esaj2"
+
   # Normalize path
   dir.create(path, FALSE, TRUE)
   path <- normalizePath(path) %>%
@@ -46,6 +50,7 @@ download_cposg <- function(id, path = ".") {
     downloaded <- append(downloaded, download_cposg_(id[i], path))
     pb$tick()
   }
+  # downloaded
 
   return(downloaded)
 }
@@ -53,12 +58,23 @@ download_cposg <- function(id, path = ".") {
 # Download one lawsuit
 download_cposg_ <- function(id, path) {
 
+  # id = "10199863620158260053"
+  # id = "00096064720138240036"
+  # path = "/home/nathalia/Desktop/Processos_esaj2/"
+
   # Choose appropriate download function
-  if (get_n(id) %in% c("26")) { download <- download_noc_lawsuit }
-  else { stop("ID must refer to a TJSP lawsuit") }
+  if (get_n(id) %in% c("26")) {
+    download <- download_noc_lawsuit
+  } else if (get_n(id) %in% c("24")) {
+    download <- download_rgb_lawsuit
+  } else {
+    stop("ID must refer to a TJSP lawsuit")
+  }
 
   # Get URLs for the download
   data <- get_lwst_data(id, deg = 2)
+
+  # data
 
   # If file exists, return it without downloading
   if (file.exists(stringr::str_c(path, id, ".html"))) {

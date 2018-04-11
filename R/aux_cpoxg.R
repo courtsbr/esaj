@@ -1,6 +1,10 @@
 # Get URLs for download depending on its TJ
 get_lwst_data <- function(id, deg = 1) {
 
+  # id = "10199863620158260053"
+  # id = "00096064720138240036"
+  # deg = 2
+
   # Switch base for URLs depending on TJ's number
   urls <- switch(get_n(id),
     "04" = list(u_captcha = "consultasaj.tjam", u_search = "consultasaj.tjam"),
@@ -14,13 +18,22 @@ get_lwst_data <- function(id, deg = 1) {
       "http://", urls$u_captcha, ".jus.br/cpopg/imagemCaptcha.do")
     urls$u_search <- stringr::str_c(
       "http://", urls$u_search, ".jus.br/cpopg/search.do")
-  }
-  else {
-    urls$u_captcha <- stringr::str_c(
+  }else {
+    if(get_n(id) %in% c("24")){
+      urls$u_captcha <- stringr::str_c(
+        "http://", urls$u_captcha, ".jus.br/cposg/imagemCaptcha.do")
+      urls$u_search <- stringr::str_c(
+        "http://", urls$u_search, ".jus.br/cposgtj/search.do")
+    }
+    else{
+      urls$u_captcha <- stringr::str_c(
       "http://", urls$u_captcha, ".jus.br/cposg/imagemCaptcha.do")
     urls$u_search <- stringr::str_c(
       "http://", urls$u_search, ".jus.br/cposg/search.do")
+    }
   }
+
+  # urls
 
   return(urls)
 }
