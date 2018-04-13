@@ -23,7 +23,7 @@ get_lwst_data <- function(id, deg = 1) {
       urls$u_captcha <- stringr::str_c(
         "http://", urls$u_captcha, ".jus.br/cposg/imagemCaptcha.do")
       urls$u_search <- stringr::str_c(
-        "http://", urls$u_search, ".jus.br/cposgtj/search.do")
+        "http://esaj.tjsc.jus.br/cposgtj/search.do")
     }
     else{
       urls$u_captcha <- stringr::str_c(
