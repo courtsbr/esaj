@@ -1,26 +1,42 @@
 # Get URLs for download depending on its TJ
 get_lwst_data <- function(id, deg = 1) {
 
-  # Switch base for URLs depending on TJ's number
-  urls <- switch(get_n(id),
-    "02" = list(u_captcha = "www2.tjal", u_search = "www2.tjal", u_cposg = "cposg5"),
-    "04" = list(u_captcha = "consultasaj.tjam", u_search = "consultasaj.tjam", u_cposg = "cposg"),
-    "05" = list(u_captcha = "esaj.tjba", u_search = "esaj.tjba", u_cposg = "cposg"),
-    "24" = list(u_captcha = "esaj.tjsc", u_search = "esaj.tjsc", u_cposg = "cposg"),
-    "26" = list(u_captcha = "esaj.tjsp", u_search = "esaj.tjsp", u_cposg = "cposg"))
-
   # Fill rest of URLs
   if (deg == 1) {
-    urls$u_captcha <- stringr::str_c(
-      "http://", urls$u_captcha, ".jus.br/cpopg/imagemCaptcha.do")
-    urls$u_search <- stringr::str_c(
-      "http://", urls$u_search, ".jus.br/cpopg/search.do")
+    urls <- switch(get_n(id),
+      "02" = list(
+       u_captcha = "http://www2.tjal.jus.br",
+       u_search = "http://www2.tjal.jus.br/cpopg/search.do"),
+      "04" = list(
+       u_captcha = "http://consultasaj.tjam.jus.br/cpopg/imagemCaptcha.do",
+       u_search = "http://consultasaj.tjam.jus.br/cpopg/search.do"),
+      "05" = list(
+       u_captcha = "http://esaj.tjba.jus.br/cpopg/imagemCaptcha.do",
+       u_search = "http://esaj.tjba.jus.br/cpopg/search.do"),
+      "24" = list(
+       u_captcha = "http://esaj.tjsc.jus.br/cpopg/imagemCaptcha.do",
+       u_search = "http://esaj.tjsc.jus.br/cpopg/search.do"),
+      "26" = list(
+       u_captcha = "http://esaj.tjsp.jus.br/cpopg/imagemCaptcha.do",
+       u_search = "http://esaj.tjsp.jus.br/cpopg/search.do"))
   }
   else {
-    urls$u_captcha <- stringr::str_c(
-      "http://", urls$u_captcha, ".jus.br/cposg/imagemCaptcha.do")
-    urls$u_search <- stringr::str_c(
-      "http://", urls$u_search, ".jus.br/", urls$u_cposg, "/search.do")
+    urls <- switch(get_n(id),
+      "02" = list(
+       u_captcha = "http://www2.tjal.jus.br/cposg5/imagemCaptcha.do",
+       u_search = "http://www2.tjal.jus.br/cposg5/search.do"),
+      "04" = list(
+       u_captcha = "http://consultasaj.tjam.jus.br/cposg/imagemCaptcha.do",
+       u_search = "http://consultasaj.tjam.jus.br/cposg/search.do"),
+      "05" = list(
+       u_captcha = "http://esaj.tjba.jus.br/cposg/imagemCaptcha.do",
+       u_search = "http://esaj.tjba.jus.br/cposg/search.do"),
+      "24" = list(
+       u_captcha = "http://esaj.tjsc.jus.br/cposg/imagemCaptcha.do",
+       u_search = "http://esaj.tjsc.jus.br/cposg/search.do"),
+      "26" = list(
+       u_captcha = "http://esaj.tjsp.jus.br/cposg/imagemCaptcha.do",
+       u_search = "http://esaj.tjsp.jus.br/cposg/search.do"))
   }
 
   return(urls)
@@ -117,7 +133,7 @@ download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
       str_replace_all("[\\n\\t]", "") %>%
       stringr::str_split(" {40}") %>%
       purrr::pluck(1) %>%
-      magrittr::extract(2:3) %>%
+      magrittr::extract((length(.)-1):length(.)) %>%
       str_replace_all("  ", " ") %>%
       stringr::str_trim()
 
