@@ -34,6 +34,7 @@ Unfortunatelly \code{\link[=download_cpopg]{download_cpopg()}} doesn't yet work 
 Brazil. Here are the ones already implemented:
 \itemize{
 \item TJAM (Amazonas)
+\item TJAL (Alagoas)
 \item TJBA (Bahia)
 \item TJSC (Santa Catarina)
 \item TJSP (Sao Paulo)
