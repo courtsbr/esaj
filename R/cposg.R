@@ -54,7 +54,7 @@ download_cposg <- function(id, path = ".") {
 download_cposg_ <- function(id, path) {
 
   # Choose appropriate download function
-  if (get_n(id) %in% c("26")) { download <- download_noc_lawsuit }
+  if (get_n(id) %in% c("02", "26")) { download <- download_noc_lawsuit }
   else { stop("ID must refer to a TJSP lawsuit") }
 
   # Get URLs for the download

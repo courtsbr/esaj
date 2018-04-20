@@ -3,10 +3,11 @@ get_lwst_data <- function(id, deg = 1) {
 
   # Switch base for URLs depending on TJ's number
   urls <- switch(get_n(id),
-    "04" = list(u_captcha = "consultasaj.tjam", u_search = "consultasaj.tjam"),
-    "05" = list(u_captcha = "esaj.tjba", u_search = "esaj.tjba"),
-    "24" = list(u_captcha = "esaj.tjsc", u_search = "esaj.tjsc"),
-    "26" = list(u_captcha = "esaj.tjsp", u_search = "esaj.tjsp"))
+    "02" = list(u_captcha = "www2.tjal", u_search = "www2.tjal", u_cposg = "cposg5"),
+    "04" = list(u_captcha = "consultasaj.tjam", u_search = "consultasaj.tjam", u_cposg = "cposg"),
+    "05" = list(u_captcha = "esaj.tjba", u_search = "esaj.tjba", u_cposg = "cposg"),
+    "24" = list(u_captcha = "esaj.tjsc", u_search = "esaj.tjsc", u_cposg = "cposg"),
+    "26" = list(u_captcha = "esaj.tjsp", u_search = "esaj.tjsp", u_cposg = "cposg"))
 
   # Fill rest of URLs
   if (deg == 1) {
@@ -19,7 +20,7 @@ get_lwst_data <- function(id, deg = 1) {
     urls$u_captcha <- stringr::str_c(
       "http://", urls$u_captcha, ".jus.br/cposg/imagemCaptcha.do")
     urls$u_search <- stringr::str_c(
-      "http://", urls$u_search, ".jus.br/cposg/search.do")
+      "http://", urls$u_search, ".jus.br/", urls$u_cposg, "/search.do")
   }
 
   return(urls)
@@ -132,6 +133,9 @@ download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
       stringr::str_extract("[0-9]{2}/[0-9]{2}/[0-9]{4}") %>%
       lubridate::dmy() %>%
       str_replace_all("-", "_")
+
+    # Replace NA dates
+    dates[is.na(dates)] <- "ND"
 
     # Map downloads
     links <- stringr::str_c(

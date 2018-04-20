@@ -18,6 +18,7 @@
 #' Brazil. Here are the ones already implemented:
 #' \itemize{
 #'   \item TJAM (Amazonas)
+#'   \item TJAL (Alagoas)
 #'   \item TJBA (Bahia)
 #'   \item TJSC (Santa Catarina)
 #'   \item TJSP (Sao Paulo)
@@ -57,7 +58,7 @@ download_cpopg_ <- function(id, path) {
 
   # Choose appropriate download function
   if (get_n(id) %in% c("05")) { download <- download_bw_lawsuit }
-  else if (get_n(id) %in% c("26")) { download <- download_noc_lawsuit }
+  else if (get_n(id) %in% c("02", "26")) { download <- download_noc_lawsuit }
   else { download <- download_rgb_lawsuit }
 
   # Get URLs for the download
