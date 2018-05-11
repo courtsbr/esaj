@@ -24,6 +24,7 @@ parse_cjsg <- function(file, cores = 1) {
 
   # Set names for .id
   names(file) <- file
+  file <- file[file.size(file) > 0]
 
   # Run either with progress bar or on parallel
   if (cores == 1) {
