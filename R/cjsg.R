@@ -148,17 +148,25 @@ cjsg_npags <- function(path) {
     as.numeric() %>%
     magrittr::divide_by(.[1]) %>%
     purrr::pluck(2) %>%
+    `%||%`(0) %>%
     ceiling()
 }
 
 cjsg_print_npags <- function(pages, min_pag) {
+
   # Print message
-  min_p <- ifelse(min_pag == -1, 1, min_pag)
-  message(
-    "There are ", (pages - min_pag + 1), " pages to download\n",
-    "This should take around ",
-    how_long((pages - min_p + 1) * 0.5105))
-  invisible(pages)
+  if (pages == 0) {
+    message("There are no pages to download")
+    invisible(pages)
+  }
+  else {
+    min_p <- ifelse(min_pag == -1, 1, min_pag)
+    message(
+      "There are ", (pages - min_pag + 1), " pages to download\n",
+      "This should take around ",
+      how_long((pages - min_p + 1) * 0.5105))
+    invisible(pages)
+  }
 }
 
 #' Check how long a call to [download_cjsg()] will probably take

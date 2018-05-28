@@ -130,14 +130,20 @@ peek_cjpg <- function(...) {
     as.numeric() %>%
     magrittr::divide_by(.[1]) %>%
     purrr::pluck(2) %>%
+    `%||%`(0) %>%
     ceiling()
 
   # Print message
-  min_p <- ifelse(min_p == -1, 1, min_p)
-  max_p <- ifelse(max_p == -1, pages, max_p)
-  message(
-    "There are ", (max_p - min_p + 1), " pages to download\n",
-    "This should take around ",
-    how_long((max_p - min_p + 1) * 0.5105))
-  invisible(pages)
+  if (pages == 0) {
+    message("There are no pages to download")
+    invisible(pages)
+  }
+  else {
+    min_p <- ifelse(min_pag == -1, 1, min_pag)
+    message(
+      "There are ", (pages - min_pag + 1), " pages to download\n",
+      "This should take around ",
+      how_long((pages - min_p + 1) * 0.5105))
+    invisible(pages)
+  }
 }
