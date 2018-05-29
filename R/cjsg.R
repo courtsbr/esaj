@@ -214,6 +214,10 @@ download_cjsg_tjmg <- function(query, path = ".", classes = "", subjects = "",
                                registration_start = "", registration_end = "",
                                min_page = 1, max_page = 1, rapporteurs = "") {
 
+  # Require V8 and decryptr
+  require_pkg("V8")
+  require_pkg("decryptr")
+
   # Create directory if necessary
   dir.create(path, FALSE, TRUE)
   path <- normalizePath(path)

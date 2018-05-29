@@ -126,6 +126,24 @@ rm_accent <- function(x) {
   }
 }
 
+# Send message if package is required
+require_pkg <- function(package) {
+
+  if (!requireNamespace(package, quietly = TRUE)) {
+
+    if (package == "captchasaj") {
+      package <- "jtrecenti/captchasaj"
+    } else if (package == "decryptr") {
+      package <- "decryptr/decryptr"
+    }
+
+    msg <- stringr::str_c(
+      "What you're trying to do requires the ",
+      package, " package. Please install it.")
+    stop(msg, call. = FALSE)
+  }
+}
+
 globalVariables(c(
   ".", "Documento", "X1", "X2", "X3", "adv", "arq", "b", "booklet",
   "color", "date_link", "desc", "forma", "g", "head", "id",
@@ -137,4 +155,4 @@ globalVariables(c(
   "ementa", "id_decision", "id_lawsuit", "id_page", "orgao_julgador",
   "relatora", "txt_summary", "hidden", "data_publicacao", "Data",
   "Movimento", "movement", "description", "assunto", "classe",
-  "data_de_disponibilizacao", "foro", "magistrado", "vara"))
+  "data_de_disponibilizacao", "foro", "magistrado", "vara", "min_pag"))

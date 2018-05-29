@@ -58,6 +58,10 @@ cposg_query <- function(id) {
 # Break RGB captcha
 break_rgb_captcha <- function(file) {
 
+  # Require magick and tesseract
+  require_pkg("magick")
+  require_pkg("tesseract")
+
   # Get file's JSON
   json <- jsonlite::fromJSON(file)
 

@@ -1,6 +1,6 @@
 Package: esaj
 Title: A scraper for all e-SAJ systems
-Version: 0.1.1.9000
+Version: 0.1.2.9000
 Authors@R: c(
   person("Caio", "Lente", , "ctlente@gmail.com", role = c("aut", "cre")),
   person("Fernando", "Corr\u00EAa", role = c("aut")),
@@ -12,33 +12,28 @@ Depends: R (>= 3.2.3)
 License: GPL-2
 Imports:
   magrittr,
-  captchasaj,
   dplyr,
   httr,
-  janitor,
   jsonlite,
   lubridate,
   readr,
-  rvest,
   stringr,
   tidyr,
   xml2,
-  rlang,
   purrr,
-  abjutils,
   progress,
   tibble,
+  rvest,
+  rlang
+Suggests:
+  knitr,
+  rmarkdown,
+  testthat,
+  captchasaj,
   magick,
   tesseract,
   V8,
   decryptr
-Remotes:
-  jtrecenti/captchasaj,
-  decryptr/decryptr
-Suggests:
-  knitr,
-  rmarkdown,
-  testthat
 VignetteBuilder: knitr
 LazyData: true
 RoxygenNote: 6.0.1

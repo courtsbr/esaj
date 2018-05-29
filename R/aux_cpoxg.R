@@ -80,6 +80,9 @@ download_rgb_lawsuit <- function(id, path, u_captcha, u_search, query) {
 # Download a lawsuit from a TJ that uses B&W captchas
 download_bw_lawsuit <- function(id, path, u_captcha, u_search, query) {
 
+  # Require captchasaj
+  require_pkg("captchasaj")
+
   # Aux function for breaking captcha
   break_bw_captcha <- purrr::possibly(captchasaj::decodificar, "xxxxx")
 
