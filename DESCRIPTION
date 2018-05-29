@@ -3,7 +3,7 @@ Title: A scraper for all e-SAJ systems
 Version: 0.1.2.9000
 Authors@R: c(
   person("Caio", "Lente", , "ctlente@gmail.com", role = c("aut", "cre")),
-  person("Fernando", "Corr\u00EAa", role = c("aut")),
+  person("Fernando", "Correa", role = c("aut")),
   person("Julio", "Trecenti", , "j@jtrecenti.com", c("aut")),
   person("ABJ", role = c("cph", "fnd")))
 Description: A simple interface that allows you to download first and second
