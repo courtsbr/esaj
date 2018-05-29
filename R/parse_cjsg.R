@@ -113,7 +113,7 @@ parse_cjsg_lawsuit <- function(node) {
     dplyr::mutate_all(stringr::str_trim) %>%
     dplyr::mutate(
       key = key %>%
-        abjutils::rm_accent() %>%
+        rm_accent() %>%
         stringr::str_to_lower() %>%
         stringr::str_replace_all(" +", "_") %>%
         stringr::str_replace_all("[^a-z_]", "") %>%

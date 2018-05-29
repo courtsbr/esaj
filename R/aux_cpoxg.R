@@ -139,7 +139,7 @@ download_noc_lawsuit <- function(id, path, u_captcha, u_search, query) {
 
     # Extract subjects and dates from descriptions
     subjects <- descs %>%
-      rm_diacritics() %>%
+      rm_accent() %>%
       stringr::str_to_lower() %>%
       stringr::str_extract("[a-z ]+./") %>%
       stringr::str_extract("[a-z ]+") %>%

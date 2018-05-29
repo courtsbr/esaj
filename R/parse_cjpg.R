@@ -26,7 +26,7 @@ parse_cjpg_lawsuit <- function(node) {
     rvest::html_text() %>%
     stringr::str_trim() %>%
     stringr::str_to_lower() %>%
-    abjutils::rm_accent() %>%
+    rm_accent() %>%
     stringr::str_trim() %>%
     stringr::str_replace_all("[^0-9a-z]+", "_") %>%
     stringr::str_replace_all("^_|_$", "")

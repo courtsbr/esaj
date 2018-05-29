@@ -8,38 +8,10 @@
 #' @importFrom magrittr %>%
 NULL
 
-#' Double-pipe operator
-#'
-#' See \code{\link[magrittr]{\%<>\%}} for more details.
-#'
-#' @name %<>%
-#' @rdname pipe
-#' @keywords internal
-#' @importFrom magrittr %<>%
-NULL
-
-#' Quasiquotation of an expression
-#'
-#' See \code{\link[rlang]{!!}} for more details.
-#'
-#' @rdname quasiquotation
-#' @keywords internal
-#' @importFrom rlang !!
-NULL
-
-#' Definition operator
-#'
-#' See \code{\link[rlang]{:=}} for more details.
-#'
-#' @name :=
-#' @rdname op-definition
-#' @keywords internal
-#' @importFrom rlang :=
-NULL
-
-"%||%" <- function(x, y) {
-  if (rlang::is_null(x)) y else x
-}
+# Symbols
+"!!" <- rlang::`!!`
+":=" <- rlang::`:=`
+"%||%" <- purrr::`%||%`
 
 # Shortcuts for stringr functions
 str_replace_all <- stringr::str_replace_all
@@ -145,11 +117,13 @@ tree_to_tibble <- function(tree, n = 0) {
   })
 }
 
-# Remove diacritics
-rm_diacritics <- function(string) {
-  string %>%
-    abjutils::rm_accent() %>%
-    str_replace_all("[\\~\\^\\'\\`]", "")
+# Remove diacritics (from abjutils)
+rm_accent <- function(x) {
+  if (.Platform$OS.type == 'unix') {
+    stringr::str_replace_all(iconv(x, to = "ASCII//TRANSLIT"), "[`'\"^~]", "")
+  } else {
+    gsub("`", "", iconv(x, from = 'latin1', to="ASCII//TRANSLIT"))
+  }
 }
 
 globalVariables(c(

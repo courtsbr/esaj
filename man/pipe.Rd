@@ -2,11 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{\%>\%}
 \alias{\%>\%}
-\alias{\%<>\%}
 \title{Pipe operator}
 \description{
 See \code{\link[magrittr]{\%>\%}} for more details.
-
-See \code{\link[magrittr]{\%<>\%}} for more details.
 }
 \keyword{internal}
