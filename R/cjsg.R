@@ -53,15 +53,17 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
       trial_start, trial_end,
       registration_start, registration_end) %>%
     purrr::modify(date_pt)
-  if (stringr::str_detect(query, "\"")) {
-    query <- stringr::str_replace_all(query, " ", "+")
-  }
+
+  # Those lines are no longer necessary, although the original requisition uses the '+'
+  # if (stringr::str_detect(query, "\"")) {
+  #  query <- stringr::str_replace_all(query, " ", "+")
+  # }
 
   # Query for POST request
   query_post <- list(
     "conversationId" = "",
     "dados.buscaInteiroTeor" = query,
-    "dados.pesquisarComSinonimos" = "S",
+    "dados.pesquisarComSinonimos" = "N",
     "contadoragente" = 0,
     "contadorMaioragente" = 0,
     "contadorjuizProlator" = 0,

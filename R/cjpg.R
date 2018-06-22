@@ -38,9 +38,11 @@ download_cjpg <- function(query, path = ".", classes = "", subjects = "",
     purrr::modify(stringr::str_c, collapse = ",")
   dates <- list(date_start, date_end) %>%
     purrr::modify(date_pt)
-  if (stringr::str_detect(query, "\"")) {
-    query <- stringr::str_replace_all(query, " ", "+")
-  }
+
+  # Those lines are no longer necessary, although the original requisition uses the '+'
+  # if (stringr::str_detect(query, "\"")) {
+  #   query <- stringr::str_replace_all(query, " ", "+")
+  # }
 
   # Query for POST request
   query_post <- list(
