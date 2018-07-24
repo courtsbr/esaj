@@ -101,7 +101,7 @@ download_cjpg <- function(query, path = ".", classes = "", subjects = "",
   return(c(file, purrr::flatten_chr(files)))
 }
 
-#' Check how long a call to [download_cjpg()] will probably take
+  #' Check how long a call to [download_cjpg()] will probably take
 #' @param ... Arguments passed on to [download_cjpg()] (
 #' `path` will be ignored)
 #' @seealso [download_cjpg()], [cjpg_table()]
@@ -112,13 +112,17 @@ peek_cjpg <- function(...) {
   dots <- rlang::dots_list(...)
   path <- tempdir()
   dots$path <- path
-  min_p <- dots$min_page %||% -1
-  max_p <- dots$max_page %||% -1
+  min_p <- dots$min_page
+  max_p <- dots$max_page
   dots$min_page <- 1
   dots$max_page <- 1
 
-  # Call download_cjsg
+  # Call download_cjpg
   do.call(download_cjpg, dots)
+
+  # Fix pages
+  dots$min_page <- min_p %||% 1
+  dots$max_page <- max_p %||% 1
 
   # Get number of pages
   pages <- path %>%
@@ -129,23 +133,40 @@ peek_cjpg <- function(...) {
     stringr::str_extract_all(" [0-9]+") %>%
     purrr::pluck(1) %>%
     stringr::str_trim() %>%
-    as.numeric() %>%
+    as.numeric()
+  n_pages <- pages %>%
     magrittr::divide_by(.[1]) %>%
     purrr::pluck(2) %>%
     `%||%`(0) %>%
     ceiling()
 
   # Print message
-  if (pages == 0) {
+  if (n_pages == 0) {
     message("There are no pages to download")
     invisible(pages)
   }
   else {
-    min_p <- ifelse(min_pag == -1, 1, min_pag)
-    message(
-      "There are ", (pages - min_pag + 1), " pages to download\n",
-      "This should take around ",
-      how_long((pages - min_p + 1) * 0.5105))
+    dots$max_page <- min(dots$max_page, n_pages)
+    n_pages <- dots$max_page - dots$min_page + 1
+
+    if (n_pages > 1000) {
+      message(
+        "There are ",
+        pages[1]*n_pages, " lawsuits to download ",
+        "(for a total of ", n_pages, " pages)\n",
+        "This should take around ",
+        how_long(n_pages*1.3988),
+        "\nNote that this estimate is only ok for less than 1000 pages")
+    }
+    else {
+      message(
+        "There are ",
+        pages[2], " lawsuits to download ",
+        "(for a total of ", n_pages, " pages)\n",
+        "This should take around ",
+        how_long(n_pages*1.3988))
+    }
+
     invisible(pages)
   }
 }

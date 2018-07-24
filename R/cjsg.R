@@ -137,40 +137,6 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
   return(c(file, purrr::flatten_chr(files)))
 }
 
-cjsg_npags <- function(path) {
-  # Get number of pages
-  path %>%
-    list.files("search", full.names = TRUE) %>%
-    xml2::read_html() %>%
-    xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
-    rvest::html_text() %>%
-    stringr::str_extract_all(" [0-9]+") %>%
-    purrr::pluck(1) %>%
-    stringr::str_trim() %>%
-    as.numeric() %>%
-    magrittr::divide_by(.[1]) %>%
-    purrr::pluck(2) %>%
-    `%||%`(0) %>%
-    ceiling()
-}
-
-cjsg_print_npags <- function(pages, min_pag) {
-
-  # Print message
-  if (pages == 0) {
-    message("There are no pages to download")
-    invisible(pages)
-  }
-  else {
-    min_p <- ifelse(min_pag == -1, 1, min_pag)
-    message(
-      "There are ", (pages - min_pag + 1), " pages to download\n",
-      "This should take around ",
-      how_long((pages - min_p + 1) * 0.5105))
-    invisible(pages)
-  }
-}
-
 #' Check how long a call to [download_cjsg()] will probably take
 #' @param ... Arguments passed on to [download_cjsg()] (
 #' `path` will be ignored)
@@ -182,16 +148,64 @@ peek_cjsg <- function(...) {
   dots <- rlang::dots_list(...)
   path <- tempdir()
   dots$path <- path
-  min_p <- dots$min_page %||% -1
-  max_p <- dots$max_page %||% -1
+  min_p <- dots$min_page
+  max_p <- dots$max_page
   dots$min_page <- 1
   dots$max_page <- 1
   dots$wait <- 0
 
   # Call download_cjsg
   do.call(download_cjsg, dots)
-  pages <- cjsg_npags(path)
-  cjsg_print_npags(pages, min_p)
+
+  # Fix pages
+  dots$min_page <- min_p %||% 1
+  dots$max_page <- max_p %||% 1
+
+  # Get number of pages
+  pages <- path %>%
+    list.files("search", full.names = TRUE) %>%
+    xml2::read_html() %>%
+    xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
+    rvest::html_text() %>%
+    stringr::str_extract_all(" [0-9]+") %>%
+    purrr::pluck(1) %>%
+    stringr::str_trim() %>%
+    as.numeric()
+  n_pages <- pages %>%
+    magrittr::divide_by(.[1]) %>%
+    purrr::pluck(2) %>%
+    `%||%`(0) %>%
+    ceiling()
+
+  # Print message
+  if (n_pages == 0) {
+    message("There are no pages to download")
+    invisible(pages)
+  }
+  else {
+    dots$max_page <- min(dots$max_page, n_pages)
+    n_pages <- dots$max_page - dots$min_page + 1
+
+    if (n_pages > 1000) {
+      message(
+        "There are ",
+        pages[1]*n_pages, " lawsuits to download ",
+        "(for a total of ", n_pages, " pages)\n",
+        "This should take around ",
+        how_long(n_pages*1.3988),
+        "\nNote that this estimate is only ok for less than 1000 pages")
+    }
+    else {
+      message(
+        "There are ",
+        pages[2], " lawsuits to download ",
+        "(for a total of ", n_pages, " pages)\n",
+        "This should take around ",
+        how_long(n_pages*1.3988))
+    }
+
+    invisible(pages)
+  }
 }
 
 #' Temporary function for downloading TJMG's CJSG queries
