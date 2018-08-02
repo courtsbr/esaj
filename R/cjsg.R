@@ -93,8 +93,23 @@ download_cjsg <- function(query, path = ".", classes = "", subjects = "",
     httr::write_disk(file, TRUE))
 
   if (is.na(max_page) || is.infinite(max_page)) {
-    max_page <- cjsg_npags(dirname(file))
-    cjsg_print_npags(max_page, min_page)
+
+    # Get number of pages
+    max_page <- dirname(file) %>%
+      list.files("search", full.names = TRUE) %>%
+      xml2::read_html() %>%
+      xml2::xml_find_all("//*[@id='paginacaoSuperior-A']") %>%
+      rvest::html_text() %>%
+      stringr::str_extract_all(" [0-9]+") %>%
+      purrr::pluck(1) %>%
+      stringr::str_trim() %>%
+      as.numeric() %>%
+      magrittr::divide_by(.[1]) %>%
+      purrr::pluck(2) %>%
+      `%||%`(0) %>%
+      ceiling()
+
+    message("A total of ", max_page - min_page, " pages will be downloaded")
   }
 
   stopifnot(min_page <= max_page)
