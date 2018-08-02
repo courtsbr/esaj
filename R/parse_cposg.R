@@ -72,18 +72,19 @@ parse_movs.cposg <- function(parser) {
 
   # Function for getting movements
   get_movs <- function(html) {
-    html %>%
-      xml2::xml_find_all("//*[@id='tabelaTodasMovimentacoes']") %>%
+    xp0 <- "//*[@id='tabelaTodasMovimentacoes']"
+    tab <- xml2::xml_find_all(html, paste0(xp0, "//parent::table"))
+    tab %>%
       rvest::html_table(fill = TRUE) %>%
       purrr::pluck(1) %>%
+      janitor::clean_names() %>%
       dplyr::as_tibble() %>%
-      dplyr::mutate(
-        X1 = lubridate::dmy(X1, quiet = TRUE),
-        X3 = str_replace_all(X3, "[\\t\\n]", ""),
-        X3 = str_replace_all(X3, "\\r", " "),
-        X3 = str_replace_all(X3, " +", " ")) %>%
-      dplyr::select(-X2) %>%
-      purrr::set_names("movement", "description")
+      dplyr::select(movement = data, X3 = movimento) %>%
+      dplyr::filter(movement != "") %>%
+      tidyr::separate(X3, c("title", "txt"), sep = "\n\t",
+        extra = "merge", fill = "right") %>%
+      dplyr::mutate_all(stringr::str_squish) %>%
+      dplyr::mutate(movement = lubridate::dmy(movement, quiet = TRUE))
   }
 
   # Add get_movs to getters
