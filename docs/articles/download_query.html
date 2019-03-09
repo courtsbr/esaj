@@ -40,7 +40,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -58,7 +58,7 @@
         <li>
   <a href="https://github.com/courtsbr/esaj">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -69,16 +69,16 @@
 </div>
 <!--/.navbar -->
 
-      
+
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Downloading Queries</h1>
-            
+
           </div>
 
-    
-    
+
+
 <div class="contents">
 <p>Besides downloading lawsuits (see the <strong>Downloading Lawsuits</strong> article), <code>esaj</code> also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.</p>
 <p>To accomplish this task two functions were made available: <code><a href="../reference/download_cjpg.html">download_cjpg()</a></code> (for queries on first degree lawsuits) and <code><a href="../reference/download_cjsg.html">download_cjsg()</a></code> (for queries on second degree lawsuits). There are also two auxiliary functions that can help the user to evaluate how long this kind of download might take: <code><a href="../reference/peek_cjpg.html">peek_cjpg()</a></code> and <code><a href="../reference/peek_cjsg.html">peek_cjsg()</a></code>. Finally, there are 3 functions to explore which arguments to use when calling the functions above: <code><a href="../reference/cjpg_table.html">cjpg_table()</a></code>, <code><a href="../reference/cjsg_table.html">cjsg_table()</a></code>, and <code><a href="../reference/browse_table.html">browse_table()</a></code>.</p>
@@ -88,16 +88,16 @@
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>To run a query on first degree lawsuits and download the results, simply write the query as a string and supply the path to the directory where to download all resulting files. The example below finds all lawsuits containing the word “recurso”.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_cjpg.html">download_cjpg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page1.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/page1.html"</span></code></pre></div>
 <p>As you can see, <code>download_cj*g()</code> return the paths to the downloaded files. The first file always refers to the search page, containing the filled fields and the first results of the query; the subsequent files contain pages of results (as many pages as requested by the user).</p>
 <p>By default <code>download_cj*g()</code> download only one page of results, but we can also specify page indexes to start and stop downloading.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_cjpg.html">download_cjpg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>, <span class="dt">min_page =</span> <span class="dv">3</span>, <span class="dt">max_page =</span> <span class="dv">6</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page3.html" </span>
-<span class="co">#&gt; [3] "/Users/ctlente/Desktop/page4.html" </span>
-<span class="co">#&gt; [4] "/Users/ctlente/Desktop/page5.html" </span>
-<span class="co">#&gt; [5] "/Users/ctlente/Desktop/page6.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/page3.html" </span>
+<span class="co">#&gt; [3] "/Users/user/Desktop/page4.html" </span>
+<span class="co">#&gt; [4] "/Users/user/Desktop/page5.html" </span>
+<span class="co">#&gt; [5] "/Users/user/Desktop/page6.html"</span></code></pre></div>
 <p>To help you filter the results even more, many other arguments are also made available. <code><a href="../reference/download_cjpg.html">download_cjpg()</a></code> and <code><a href="../reference/download_cjsg.html">download_cjsg()</a></code> have slightly different ones, so make sure to run <code><a href="../reference/download_cjpg.html">?download_cjpg</a></code> or <code><a href="../reference/download_cjsg.html">?download_cjsg</a></code> to learn more about them.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Repeted arguments</span>
 query &lt;-<span class="st"> "recurso"</span>

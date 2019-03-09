@@ -40,7 +40,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -58,7 +58,7 @@
         <li>
   <a href="https://github.com/courtsbr/esaj">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -69,16 +69,16 @@
 </div>
 <!--/.navbar -->
 
-      
+
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Downloading Lawsuits</h1>
-            
+
           </div>
 
-    
-    
+
+
 <div class="contents">
 <p>The <code>esaj</code> package has two very useful functions for downloading lawsuits filed in Brazilian Justice Courts (<em>Tribunais de Justiça</em>). The only arguments you have to provide to them are the lawsuit’s unique number and the directory where to save the downloaded file.</p>
 <p>These two functions are called <code><a href="../reference/download_cpopg.html">download_cpopg()</a></code> and <code><a href="../reference/download_cposg.html">download_cposg()</a></code>. The first one works for first degree lawsuits, while the second one works for second degree lawsuits; despite this superficial difference, both download lawsuits as HTMLs and return the paths to the downloaded files in the exact same way.</p>
@@ -88,16 +88,16 @@
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>To download a first degree lawsuits, simply provide the lawsuit’s unique number (ID) and the path to the directory where the file should be saved. The ID doesn’t necessarily have to have all divisor marks, but I’ll leave them here for clarity purposes anyway.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_cpopg.html">download_cpopg</a></span>(<span class="st">"0123479-07.2012.8.26.0100"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/01234790720128260100.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/01234790720128260100.html"</span></code></pre></div>
 <p>If you want to download more than one lawsuit, provide all IDs in a character vector and the function will take care of the rest. All lawsuits will be independently downloaded to the provided directory as if the fuction had been called once for each ID.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ids &lt;-<span class="st"> </span><span class="kw">c</span>(
   <span class="st">"0123479-07.2012.8.26.0100"</span>,
   <span class="st">"0552486-62.2015.8.05.0001"</span>,
   <span class="st">"0303349-44.2014.8.24.0020"</span>)
 <span class="kw"><a href="../reference/download_cpopg.html">download_cpopg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/01234790720128260100.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/05524866220158050001.html"</span>
-<span class="co">#&gt; [3] "/Users/ctlente/Desktop/03033494420148240020.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/01234790720128260100.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/05524866220158050001.html"</span>
+<span class="co">#&gt; [3] "/Users/user/Desktop/03033494420148240020.html"</span></code></pre></div>
 <p>Note that these lawsuits all belong to different TJs. <code><a href="../reference/download_cpopg.html">download_cpopg()</a></code> is able to identify the Justice Court where the lawsuit was filed and automatically look for it in the correct website (for a list of all valid TJs see the <strong>Implemented TJs</strong> section below).</p>
 <p><code>esaj</code> is able to download lawsuits from many TJs because it is capable of breaking multiple types of captchas (courtesey of the <code>decryptr</code> package). The functions used for this task are not exported, but you can check them out with <code>esaj:::download_noc_lawsuit()</code>, <code>esaj:::download_bw_lawsuit()</code>, and <code>esaj:::download_rgb_lawsuit()</code>.</p>
 <p><code><a href="../reference/download_cposg.html">download_cposg()</a></code> works in the exact same way as <code><a href="../reference/download_cpopg.html">download_cpopg()</a></code>, but, as of the day of this writing, it is only able to download lawsuits filed in São Paulo (TJSP).</p>
@@ -105,12 +105,12 @@
   <span class="st">"1001869-51.2017.8.26.0562"</span>,
   <span class="st">"1001214-07.2016.8.26.0565"</span>)
 <span class="kw"><a href="../reference/download_cposg.html">download_cposg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10018695120178260562.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/10012140720168260565.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10018695120178260562.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/10012140720168260565.html"</span></code></pre></div>
 <p>The only case where <code><a href="../reference/download_cposg.html">download_cposg()</a></code> differs in behaviour from <code><a href="../reference/download_cpopg.html">download_cpopg()</a></code> is when the lawsuit turns out to be a list of “closed” lawsuits. If this ever happens, <code><a href="../reference/download_cposg.html">download_cposg()</a></code> adds some information to the filenames.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_cposg.html">download_cposg</a></span>(<span class="st">"00000144420138260352"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/00000144420138260352_recurso_em_sentido_estrito_2014_09_23.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/00000144420138260352_apelacao_2017_03_24.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/00000144420138260352_recurso_em_sentido_estrito_2014_09_23.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/00000144420138260352_apelacao_2017_03_24.html"</span></code></pre></div>
 </div>
 <div id="implemented-tjs" class="section level2">
 <h2 class="hasAnchor">

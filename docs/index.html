@@ -40,7 +40,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -58,7 +58,7 @@
         <li>
   <a href="https://github.com/courtsbr/esaj">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -69,13 +69,13 @@
 </div>
 <!--/.navbar -->
 
-      
+
       </header><div class="row">
   <div class="col-md-9">
-    
 
-    
-    
+
+
+
 <div class="contents">
 <div id="esaj" class="section level1">
 
@@ -101,17 +101,17 @@ ids &lt;-<span class="st"> </span><span class="kw">c</span>(
   <span class="st">"0552486-62.2015.8.05.0001"</span>,
   <span class="st">"0303349-44.2014.8.24.0020"</span>)
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cpopg">download_cpopg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/01234790720128260100.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/05524866220158050001.html"</span>
-<span class="co">#&gt; [3] "/Users/ctlente/Desktop/03033494420148240020.html"</span>
+<span class="co">#&gt; [1] "/Users/user/Desktop/01234790720128260100.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/05524866220158050001.html"</span>
+<span class="co">#&gt; [3] "/Users/user/Desktop/03033494420148240020.html"</span>
 
 <span class="co"># Download second degree lawsuits from São Paulo</span>
 ids &lt;-<span class="st"> </span><span class="kw">c</span>(
   <span class="st">"1001869-51.2017.8.26.0562"</span>,
   <span class="st">"1001214-07.2016.8.26.0565"</span>)
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cposg">download_cposg</a></span>(ids, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10018695120178260562.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/10012140720168260565.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10018695120178260562.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/10012140720168260565.html"</span></code></pre></div>
 <p>For more information on how to use these functions and which TJs are implemented, please see <a href="http://courtsbr.github.io/esaj/articles/download_lawsuit.html">Downloading Lawsuits</a>.</p>
 </div>
 <div id="queries" class="section level3">
@@ -120,13 +120,13 @@ esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentatio
 <p>Besides downloading lawsuits (see the <strong>Downloading Lawsuits</strong> article), <code>esaj</code> also allows the user to download the results of a query on lawsuits. This kind of query is very useful for finding out what lawsuits contain certain words, were filed in a given period, were filed in a given court, etc.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Download results of a simple first degree query</span>
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cjpg">download_cjpg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page1.html"</span>
+<span class="co">#&gt; [1] "/Users/user/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/page1.html"</span>
 
 <span class="co"># Download results of a slightly more complex second degree query</span>
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_cjsg">download_cjsg</a></span>(<span class="st">"recurso"</span>, <span class="st">"~/Desktop/"</span>, <span class="dt">classes =</span> <span class="kw">c</span>(<span class="st">"1231"</span>, <span class="st">"1232"</span>))
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/search.html"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/page1.html"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/search.html"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/page1.html"</span></code></pre></div>
 <p>For more information on how to use these functions and all their auxiliary methods (like <code>peek_cj*g()</code> and <code>cj*g_table()</code>), please see <a href="http://courtsbr.github.io/esaj/articles/download_query.html">Downloading Queries</a>.</p>
 </div>
 <div id="decisions" class="section level3">
@@ -135,11 +135,11 @@ esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentatio
 <p>Of all functions in the <code>esaj</code> package, <code><a href="reference/download_decision.html">download_decision()</a></code> is probably the simplest: it downloads the PDF belonging to a decision and that’s it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Download one decision</span>
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_decision">download_decision</a></span>(<span class="st">"10000034"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10000034.pdf"</span>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10000034.pdf"</span>
 
 <span class="co"># Download more than one decision</span>
 esaj<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/esaj/topics/download_decision">download_decision</a></span>(<span class="kw">c</span>(<span class="st">"10800758"</span>, <span class="st">"10000034"</span>), <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10800758.pdf"</span>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10800758.pdf"</span>
 <span class="co">#&gt; [2] ""</span></code></pre></div>
 <p>For more information on how to use this function, please see <a href="http://courtsbr.github.io/esaj/articles/download_decision.html">Downloading Decisions</a>.</p>
 </div>

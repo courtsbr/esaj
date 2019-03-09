@@ -30,17 +30,17 @@ ids <- c(
   "0552486-62.2015.8.05.0001",
   "0303349-44.2014.8.24.0020")
 esaj::download_cpopg(ids, "~/Desktop/")
-#> [1] "/Users/ctlente/Desktop/01234790720128260100.html"
-#> [2] "/Users/ctlente/Desktop/05524866220158050001.html"
-#> [3] "/Users/ctlente/Desktop/03033494420148240020.html"
+#> [1] "/Users/user/Desktop/01234790720128260100.html"
+#> [2] "/Users/user/Desktop/05524866220158050001.html"
+#> [3] "/Users/user/Desktop/03033494420148240020.html"
 
 # Download second degree lawsuits from São Paulo
 ids <- c(
   "1001869-51.2017.8.26.0562",
   "1001214-07.2016.8.26.0565")
 esaj::download_cposg(ids, "~/Desktop/")
-#> [1] "/Users/ctlente/Desktop/10018695120178260562.html"
-#> [2] "/Users/ctlente/Desktop/10012140720168260565.html"
+#> [1] "/Users/user/Desktop/10018695120178260562.html"
+#> [2] "/Users/user/Desktop/10012140720168260565.html"
 ```
 
 For more information on how to use these functions and which TJs are implemented, please see [Downloading Lawsuits](http://courtsbr.github.io/esaj/articles/download_lawsuit.html).
@@ -52,13 +52,13 @@ Besides downloading lawsuits (see the **Downloading Lawsuits** article), `esaj` 
 ``` r
 # Download results of a simple first degree query
 esaj::download_cjpg("recurso", "~/Desktop/")
-#> [1] "/Users/ctlente/Desktop/search.html"
-#> [2] "/Users/ctlente/Desktop/page1.html"
+#> [1] "/Users/user/Desktop/search.html"
+#> [2] "/Users/user/Desktop/page1.html"
 
 # Download results of a slightly more complex second degree query
 esaj::download_cjsg("recurso", "~/Desktop/", classes = c("1231", "1232"))
-#> [1] "/Users/ctlente/Desktop/search.html"
-#> [2] "/Users/ctlente/Desktop/page1.html"
+#> [1] "/Users/user/Desktop/search.html"
+#> [2] "/Users/user/Desktop/page1.html"
 ```
 
 For more information on how to use these functions and all their auxiliary methods (like `peek_cj*g()` and `cj*g_table()`), please see [Downloading Queries](http://courtsbr.github.io/esaj/articles/download_query.html).
@@ -70,12 +70,12 @@ Of all functions in the `esaj` package, `download_decision()` is probably the si
 ``` r
 # Download one decision
 esaj::download_decision("10000034", "~/Desktop/")
-#> [1] "/Users/ctlente/Desktop/10000034.pdf"
+#> [1] "/Users/user/Desktop/10000034.pdf"
 
 # Download more than one decision
 esaj::download_decision(c("10800758", "10000034"), "~/Desktop/")
-#> [1] "/Users/ctlente/Desktop/10800758.pdf"
-#> [2] "/Users/ctlente/Desktop/10000034.pdf"
+#> [1] "/Users/user/Desktop/10800758.pdf"
+#> [2] "/Users/user/Desktop/10000034.pdf"
 ```
 
 For more information on how to use this function, please see [Downloading Decisions](http://courtsbr.github.io/esaj/articles/download_decision.html).

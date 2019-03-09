@@ -40,7 +40,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -58,7 +58,7 @@
         <li>
   <a href="https://github.com/courtsbr/esaj">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -69,16 +69,16 @@
 </div>
 <!--/.navbar -->
 
-      
+
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Downloading Decisions</h1>
-            
+
           </div>
 
-    
-    
+
+
 <div class="contents">
 <p>Of all functions in the <code>esaj</code> package, <code><a href="../reference/download_decision.html">download_decision()</a></code> is probably the simplest. Unlike lawsuit and query functions, there is only one decision function and absolutelly no helper functions are necessary; it simply downloads the PDF belonging to a decision.</p>
 <p>It takes two arguments: a decision unique number (ID) and the path to a directory. It’s important to note that the second argument isn’t the path to a file like <code>readr::write_*()</code> functions expect, it’s the path to a folder (which can, but not necessarily has to, exist).</p>
@@ -88,11 +88,11 @@
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>To download a decision, simply call <code><a href="../reference/download_decision.html">download_decision()</a></code> with a decision ID and a path. The function will return the path to the downloaded PDF.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_decision.html">download_decision</a></span>(<span class="st">"10000034"</span>, <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10000034.pdf"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10000034.pdf"</span></code></pre></div>
 <p>This function is vectorized, meaning that we can pass it a character vector of IDs to download more than one decision.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/download_decision.html">download_decision</a></span>(<span class="kw">c</span>(<span class="st">"10800758"</span>, <span class="st">"10000034"</span>), <span class="st">"~/Desktop/"</span>)
-<span class="co">#&gt; [1] "/Users/ctlente/Desktop/10800758.pdf"</span>
-<span class="co">#&gt; [2] "/Users/ctlente/Desktop/10000034.pdf"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/user/Desktop/10800758.pdf"</span>
+<span class="co">#&gt; [2] "/Users/user/Desktop/10000034.pdf"</span></code></pre></div>
 <p>As expected, it returns the paths to both downloaded PDFs.</p>
 <p>It’s important to remember that <code><a href="../reference/download_decision.html">download_decision()</a></code> is breaking captchas in order to do its job (courtesey of the <code>decryptr</code> package). The function tries at most 10 times to break each captcha, so it’s possible that it fails every time and isn’t able to download the decision.</p>
 <p>If you find it super necessary to download every single decision, we recommend using <code>esaj:::download_decision_()</code>. With this non-exported function one can force a larger number of attempts or even get a more verbose output from the execution.</p>
