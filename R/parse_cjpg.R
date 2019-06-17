@@ -42,11 +42,7 @@ parse_cjpg_lawsuit <- function(node) {
   # Build final table
   tibble::tibble(id_lawsuit = id, code_lawsuit = cd) %>%
     dplyr::bind_cols(infos) %>%
-    dplyr::mutate(summary = tx) %>%
-    dplyr::rename(
-      subject = assunto, class = classe, district = comarca,
-      date_available = data_de_disponibilizacao, jurisdiction = foro,
-      judge = magistrado, court = vara)
+    dplyr::mutate(summary = tx)
 }
 
 #' Parse a page of CJPG results
